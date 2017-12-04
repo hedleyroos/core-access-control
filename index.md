@@ -1,4 +1,0 @@
-Access Control documentation
-============================
-
-TODO
