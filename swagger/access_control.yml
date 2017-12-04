@@ -120,6 +120,596 @@ parameters:
     type: string
     format: uuid
 
+definitions:
+  domain:
+    type: object
+    properties:
+      id:
+        type: integer
+      parent_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - name
+      - created_at
+      - updated_at
+
+  domain_create:
+    type: object
+    properties:
+      parent_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+    required:
+      - parent_id
+      - name
+
+  domain_update:
+    type: object
+    properties:
+      parent_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+    minItems: 1
+
+  site:
+    type: object
+    properties:
+      id:
+        type: integer
+      client_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - domain_id
+      - name
+      - created_at
+      - updated_at
+
+  site_create:
+    type: object
+    properties:
+      client_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+    required:
+      - domain_id
+      - name
+
+  site_update:
+    type: object
+    properties:
+      client_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+    minItems: 1
+
+  role:
+    type: object
+    properties:
+      id:
+        type: integer
+      label:
+        type: string
+        maxLength: 100
+      is_admin_role:
+        type: boolean
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - label
+      - is_admin_role
+      - created_at
+      - updated_at
+
+  role_create:
+    type: object
+    properties:
+      label:
+        type: string
+        maxLength: 100
+      is_admin_role:
+        type: boolean
+      description:
+        type: string
+    required:
+      - label
+
+  role_update:
+    type: object
+    properties:
+      label:
+        type: string
+        maxLength: 100
+      is_admin_role:
+        type: boolean
+      description:
+        type: string
+    minItems: 1
+
+  site_role:
+    type: object
+    properties:
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - site_id
+      - role_id
+      - grant_implicitly
+      - created_at
+      - updated_at
+
+  site_role_create:
+    type: object
+    properties:
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+    required:
+      - site_id
+      - role_id
+
+  site_role_update:
+    type: object
+    properties:
+      grant_implicitly:
+        type: boolean
+    minItems: 1
+
+  domain_role:
+    type: object
+    properties:
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - domain_id
+      - role_id
+      - grant_implicitly
+      - created_at
+      - updated_at
+
+  domain_role_create:
+    type: object
+    properties:
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+    required:
+      - domain_id
+      - role_id
+
+  domain_role_update:
+    type: object
+    properties:
+      grant_implicitly:
+        type: boolean
+    minItems: 1
+
+  user_domain_role:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - user_id
+      - domain_id
+      - role_id
+      - created_at
+      - updated_at
+
+  user_domain_role_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - user_id
+      - domain_id
+      - role_id
+
+  user_site_role:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - user_id
+      - site_id
+      - role_id
+      - created_at
+      - updated_at
+
+  user_site_role_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - user_id
+      - site_id
+      - role_id
+
+  permission:
+    type: object
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+        maxLength: 50
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - name
+      - created_at
+      - updated_at
+
+  permission_create:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 50
+      description:
+        type: string
+    required:
+      - name
+
+  permission_update:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 50
+      description:
+        type: string
+    minItems: 1
+
+  resource:
+    type: object
+    properties:
+      id:
+        type: integer
+      urn:
+        type: string
+        format: uri
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - urn
+      - created_at
+      - updated_at
+
+  resource_create:
+    type: object
+    properties:
+      urn:
+        type: string
+        format: uri
+      description:
+        type: string
+    required:
+      - urn
+
+  resource_update:
+    type: object
+    properties:
+      urn:
+        type: string
+        format: uri
+      description:
+        type: string
+    minItems: 1
+
+  role_resource_permission:
+    type: object
+    properties:
+      role_id:
+        type: integer
+      resource_id:
+        type: integer
+      permission_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - role_id
+      - resource_id
+      - permission_id
+      - created_at
+      - updated_at
+
+  role_resource_permission_create:
+    type: object
+    properties:
+      role_id:
+        type: integer
+      resource_id:
+        type: integer
+      permission_id:
+        type: integer
+    required:
+      - role_id
+      - resource_id
+      - permission_id
+
+  invitation:
+    type: object
+    properties:
+      id:
+        type: string
+        format: uuid
+      first_name:
+        type: string
+        maxLength: 100
+      last_name:
+        type: string
+        maxLength: 100
+      email:
+        type: string
+        format: email
+      expires_at:
+        type: string
+        format: 'date-time'
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - id
+      - first_name
+      - last_name
+      - email
+      - expires_at
+      - created_at
+      - updated_at
+
+  invitation_create:
+    type: object
+    properties:
+      first_name:
+        type: string
+        maxLength: 100
+      last_name:
+        type: string
+        maxLength: 100
+      email:
+        type: string
+        format: email
+      expires_at:
+        type: string
+        format: 'date-time'
+    required:
+      - first_name
+      - last_name
+      - email
+      - expires_at
+
+  invitation_update:
+    type: object
+    properties:
+      first_name:
+        type: string
+        maxLength: 100
+      last_name:
+        type: string
+        maxLength: 100
+      email:
+        type: string
+        format: email
+      expires_at:
+        type: string
+        format: 'date-time'
+    minItems: 1
+
+  invitation_domain_role:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - invitation_id
+      - domain_id
+      - role_id
+      - created_at
+      - updated_at
+
+  invitation_domain_role_create:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - invitation_id
+      - domain_id
+      - role_id
+
+  invitation_site_role:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+      updated_at:
+        type: string
+        format: 'date-time'
+    required:
+      - invitation_id
+      - site_id
+      - role_id
+      - created_at
+      - updated_at
+
+  invitation_site_role_create:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - invitation_id
+      - site_id
+      - role_id
+
 paths:
   /domain/:
     get:
@@ -130,6 +720,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/domain'
       tags:
         - access_control
     post:
@@ -140,20 +734,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              name:
-                type: string
-              parent:
-                type: integer
-            required:
-              - name
-              - description
-            type: object
+            $ref: '#/definitions/domain_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/domain'
       tags:
         - access_control
 
@@ -172,27 +758,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: domain_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              description:
-                type: string
-              name:
-                type: string
-              parent:
-                type: integer
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/domain'
       tags:
         - access_control
     put:
@@ -203,20 +770,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              name:
-                type: string
-              parent:
-                type: integer
-            required:
-              - name
-              - description
-            type: object
+            $ref: '#/definitions/domain_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/domain'
       tags:
         - access_control
 
@@ -231,6 +790,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/domain_role'
       tags:
         - access_control
     post:
@@ -241,20 +804,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              domain_id:
-                type: integer
-              role_id:
-                type: integer
-              grant_implicitly:
-                type: boolean
-            required:
-              - domain_id
-              - role_id
-            type: object
+            $ref: '#/definitions/domain_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/domain_role'
       tags:
         - access_control
 
@@ -274,6 +829,8 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/domain_role'
       tags:
         - access_control
     put:
@@ -284,13 +841,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              grant_implicitly:
-                type: boolean
-            type: object
+            $ref: '#/definitions/domain_role_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/domain_role'
       tags:
         - access_control
 
@@ -303,6 +859,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/invitation'
       tags:
         - access_control
     post:
@@ -313,23 +873,12 @@ paths:
         - in: body
           name: data
           schema:
-            type: object
-            properties:
-              email:
-                type: string
-              expires_at:
-                type: string
-              first_name:
-                type: string
-              last_name:
-                type: string
-            required:
-              - first_name
-              - last_name
-              - email
+            $ref: '#/definitions/invitation_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation'
       tags:
         - access_control
 
@@ -348,31 +897,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: invitation_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              email:
-                type: string
-                format: email
-              expires_at:
-                type: string
-                format: date-time
-              first_name:
-                type: string
-              last_name:
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/invitation'
       tags:
         - access_control
     put:
@@ -383,25 +909,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              email:
-                type: string
-                format: email
-              expires_at:
-                type: string
-                format: date-time
-              first_name:
-                type: string
-              last_name:
-                type: string
-            required:
-              - first_name
-              - last_name
-              - email
-            type: object
+            $ref: '#/definitions/invitation_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation'
       tags:
         - access_control
 
@@ -417,6 +930,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/invitation_domain_role'
       tags:
         - access_control
     post:
@@ -427,22 +944,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              domain_id:
-                type: integer
-              role_id:
-                type: integer
-              invitation_id:
-                type: string
-                format: uuid
-            required:
-              - invitation_id
-              - domain_id
-              - role_id
-            type: object
+            $ref: '#/definitions/invitation_domain_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation_domain_role'
       tags:
         - access_control
 
@@ -463,6 +970,8 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation_domain_role'
       tags:
         - access_control
 
@@ -478,6 +987,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/invitation_site_role'
       tags:
         - access_control
     post:
@@ -488,22 +1001,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              invitation_id:
-                type: string
-                format: uuid
-              site_id:
-                type: integer
-              role_id:
-                type: integer
-            required:
-              - invitation_id
-              - site_id
-              - role_id
-            type: object
+            $ref: '#/definitions/invitation_site_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation_site_role'
       tags:
         - access_control
 
@@ -524,6 +1027,8 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/invitation_site_role'
       tags:
         - access_control
 
@@ -536,6 +1041,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/permission'
       tags:
         - access_control
     post:
@@ -546,18 +1055,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              name:
-                type: string
-            required:
-              - name
-              - description
-            type: object
+            $ref: '#/definitions/permission_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/permission'
       tags:
         - access_control
 
@@ -576,27 +1079,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: permission_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              description:
-                description: ''
-                type: string
-              name:
-                description: ''
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/permission'
       tags:
         - access_control
     put:
@@ -607,20 +1091,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                description: ''
-                type: string
-              name:
-                description: ''
-                type: string
-            required:
-              - name
-              - description
-            type: object
+            $ref: '#/definitions/permission_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/permission'
       tags:
         - access_control
 
@@ -638,6 +1114,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/resource'
       tags:
         - access_control
     post:
@@ -648,19 +1128,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              urn:
-                type: string
-                format: uri
-            required:
-              - urn
-              - description
-            type: object
+            $ref: '#/definitions/resource_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/resource'
       tags:
         - access_control
 
@@ -679,26 +1152,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: resource_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              description:
-                type: string
-              urn:
-                type: string
-                format: uri
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/resource'
       tags:
         - access_control
     put:
@@ -709,19 +1164,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              urn:
-                type: string
-                format: uri
-            required:
-              - urn
-              - description
-            type: object
+            $ref: '#/definitions/resource_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/resource'
       tags:
         - access_control
 
@@ -734,6 +1182,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/role'
       tags:
         - access_control
     post:
@@ -744,19 +1196,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              is_admin_role:
-                type: boolean
-              label:
-                type: string
-            required:
-              - label
-            type: object
+            $ref: '#/definitions/role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/role'
       tags:
         - access_control
 
@@ -775,27 +1220,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: role_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              description:
-                type: string
-              is_admin_role:
-                type: boolean
-              label:
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/role'
       tags:
         - access_control
     put:
@@ -806,19 +1232,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              description:
-                type: string
-              is_admin_role:
-                type: boolean
-              label:
-                type: string
-            required:
-              - label
-            type: object
+            $ref: '#/definitions/role_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/role'
       tags:
         - access_control
 
@@ -842,6 +1261,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/role_resource_permission'
       tags:
         - access_control
     post:
@@ -852,21 +1275,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              permission_id:
-                type: integer
-              resource_id:
-                type: integer
-              role_id:
-                type: integer
-            required:
-              - role_id
-              - resource_id
-              - permission_id
-            type: object
+            $ref: '#/definitions/role_resource_permission_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/role_resource_permission'
       tags:
         - access_control
 
@@ -887,52 +1301,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: roleresourcepermission_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              permission_id:
-                type: integer
-              resource_id:
-                type: integer
-              role_id:
-                type: integer
-            type: object
-      responses:
-        '200':
-          description: ''
-      tags:
-        - access_control
-    put:
-      consumes:
-        - application/json
-      operationId: roleresourcepermission_update
-      parameters:
-        - in: body
-          name: data
-          schema:
-            properties:
-              permission_id:
-                type: integer
-              resource_id:
-                type: integer
-              role_id:
-                type: integer
-            required:
-              - role_id
-              - resource_id
-              - permission_id
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/role_resource_permission'
       tags:
         - access_control
 
@@ -945,6 +1315,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/site'
       tags:
         - access_control
     post:
@@ -955,23 +1329,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              client_id:
-                type: string
-                format: uuid
-              description:
-                type: string
-              domain_id:
-                type: integer
-              name:
-                type: string
-            required:
-              - name
-              - domain_id
-            type: object
+            $ref: '#/definitions/site_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/site'
       tags:
         - access_control
 
@@ -990,30 +1353,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: site_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              client_id:
-                type: string
-                format: uuid
-              description:
-                type: string
-              domain_id:
-                type: integer
-              name:
-                type: string
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/site'
       tags:
         - access_control
     put:
@@ -1024,23 +1365,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              client_id:
-                type: string
-                format: uuid
-              description:
-                type: string
-              domain_id:
-                type: integer
-              name:
-                type: string
-            required:
-              - name
-              - domain_id
-            type: object
+            $ref: '#/definitions/site_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/site'
       tags:
         - access_control
 
@@ -1055,6 +1385,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/site_role'
       tags:
         - access_control
     post:
@@ -1065,20 +1399,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              grant_implicitly:
-                type: boolean
-              role_id:
-                type: integer
-              site_id:
-                type: integer
-            required:
-              - site_id
-              - role_id
-            type: object
+            $ref: '#/definitions/site_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/site_role'
       tags:
         - access_control
 
@@ -1098,23 +1424,8 @@ paths:
       responses:
         '200':
           description: ''
-      tags:
-        - access_control
-    patch:
-      consumes:
-        - application/json
-      operationId: siterole_partial_update
-      parameters:
-        - in: body
-          name: data
           schema:
-            properties:
-              grant_implicitly:
-                type: boolean
-            type: object
-      responses:
-        '200':
-          description: ''
+            $ref: '#/definitions/site_role'
       tags:
         - access_control
     put:
@@ -1125,14 +1436,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              grant_implicitly:
-                description: ''
-                type: boolean
-            type: object
+            $ref: '#/definitions/site_role_update'
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/site_role'
       tags:
         - access_control
 
@@ -1148,6 +1457,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_domain_role'
       tags:
         - access_control
     post:
@@ -1158,22 +1471,12 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              domain_id:
-                type: integer
-              role_id:
-                type: integer
-              user_id:
-                type: string
-                format: uuid
-            required:
-              - user_id
-              - domain_id
-              - role_id
-            type: object
+            $ref: '#/definitions/user_domain_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/user_domain_role'
       tags:
         - access_control
 
@@ -1194,8 +1497,11 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            $ref: '#/definitions/user_domain_role'
       tags:
         - access_control
+
   /usersiterole/:
     get:
       operationId: usersiterole_list
@@ -1208,6 +1514,10 @@ paths:
       responses:
         '200':
           description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_site_role'
       tags:
         - access_control
     post:
@@ -1218,20 +1528,11 @@ paths:
         - in: body
           name: data
           schema:
-            properties:
-              role_id:
-                type: integer
-              site_id:
-                type: integer
-              user_id:
-                type: integer
-            required:
-              - user_id
-              - site_id
-              - role_id
-            type: object
+            $ref: '#/definitions/user_site_role_create'
       responses:
         '201':
           description: ''
+          schema:
+            $ref: '#/definitions/user_site_role'
       tags:
         - access_control
