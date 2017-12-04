@@ -1,3 +1,6 @@
+# Virtualenv as created in Makefile
+ve/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -60,6 +63,11 @@ instance/
 
 # Scrapy stuff:
 .scrapy
+
+# Sphinx documentation
+docs/
+!docs/Makefile
+!docs/source/
 
 # PyBuilder
 target/
