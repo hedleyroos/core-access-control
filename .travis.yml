@@ -1,0 +1,18 @@
+sudo: false
+cache: pip
+language: python
+
+matrix:
+  include:
+    - python: 3.5
+      env: TOXENV=py35
+    - python: 3.6
+      env: TOXENV=py36
+
+services:
+  - redis-server
+
+install:
+  - pip install tox
+
+script: tox
