@@ -6,13 +6,25 @@ PIP=$(VENV)/bin/pip
 $(VENV):
 	virtualenv $(VENV) -p python3.5
 
-build-html: $(VENV)
-	tar -cvf backup.tar docs/source docs/build docs/Makefile
-	rm -rf docs/
-	tar -xvf backup.tar
-	rm backup.tar
+docs-build-html: $(VENV)
 	$(PIP) install sphinx sphinx-autobuild
+
+# Backup the files needed to build the html.
+	tar -cvf backup.tar docs/source docs/Makefile
+
+# Remove docs compeletely.
+	rm -rf docs/
+
+# Restore backup files.
+	tar -xvf backup.tar
+
+# Remove the tar file.
+	rm backup.tar
+
+# Actually make html from index.rst
 	$(MAKE) -C docs/ clean && $(MAKE) -C docs/ html
+
+# Drop all build files in doc root.
 	cp -r docs/build/html/. docs/
 
 clean-virtualenv:
