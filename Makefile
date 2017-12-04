@@ -13,23 +13,17 @@ $(VENV):
 
 docs-build: $(VENV)
 	$(PIP) install sphinx sphinx-autobuild
-
-# Backup the files needed to build the html.
+	# Backup the files needed to build the html.
 	tar -cvf backup.tar docs/source docs/Makefile
-
-# Remove docs compeletely.
+	# Remove docs compeletely.
 	rm -rf docs/
-
-# Restore backup files.
+	# Restore backup files.
 	tar -xvf backup.tar
-
-# Remove the tar file.
+	# Remove the tar file.
 	rm backup.tar
-
-# Actually make html from index.rst
-	$(MAKE) -C docs/ clean && $(MAKE) -C docs/ html
-
-# Drop all build files in doc root.
+	# Actually make html from index.rst
+	$(MAKE) -C docs/ clean html
+	# Drop all build files in doc root.
 	cp -r docs/build/html/. docs/
 
 
