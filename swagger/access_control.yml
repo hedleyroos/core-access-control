@@ -1,0 +1,1237 @@
+swagger: '2.0'
+
+schemes:
+  - http
+
+securityDefinitions:
+  basic:
+    type: basic
+  APIKeyHeader:
+    type: apiKey
+    in: header
+    name: X-API-Key
+
+security:
+  - APIKeyHeader: []
+
+host: 'localhost:8000'
+
+info:
+  description: ''
+  title: Access Control API
+  version: ''
+
+basePath: /api/v1
+
+parameters:
+  optional_limit:
+    description: An optional query parameter to limit the number of results returned.
+    in: query
+    name: limit
+    required: false
+    type: integer
+    minimum: 1
+    maximum: 100
+    default: 20
+  optional_offset:
+    description: >-
+      An optional query parameter specifying the offset in the result set to
+      start from.
+    in: query
+    name: offset
+    required: false
+    type: integer
+    default: 0
+    minimum: 0
+  optional_domain_filter:
+    description: An optional query parameter to filter by domain_id
+    in: query
+    name: domain_id
+    required: false
+    type: integer
+  optional_invitation_filter:
+    description: An optional query parameter to filter by invitation_id
+    in: query
+    name: invitation_id
+    required: false
+    type: string
+    format: uuid
+  optional_role_filter:
+    description: An optional query parameter to filter by role_id
+    in: query
+    name: role_id
+    required: false
+    type: integer
+  optional_site_filter:
+    description: An optional query parameter to filter by site_id
+    in: query
+    name: site_id
+    required: false
+    type: integer
+  optional_user_filter:
+    description: An optional query parameter to filter by user_id
+    in: query
+    name: user_id
+    required: false
+    type: string
+    format: uuid
+  domain_id:
+    description: A unique integer value identifying the domain.
+    in: path
+    name: domain_id
+    required: true
+    type: integer
+  invitation_id:
+    description: A UUID value identifying the invitation.
+    in: path
+    name: invitation_id
+    required: true
+    type: string
+    format: uuid
+  permission_id:
+    description: A unique integer value identifying the permission.
+    in: path
+    name: permission_id
+    required: true
+    type: integer
+  resource_id:
+    description: A unique integer value identifying the resource.
+    in: path
+    name: resource_id
+    required: true
+    type: integer
+  role_id:
+    description: A unique integer value identifying the role.
+    in: path
+    name: role_id
+    required: true
+    type: integer
+  site_id:
+    description: A unique integer value identifying the site.
+    in: path
+    name: site_id
+    required: true
+    type: integer
+  user_id:
+    description: A unique integer value identifying the user.
+    in: path
+    name: user_id
+    required: true
+    type: string
+    format: uuid
+
+paths:
+  /domain/:
+    get:
+      operationId: domain_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: domain_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              name:
+                type: string
+              parent:
+                type: integer
+            required:
+              - name
+              - description
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  /domain/{domain_id}/:
+    parameters:
+      - $ref: '#/parameters/domain_id'
+    delete:
+      operationId: domain_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: domain_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: domain_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              name:
+                type: string
+              parent:
+                type: integer
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: domain_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              name:
+                type: string
+              parent:
+                type: integer
+            required:
+              - name
+              - description
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /domainrole/:
+    get:
+      operationId: domainrole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_domain_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: domainrole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              domain_id:
+                type: integer
+              role_id:
+                type: integer
+              grant_implicitly:
+                type: boolean
+            required:
+              - domain_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/domainrole/{domain_id}/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/domain_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: domainrole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: domainrole_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: domainrole_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              grant_implicitly:
+                type: boolean
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /invitation/:
+    get:
+      operationId: invitation_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: invitation_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              expires_at:
+                type: string
+              first_name:
+                type: string
+              last_name:
+                type: string
+            required:
+              - first_name
+              - last_name
+              - email
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/invitation/{invitation_id}/':
+    parameters:
+      - $ref: '#/parameters/invitation_id'
+    delete:
+      operationId: invitation_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: invitation_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: invitation_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              email:
+                type: string
+                format: email
+              expires_at:
+                type: string
+                format: date-time
+              first_name:
+                type: string
+              last_name:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: invitation_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              email:
+                type: string
+                format: email
+              expires_at:
+                type: string
+                format: date-time
+              first_name:
+                type: string
+              last_name:
+                type: string
+            required:
+              - first_name
+              - last_name
+              - email
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /invitationdomainrole/:
+    get:
+      operationId: invitationdomainrole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_invitation_filter'
+        - $ref: '#/parameters/optional_domain_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: invitationdomainrole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              domain_id:
+                type: integer
+              role_id:
+                type: integer
+              invitation_id:
+                type: string
+                format: uuid
+            required:
+              - invitation_id
+              - domain_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/invitationdomainrole/{invitation_id}/{domain_id}/{role_id}':
+    parameters:
+      - $ref: '#/parameters/invitation_id'
+      - $ref: '#/parameters/domain_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: invitationdomainrole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: invitationdomainrole_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /invitationsiterole/:
+    get:
+      operationId: invitationsiterole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_invitation_filter'
+        - $ref: '#/parameters/optional_site_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: invitationsiterole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              invitation_id:
+                type: string
+                format: uuid
+              site_id:
+                type: integer
+              role_id:
+                type: integer
+            required:
+              - invitation_id
+              - site_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/invitationsiterole/{invitation_id}/{site_id}/{role_id}':
+    parameters:
+      - $ref: '#/parameters/invitation_id'
+      - $ref: '#/parameters/site_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: invitationsiterole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: invitationsiterole_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /permission/:
+    get:
+      operationId: permission_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: permission_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              name:
+                type: string
+            required:
+              - name
+              - description
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/permission/{permission_id}/':
+    parameters:
+      - $ref: '#/parameters/permission_id'
+    delete:
+      operationId: permission_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: permission_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: permission_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                description: ''
+                type: string
+              name:
+                description: ''
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: permission_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                description: ''
+                type: string
+              name:
+                description: ''
+                type: string
+            required:
+              - name
+              - description
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /resource/:
+    get:
+      operationId: resource_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - description: An optional URN prefix filter
+          name: prefix
+          in: query
+          required: false
+          type: string
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: resource_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              urn:
+                type: string
+                format: uri
+            required:
+              - urn
+              - description
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/resource/{resource_id}/':
+    parameters:
+      - $ref: '#/parameters/resource_id'
+    delete:
+      operationId: resource_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: resource_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: resource_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              urn:
+                type: string
+                format: uri
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: resource_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              urn:
+                type: string
+                format: uri
+            required:
+              - urn
+              - description
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /role/:
+    get:
+      operationId: role_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: role_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              is_admin_role:
+                type: boolean
+              label:
+                type: string
+            required:
+              - label
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/role/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: role_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: role_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: role_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              is_admin_role:
+                type: boolean
+              label:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: role_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              description:
+                type: string
+              is_admin_role:
+                type: boolean
+              label:
+                type: string
+            required:
+              - label
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /roleresourcepermission/:
+    get:
+      operationId: roleresourcepermission_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_role_filter'
+        - description: An optional resource filter
+          name: resource_id
+          in: query
+          required: false
+          type: integer
+        - description: An optional permission filter
+          name: permission_id
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: roleresourcepermission_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              permission_id:
+                type: integer
+              resource_id:
+                type: integer
+              role_id:
+                type: integer
+            required:
+              - role_id
+              - resource_id
+              - permission_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/roleresourcepermission/{role_id}/{resource_id}/{permission_id}/':
+    parameters:
+      - $ref: '#/parameters/role_id'
+      - $ref: '#/parameters/resource_id'
+      - $ref: '#/parameters/permission_id'
+    delete:
+      operationId: access_control-roleresourcepermission_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: roleresourcepermission_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: roleresourcepermission_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              permission_id:
+                type: integer
+              resource_id:
+                type: integer
+              role_id:
+                type: integer
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: roleresourcepermission_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              permission_id:
+                type: integer
+              resource_id:
+                type: integer
+              role_id:
+                type: integer
+            required:
+              - role_id
+              - resource_id
+              - permission_id
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /site/:
+    get:
+      operationId: site_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: site_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              client_id:
+                type: string
+                format: uuid
+              description:
+                type: string
+              domain_id:
+                type: integer
+              name:
+                type: string
+            required:
+              - name
+              - domain_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/site/{site_id}/':
+    parameters:
+      - $ref: '#/parameters/site_id'
+    delete:
+      operationId: site_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: site_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: site_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              client_id:
+                type: string
+                format: uuid
+              description:
+                type: string
+              domain_id:
+                type: integer
+              name:
+                type: string
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: site_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              client_id:
+                type: string
+                format: uuid
+              description:
+                type: string
+              domain_id:
+                type: integer
+              name:
+                type: string
+            required:
+              - name
+              - domain_id
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /siterole/:
+    get:
+      operationId: siterole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_site_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: siterole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              grant_implicitly:
+                type: boolean
+              role_id:
+                type: integer
+              site_id:
+                type: integer
+            required:
+              - site_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/siterole/{site_id}/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/site_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: siterole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: siterole_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    patch:
+      consumes:
+        - application/json
+      operationId: siterole_partial_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              grant_implicitly:
+                type: boolean
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    put:
+      consumes:
+        - application/json
+      operationId: siterole_update
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              grant_implicitly:
+                description: ''
+                type: boolean
+            type: object
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+
+  /userdomainrole/:
+    get:
+      operationId: userdomainrole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_user_filter'
+        - $ref: '#/parameters/optional_domain_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: userdomainrole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              domain_id:
+                type: integer
+              role_id:
+                type: integer
+              user_id:
+                type: string
+                format: uuid
+            required:
+              - user_id
+              - domain_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
+
+  '/userdomainrole/{user_id}/{domain_id}/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/user_id'
+      - $ref: '#/parameters/domain_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: userdomainrole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: userdomainrole_read
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+  /usersiterole/:
+    get:
+      operationId: usersiterole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_user_filter'
+        - $ref: '#/parameters/optional_site_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      responses:
+        '200':
+          description: ''
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: usersiterole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            properties:
+              role_id:
+                type: integer
+              site_id:
+                type: integer
+              user_id:
+                type: integer
+            required:
+              - user_id
+              - site_id
+              - role_id
+            type: object
+      responses:
+        '201':
+          description: ''
+      tags:
+        - access_control
