@@ -39,15 +39,12 @@ docs-build:
 	@echo "$(CYAN)Installing Sphinx requirements...$(CLEAR)"
 	$(PIP) install sphinx sphinx-autobuild
 	@echo "$(GREEN)DONE$(CLEAR)"
-	# Backup the files needed to build the html.
 	@echo "$(CYAN)Backing up docs/ directory content...$(CLEAR)"
 	tar -cvf backup.tar docs/source docs/Makefile
 	@echo "$(GREEN)DONE$(CLEAR)"
-	# Remove docs completely.
 	@echo "$(CYAN)Clearing out docs/ directory content...$(CLEAR)"
 	rm -rf docs/
 	@echo "$(GREEN)DONE$(CLEAR)"
-	# Restore backup files.
 	@echo "$(CYAN)Restoring base docs/ directory content...$(CLEAR)"
 	tar -xvf backup.tar
 	@echo "$(GREEN)DONE$(CLEAR)"
@@ -57,7 +54,7 @@ docs-build:
 	@echo "$(CYAN)Running sphinx command...$(CLEAR)"
 	$(MAKE) -C docs/ clean html
 	@echo "$(GREEN)DONE$(CLEAR)"
-	# Drop all build files in doc root.
 	@echo "$(CYAN)Moving build files to docs/ root...$(CLEAR)"
-	cp -r docs/build/html/. docs/
+	cp -r docs/build/html/ docs/
+	rm -rf docs/build/
 	@echo "$(GREEN)DONE$(CLEAR)"
