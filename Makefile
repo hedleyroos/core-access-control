@@ -55,6 +55,6 @@ docs-build:
 	$(MAKE) -C docs/ clean html
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Moving build files to docs/ root...$(CLEAR)"
-	cp -r docs/build/html/ docs/
+	cp -r docs/build/html/. docs/
 	rm -rf docs/build/
 	@echo "$(GREEN)DONE$(CLEAR)"
