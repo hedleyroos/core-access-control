@@ -15,7 +15,6 @@ services:
 before-install:
   - docker build -t dockerfile/python .
 
-
 install:
   - pip install tox
 
