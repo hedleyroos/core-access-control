@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Girl Effect: Access control documentation build configuration file, created by
-# sphinx-quickstart on Mon Dec  4 11:00:04 2017.
+# Girl Effect: Core access control documentation build configuration file, created by
+# sphinx-quickstart on Mon Dec  4 12:53:13 2017.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -47,7 +47,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'Girl Effect: Access control'
+project = 'Girl Effect: Core access control'
 copyright = '2017, Girl Effect'
 author = 'Altus Barry'
 
@@ -70,7 +70,7 @@ language = None
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -113,7 +113,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'GirlEffectAccesscontroldoc'
+htmlhelp_basename = 'GirlEffectCoreaccesscontroldoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -140,7 +140,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'GirlEffectAccesscontrol.tex', 'Girl Effect: Access control Documentation',
+    (master_doc, 'GirlEffectCoreaccesscontrol.tex', 'Girl Effect: Core access control Documentation',
      'Altus Barry', 'manual'),
 ]
 
@@ -150,7 +150,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'girleffectaccesscontrol', 'Girl Effect: Access control Documentation',
+    (master_doc, 'girleffectcoreaccesscontrol', 'Girl Effect: Core access control Documentation',
      [author], 1)
 ]
 
@@ -161,8 +161,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'GirlEffectAccesscontrol', 'Girl Effect: Access control Documentation',
-     author, 'GirlEffectAccesscontrol', 'One line description of project.',
+    (master_doc, 'GirlEffectCoreaccesscontrol', 'Girl Effect: Core access control Documentation',
+     author, 'GirlEffectCoreaccesscontrol', 'One line description of project.',
      'Miscellaneous'),
 ]
 
