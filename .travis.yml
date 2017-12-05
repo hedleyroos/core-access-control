@@ -1,4 +1,4 @@
-sudo: false
+sudo: required
 cache: pip
 language: python
 
@@ -10,9 +10,15 @@ matrix:
       env: TOXENV=py36
 
 services:
-  - redis-server
+  - docker
+
+before-install:
+  - docker build -t dockerfile/python .
+
 
 install:
   - pip install tox
 
-script: tox
+script:
+  - tox
+
