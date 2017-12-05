@@ -23,7 +23,7 @@ $(VENV):
 
 # Creates the virtual environment.
 build-virtualenv:
-# TODO: Depending on project type, requirements will need to be installed here.
+	# TODO: Depending on project type, requirements will need to be installed here.
 	@echo "$(CYAN)Building virtualenv...$(CLEAR)"
 	$(VENV)
 	@echo "$(GREEN)DONE$(CLEAR)"
