@@ -585,33 +585,51 @@ definitions:
         items:
           $ref: '#/definitions/role_label'
 
-  site_and_domain_roles:
-    description: 'An object containing the site- and domain roles defined for a given site.'
+  domain_roles:
+    description: 'An object containing the domain roles defined for a given domain and it''s lineage.'
     type: object
     properties:
-      site:
+      domain_id:
+        description: 'The domain for which the request was made.'
+        type: integer
+      roles_map:
+        description: 'A dictionary where the keys are domain ids prefixed with `d:` and the values are lists of role ids.'
         type: object
         additionalProperties:
-          properties:
-            id:
-              description: 'The site id'
-              type: integer
-            role_ids:
-              description: 'The list of role ids for the site'
-              type: array
-              items:
-                type: integer
-      domains:
-        type: object
+          description: 'The list of role ids for the domain'
+          type: array
+          items:
+            type: integer
+        example:
+          "s:1": [1, 2, 3]
+          "d:1": [1]
+          "d:2": [1, 2]
+    required:
+      - domain_id
+      - roles_map
+
+  site_and_domain_roles:
+    description: 'An object containing the site- and domain lineage roles defined for a given site.'
+    type: object
+    properties:
+      site_id:
+        description: 'The site for which the request was made.'
+        type: integer
+      roles_map:
+        description: 'A dictionary where the keys are site and domain ids prefixed with `s:` and `d:`, respectively
+           and the values are lists of role ids.'
         additionalProperties:
-          properties:
-            id:
-              description: 'The domain id'
-            role_ids:
-              description: 'The list of role ids for the domain'
-              type: array
-              items:
-                type: integer
+          description: 'The list of role ids for the site or domain'
+          type: array
+          items:
+            type: integer
+        example:
+          "s:1": [1, 2, 3]
+          "d:1": [1]
+          "d:2": [1, 2]
+    required:
+      - site_id
+      - roles_map
 
   all_user_roles:
     description: 'An object containing the effective roles that a user has in any place in the organisational tree.'
@@ -631,12 +649,16 @@ definitions:
           "s:1": [1, 2, 3]
           "d:1": [1]
           "d:2": [1, 2]
+    required:
+      - user_id
+      - roles_map
 
 paths:
   /ops/site_role_labels_aggregated/{site_id}/:
     parameters:
       - $ref: '#/parameters/site_id'
     get:
+      description: 'Get a list of all possible role labels that a user can have from the specified site''s perspective.'
       operationId: get_site_role_labels_aggregated
       responses:
         200:
@@ -653,6 +675,7 @@ paths:
       - $ref: '#/parameters/user_id'
       - $ref: '#/parameters/site_id'
     get:
+      description: 'Get a list of all role labels that the specified user has from the specified site''s perspective.'
       operationId: get_user_site_role_labels_aggregated
       responses:
         200:
@@ -664,10 +687,27 @@ paths:
       tags:
         - operational
 
+  /ops/domain_roles/{domain_id}/:
+    parameters:
+      - $ref: '#/parameters/domain_id'
+    get:
+      description: 'Get the domain and its lineage''s roles defined for a domain.'
+      operationId: get_domain_roles
+      responses:
+        200:
+          description: ''
+          schema:
+            $ref: '#/definitions/domain_roles'
+        403:
+          description: 'Forbidden'
+      tags:
+        - operational
+
   /ops/site_and_domain_roles/{site_id}/:
     parameters:
       - $ref: '#/parameters/site_id'
     get:
+      description: 'Get the site- and domain lineage roles defined for a given site.'
       operationId: get_site_and_domain_roles
       responses:
         200:
@@ -679,10 +719,11 @@ paths:
       tags:
         - operational
 
-  /ops/get_all_user_roles/{user_id}/:
+  /ops/all_user_roles/{user_id}/:
     parameters:
       - $ref: '#/parameters/user_id'
     get:
+      description: 'Get the effective roles that a user has at any place in the organisational tree.'
       operationId: get_all_user_roles
       responses:
         200:
