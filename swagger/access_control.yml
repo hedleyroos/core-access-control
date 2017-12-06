@@ -1,11 +1,10 @@
 swagger: '2.0'
 
 schemes:
+  - https
   - http
 
 securityDefinitions:
-  basic:
-    type: basic
   APIKeyHeader:
     type: apiKey
     in: header
