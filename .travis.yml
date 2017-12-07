@@ -9,16 +9,8 @@ matrix:
     - python: 3.6
       env: TOXENV=py36
 
-services:
-  - docker
-
 install:
   - pip install tox
 
 script:
   - tox
-  - docker build -t dockerfile .
-  - docker run dockerfile
-
-after_script:
-  - docker images
