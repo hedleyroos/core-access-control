@@ -12,12 +12,13 @@ matrix:
 services:
   - docker
 
-before-install:
-  - docker build -t dockerfile/python .
-
 install:
   - pip install tox
 
 script:
   - tox
+  - docker build -t dockerfile .
+  - docker run dockerfile
 
+after_script:
+  - docker images
