@@ -16,7 +16,6 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Development Status :: 5 - Production/Stable",
         "Operating System :: OS Independent",
-        "Framework :: Django",
         "Intended Audience :: Developers",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
     ],
