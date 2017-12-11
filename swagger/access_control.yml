@@ -659,6 +659,8 @@ paths:
     get:
       description: 'Get a list of all possible role labels that a user can have from the specified site''s perspective.'
       operationId: get_site_role_labels_aggregated
+      produces:
+        - application/json
       responses:
         200:
           description: ''
@@ -676,6 +678,8 @@ paths:
     get:
       description: 'Get a list of all role labels that the specified user has from the specified site''s perspective.'
       operationId: get_user_site_role_labels_aggregated
+      produces:
+        - application/json
       responses:
         200:
           description: ''
@@ -692,6 +696,8 @@ paths:
     get:
       description: 'Get the domain and its lineage''s roles defined for a domain.'
       operationId: get_domain_roles
+      produces:
+        - application/json
       responses:
         200:
           description: ''
@@ -708,6 +714,8 @@ paths:
     get:
       description: 'Get the site- and domain lineage roles defined for a given site.'
       operationId: get_site_and_domain_roles
+      produces:
+        - application/json
       responses:
         200:
           description: ''
@@ -724,6 +732,8 @@ paths:
     get:
       description: 'Get the effective roles that a user has at any place in the organisational tree.'
       operationId: get_all_user_roles
+      produces:
+        - application/json
       responses:
         200:
           description: ''
@@ -742,6 +752,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -760,6 +772,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/domain'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -780,6 +794,8 @@ paths:
         - access_control
     get:
       operationId: domain_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -796,6 +812,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/domain_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -812,6 +830,8 @@ paths:
         - $ref: '#/parameters/optional_limit'
         - $ref: '#/parameters/optional_domain_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -830,6 +850,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/domain_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -851,6 +873,8 @@ paths:
         - access_control
     get:
       operationId: domainrole_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -867,6 +891,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/domain_role_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -881,6 +907,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -899,6 +927,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/invitation'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -919,6 +949,8 @@ paths:
         - access_control
     get:
       operationId: invitation_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -935,6 +967,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/invitation_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -952,6 +986,8 @@ paths:
         - $ref: '#/parameters/optional_invitation_filter'
         - $ref: '#/parameters/optional_domain_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -970,6 +1006,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/invitation_domain_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -985,6 +1023,8 @@ paths:
       - $ref: '#/parameters/role_id'
     delete:
       operationId: invitationdomainrole_delete
+      produces:
+        - application/json
       responses:
         '204':
           description: ''
@@ -992,6 +1032,8 @@ paths:
         - access_control
     get:
       operationId: invitationdomainrole_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1009,6 +1051,8 @@ paths:
         - $ref: '#/parameters/optional_invitation_filter'
         - $ref: '#/parameters/optional_site_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1027,6 +1071,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/invitation_site_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1049,6 +1095,8 @@ paths:
         - access_control
     get:
       operationId: invitationsiterole_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1063,6 +1111,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1081,6 +1131,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/permission'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1101,6 +1153,8 @@ paths:
         - access_control
     get:
       operationId: permission_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1117,6 +1171,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/permission_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1136,6 +1192,8 @@ paths:
           in: query
           required: false
           type: string
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1154,6 +1212,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/resource'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1174,6 +1234,8 @@ paths:
         - access_control
     get:
       operationId: resource_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1190,6 +1252,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/resource_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1204,6 +1268,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1222,6 +1288,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1242,6 +1310,8 @@ paths:
         - access_control
     get:
       operationId: role_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1258,6 +1328,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/role_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1283,6 +1355,8 @@ paths:
           in: query
           required: false
           type: integer
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1301,6 +1375,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/role_resource_permission'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1323,6 +1399,8 @@ paths:
         - access_control
     get:
       operationId: roleresourcepermission_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1337,6 +1415,8 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1355,6 +1435,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1375,6 +1457,8 @@ paths:
         - access_control
     get:
       operationId: site_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1391,6 +1475,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1407,6 +1493,8 @@ paths:
         - $ref: '#/parameters/optional_limit'
         - $ref: '#/parameters/optional_site_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1425,6 +1513,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1446,6 +1536,8 @@ paths:
         - access_control
     get:
       operationId: siterole_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1462,6 +1554,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/site_role_update'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1479,6 +1573,8 @@ paths:
         - $ref: '#/parameters/optional_user_filter'
         - $ref: '#/parameters/optional_domain_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1497,6 +1593,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/user_domain_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
@@ -1519,6 +1617,8 @@ paths:
         - access_control
     get:
       operationId: userdomainrole_read
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1536,6 +1636,8 @@ paths:
         - $ref: '#/parameters/optional_user_filter'
         - $ref: '#/parameters/optional_site_filter'
         - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
       responses:
         '200':
           description: ''
@@ -1554,6 +1656,8 @@ paths:
           name: data
           schema:
             $ref: '#/definitions/user_site_role'
+      produces:
+        - application/json
       responses:
         '201':
           description: ''
