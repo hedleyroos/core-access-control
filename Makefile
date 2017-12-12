@@ -66,4 +66,4 @@ mock-access-control-api: prism
 	./prism run --mockDynamic --list -s swagger/access_control.yml -p 8010
 
 validate-swagger: prism
-	./prism validate -s swagger/access_control.yml && echo "The Swagger spec contains no errors"
+	@./prism validate -s swagger/access_control.yml && echo "The Swagger spec contains no errors"
