@@ -16,8 +16,17 @@ security:
 host: 'localhost:8000'
 
 info:
-  description: ''
   title: Access Control API
+  description: |
+    # The Access Control API
+
+    ## Overview
+    The Access Control API is an API exposed to other core components. It uses an API Key in an HTTP header to
+    perform authentication and authorisation.
+
+    Most of the API calls facilitates CRUD of the entities defined in the Access Control component. Others calls
+    allows the retrieval of information in a form that is convenient for other components (most notably the
+    Management Layer) to consume.
   version: ''
 
 basePath: /api/v1
