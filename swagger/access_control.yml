@@ -921,6 +921,12 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - description: Optional filter based on the invitor (the user who created the invitation)
+          name: invitor_id
+          in: query
+          required: false
+          type: string
+          format: uuid
       produces:
         - application/json
       responses:
