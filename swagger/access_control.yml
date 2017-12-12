@@ -470,6 +470,10 @@ definitions:
         type: string
         format: uuid
         readOnly: true
+      invitor_id:
+        type: string
+        format: uuid
+        description: The user that created the invitation
       first_name:
         type: string
         maxLength: 100
@@ -492,6 +496,7 @@ definitions:
         readOnly: true
     required:
       - id
+      - invitor_id
       - first_name
       - last_name
       - email
