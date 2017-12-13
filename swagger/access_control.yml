@@ -766,6 +766,13 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - name: domain_ids
+          description: An optional list of domain ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
       produces:
         - application/json
       responses:
@@ -927,6 +934,14 @@ paths:
           required: false
           type: string
           format: uuid
+        - name: invitation_ids
+          description: An optional list of invitation ids
+          in: query
+          type: array
+          items:
+            type: string
+            format: uuid
+          required: false
       produces:
         - application/json
       responses:
@@ -1131,6 +1146,13 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - name: permission_ids
+          description: An optional list of permission ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
       produces:
         - application/json
       responses:
@@ -1212,6 +1234,13 @@ paths:
           in: query
           required: false
           type: string
+        - name: resource_ids
+          description: An optional list of resource ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
       produces:
         - application/json
       responses:
@@ -1288,6 +1317,13 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - name: role_ids
+          description: An optional list of role ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
       produces:
         - application/json
       responses:
@@ -1435,6 +1471,13 @@ paths:
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - name: site_ids
+          description: An optional list of site ids
+          in: query
+          type: array
+          items:
+            type: integer
+          required: false
       produces:
         - application/json
       responses:
