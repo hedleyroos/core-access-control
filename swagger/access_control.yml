@@ -166,7 +166,7 @@ definitions:
         maxLength: 100
       description:
         type: string
-    minItems: 1
+    minProperties: 1
 
   role_label:
     type: string
@@ -216,7 +216,7 @@ definitions:
         maxLength: 100
       description:
         type: string
-    minItems: 1
+    minProperties: 1
 
   role:
     type: object
@@ -255,7 +255,7 @@ definitions:
         type: boolean
       description:
         type: string
-    minItems: 1
+    minProperties: 1
 
   site_role:
     type: object
@@ -286,7 +286,7 @@ definitions:
     properties:
       grant_implicitly:
         type: boolean
-    minItems: 1
+    minProperties: 1
 
   domain_role:
     type: object
@@ -317,7 +317,7 @@ definitions:
     properties:
       grant_implicitly:
         type: boolean
-    minItems: 1
+    minProperties: 1
 
   user_domain_role:
     type: object
@@ -402,7 +402,7 @@ definitions:
         maxLength: 50
       description:
         type: string
-    minItems: 1
+    minProperties: 1
 
   resource:
     type: object
@@ -437,7 +437,7 @@ definitions:
         format: uri
       description:
         type: string
-    minItems: 1
+    minProperties: 1
 
   role_resource_permission:
     type: object
@@ -519,7 +519,7 @@ definitions:
       expires_at:
         type: string
         format: 'date-time'
-    minItems: 1
+    minProperties: 1
 
   invitation_domain_role:
     type: object
