@@ -1012,6 +1012,27 @@ paths:
       tags:
         - access_control
 
+  '/invitations/{invitation_id}/redeem/{user_id}/':
+    parameters:
+      - $ref: '#/parameters/invitation_id'
+      - $ref: '#/parameters/user_id'
+    get:
+      description: >-
+        Assign all roles assigned to the invitation to the specified user, removing the invitation and related
+        configuration when done.
+        Note: We may have to change the role assignment to an asynchronous task depending on the complexity of the
+        implementation.
+      operationId: invitation_redeem
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/all_user_roles'
+      tags:
+        - access_control
+
   /invitationdomainroles/:
     get:
       operationId: invitationdomainrole_list
