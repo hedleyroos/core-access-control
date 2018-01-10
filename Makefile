@@ -2,6 +2,9 @@ VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
+CODEGEN_VERSION=2.2.3
+CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
+ACCESS_CONTROL_CLIENT_DIR=access_control_client
 
 # Colours.
 CLEAR=\033[0m
@@ -17,6 +20,10 @@ help:
 	@echo "    $(CYAN)build-virtualenv$(CLEAR): Creates virtualenv directory, 've/', in project root."
 	@echo "    $(CYAN)clean-virtualenv$(CLEAR): Deletes 've/' directory in project root."
 	@echo "    $(CYAN)docs-build$(CLEAR): Build documents and place html output in docs root."
+	@echo "    $(CYAN)mock-access-control-api$(CLEAR): Starts Prism mock server for the Access Control API."
+	@echo "    $(CYAN)validate-swagger$(CLEAR): Check Swagger spec for errors."
+	@echo "    $(CYAN)access-control-client$(CLEAR): Generate a client for the Access Control API."
+	@echo "    $(CYAN)access-control-api$(CLEAR): Generate a Flask server for the Access Control API."
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
@@ -72,6 +79,18 @@ validate-swagger: prism
 
 $(FLAKE8): $(VENV)
 	$(PIP) install flake8
+
+# Generate the client code to interface with Access Control
+access-control-0lient: swagger-codegen-cli-$(CODEGEN_VERSION).jar
+	@echo "$(CYAN)Generating the client for the Access Control API...$(CLEAR)"
+	$(CODEGEN) -l python -i swagger/access_control.yml -o /tmp/$(ACCESS_CONTROL_CLIENT_DIR)
+	cp -r /tmp/$(ACCESS_CONTROL_CLIENT_DIR)/swagger_client* $(ACCESS_CONTROL_CLIENT_DIR)
+	rm -rf /tmp/$(ACCESS_CONTROL_CLIENT_DIR)
+
+# Generate the flask server code for Access Control
+access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
+	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
 
 check: $(FLAKE8)
 	$(FLAKE8)
