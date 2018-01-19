@@ -37,7 +37,7 @@ class Role(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     label = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
-    requires_2fa = DB.Column(DB.Boolean())
+    requires_2fa = DB.Column(DB.Boolean(), default=True)
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
 
@@ -48,7 +48,7 @@ class Role(DB.Model):
 class Permission(DB.Model):
     permission = DB.relationship("Permission", backref="permission", lazy=True)
     id = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.Text, unique=True)
+    name = DB.Column(DB.VARCHAR(30), unique=True)
     description = DB.Column(DB.Text)
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
@@ -71,8 +71,12 @@ class Resource(DB.Model):
 
 class RoleResourcePermission(DB.Model):
     role_id = DB.Column(DB.Integer, DB.ForeignKey("role.id"), primary_key=True)
-    permission_id = DB.Column(DB.Integer, DB.ForeignKey("permission.id"), primary_key=True)
-    resource_id = DB.Column(DB.Integer, DB.ForeignKey("resource.id"), primary_key=True)
+    resource_id = DB.Column(
+        DB.Integer, DB.ForeignKey("resource.id"), primary_key=True
+    )
+    permission_id = DB.Column(
+        DB.Integer, DB.ForeignKey("permission.id"), primary_key=True
+    )
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
 
@@ -162,7 +166,6 @@ class UserDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    grant_implicitly = DB.Column(DB.Boolean(), default=False)
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
 
