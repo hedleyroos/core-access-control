@@ -184,7 +184,7 @@ class Invitation(DB.Model):
     last_name = DB.Column(DB.Text)
     email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     expires_at = DB.Column(DB.DateTime)
-    invitor_id = DB.Column(UUID, default=uuid.uuid1)
+    invitor_id = DB.Column(UUID)
     is_system_user = DB.Column(DB.Boolean, default=False)
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
