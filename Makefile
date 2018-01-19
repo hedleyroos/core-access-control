@@ -98,6 +98,5 @@ check: $(FLAKE8)
 
 migrate:  $(VENV)
 	@echo "$(CYAN)Migrating...$(CLEAR)"
-	export FLASK_APP=models.py
-	$(FLASK) db migrate
-	$(FLASK) db update
+	FLASK_APP=models.py $(FLASK) db migrate
+	FLASK_APP=models.py $(FLASK) db upgrade
