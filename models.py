@@ -5,6 +5,7 @@ import uuid
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from sqlalchemy.dialects.postgresql import UUID
 
 
