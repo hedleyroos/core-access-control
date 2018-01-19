@@ -7,16 +7,16 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import UUID
 
-from settings import settings
-
 
 APP = Flask(__name__)
 
-# TODO Move to settings and make env driven.
-APP.config["SQLALCHEMY_DATABASE_URI"] = "postgres+psycopg2://core-access-control:core-access-control@localhost:5432/core-access-control"
-    #os.environ.get(
+APP.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
+    "DB_URI",
+    "postgres+psycopg2://core-access-control" \
+    ":core-access-control@localhost:5432/core-access-control"
+)
 DB = SQLAlchemy(APP)
-migrate = Migrate(APP, DB)
+MIGRATE = Migrate(APP, DB)
 
 
 class Domain(DB.Model):
