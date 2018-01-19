@@ -20,7 +20,6 @@ MIGRATE = Migrate(APP, DB)
 
 
 class Domain(DB.Model):
-    domain = DB.relationship("Domain", backref="domain", lazy=True)
     id = DB.Column(DB.Integer, primary_key=True)
     parent_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), nullable=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
@@ -33,7 +32,6 @@ class Domain(DB.Model):
 
 
 class Role(DB.Model):
-    role = DB.relationship("Role", backref="role", lazy=True)
     id = DB.Column(DB.Integer, primary_key=True)
     label = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
@@ -46,7 +44,6 @@ class Role(DB.Model):
 
 
 class Permission(DB.Model):
-    permission = DB.relationship("Permission", backref="permission", lazy=True)
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True)
     description = DB.Column(DB.Text)
@@ -58,7 +55,6 @@ class Permission(DB.Model):
 
 
 class Resource(DB.Model):
-    resource = DB.relationship("Resource", backref="resource", lazy=True)
     id = DB.Column(DB.Integer, primary_key=True)
     urn = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     description = DB.Column(DB.Text)
