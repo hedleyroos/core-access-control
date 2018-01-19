@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a48957d05e83
+Revision ID: 6d0a4aed7324
 Revises: 
-Create Date: 2018-01-19 16:16:48.853934
+Create Date: 2018-01-19 16:19:49.723689
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = 'a48957d05e83'
+revision = '6d0a4aed7324'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,9 +48,9 @@ def upgrade():
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('name')
+    sa.PrimaryKeyConstraint('id')
     )
+    op.create_index(op.f('ix_permission_name'), 'permission', ['name'], unique=True)
     op.create_table('resource',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('urn', sa.VARCHAR(length=100), nullable=True),
@@ -171,6 +171,7 @@ def downgrade():
     op.drop_table('role')
     op.drop_index(op.f('ix_resource_urn'), table_name='resource')
     op.drop_table('resource')
+    op.drop_index(op.f('ix_permission_name'), table_name='permission')
     op.drop_table('permission')
     op.drop_index(op.f('ix_invitation_email'), table_name='invitation')
     op.drop_table('invitation')
