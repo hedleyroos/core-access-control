@@ -25,8 +25,8 @@ class Domain(DB.Model):
     parent_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), nullable=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Domain(%s)>" % self.name
@@ -37,9 +37,9 @@ class Role(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     label = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
-    requires_2fa = DB.Column(DB.Boolean(), default=True)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    requires_2fa = DB.Column(DB.Boolean, default=True)
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Role(%s-%s)>" % (self.label, self.requires_2fa)
@@ -50,8 +50,8 @@ class Permission(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Permission(%s)>" % self.name
@@ -62,8 +62,8 @@ class Resource(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     urn = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Resource(%s)>" % self.urn
@@ -77,8 +77,8 @@ class RoleResourcePermission(DB.Model):
     permission_id = DB.Column(
         DB.Integer, DB.ForeignKey("permission.id"), primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<RoleResourcePermission(%s-%s-%s)>" % (
@@ -91,9 +91,9 @@ class Site(DB.Model):
     domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True)
     description = DB.Column(DB.Text)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
-    is_active = DB.Column(DB.Boolean(), default=True)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    is_active = DB.Column(DB.Boolean, default=True)
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Site(%s-%s-%s)>" % (
@@ -108,9 +108,9 @@ class DomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
-    grant_implicitly = DB.Column(DB.Boolean(), default=False)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    grant_implicitly = DB.Column(DB.Boolean, default=False)
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<DomainRole(%s-%s-%s)>" % (
@@ -125,9 +125,9 @@ class SiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
-    grant_implicitly = DB.Column(DB.Boolean(), default=False)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    grant_implicitly = DB.Column(DB.Boolean, default=False)
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<SiteRole(%s-%s-%s)>" % (
@@ -142,8 +142,8 @@ class UserSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -166,8 +166,8 @@ class UserDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -183,15 +183,15 @@ class UserDomainRole(DB.Model):
 
 
 class Invitation(DB.Model):
-    id = DB.Column(UUID, default=uuid.uuid1(), primary_key=True)
+    id = DB.Column(UUID, default=uuid.uuid1, primary_key=True)
     first_name = DB.Column(DB.Text)
     last_name = DB.Column(DB.Text)
     email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     expires_at = DB.Column(DB.DateTime)
-    invitor_id = DB.Column(UUID, default=uuid.uuid1())
-    is_system_user = DB.Column(DB.Boolean(), default=False)
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    invitor_id = DB.Column(UUID, default=uuid.uuid1)
+    is_system_user = DB.Column(DB.Boolean, default=False)
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return "<Invitation(%s-%s)>" % (self.email, self.expires_at)
@@ -207,8 +207,8 @@ class InvitationDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -231,8 +231,8 @@ class InvitationSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow())
-    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow())
+    created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
+    updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
