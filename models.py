@@ -45,7 +45,7 @@ class Role(DB.Model):
 
 class Permission(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.VARCHAR(30), unique=True)
+    name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
     created_at = DB.Column(DB.DateTime, default=datetime.datetime.utcnow)
     updated_at = DB.Column(DB.DateTime, onupdate=datetime.datetime.utcnow)
