@@ -94,8 +94,8 @@ class Site(DB.Model):
     updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
 
     def __repr__(self):
-        return "<Site(%s-%s-%s)>" % (
-            self.client_id, self.is_active, self.domain_id
+        return "<Site(%s-%s-%s-%s)>" % (
+            self.name, self.client_id, self.is_active, self.domain_id
         )
 
 
