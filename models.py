@@ -26,7 +26,11 @@ class Domain(DB.Model):
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Domain(%s)>" % self.name
@@ -38,7 +42,11 @@ class Role(DB.Model):
     description = DB.Column(DB.Text)
     requires_2fa = DB.Column(DB.Boolean, default=True)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Role(%s-%s)>" % (self.label, self.requires_2fa)
@@ -49,7 +57,11 @@ class Permission(DB.Model):
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Permission(%s)>" % self.name
@@ -60,7 +72,11 @@ class Resource(DB.Model):
     urn = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     description = DB.Column(DB.Text)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Resource(%s)>" % self.urn
@@ -75,7 +91,11 @@ class RoleResourcePermission(DB.Model):
         DB.Integer, DB.ForeignKey("permission.id"), primary_key=True
     )
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<RoleResourcePermission(%s-%s-%s)>" % (
@@ -91,7 +111,11 @@ class Site(DB.Model):
     client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Site(%s-%s-%s-%s)>" % (
@@ -108,7 +132,11 @@ class DomainRole(DB.Model):
     )
     grant_implicitly = DB.Column(DB.Boolean, default=False)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<DomainRole(%s-%s-%s)>" % (
@@ -125,7 +153,11 @@ class SiteRole(DB.Model):
     )
     grant_implicitly = DB.Column(DB.Boolean, default=False)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<SiteRole(%s-%s-%s)>" % (
@@ -141,7 +173,11 @@ class UserSiteRole(DB.Model):
         DB.Integer, primary_key=True
     )
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -165,7 +201,11 @@ class UserDomainRole(DB.Model):
         DB.Integer, primary_key=True
     )
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -189,7 +229,11 @@ class Invitation(DB.Model):
     invitor_id = DB.Column(UUID)
     is_system_user = DB.Column(DB.Boolean, default=False)
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     def __repr__(self):
         return "<Invitation(%s-%s)>" % (self.email, self.expires_at)
@@ -206,7 +250,11 @@ class InvitationDomainRole(DB.Model):
         DB.Integer, primary_key=True
     )
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
@@ -230,7 +278,11 @@ class InvitationSiteRole(DB.Model):
         DB.Integer, primary_key=True
     )
     created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
-    updated_at = DB.Column(DB.DateTime, onupdate=func.utc_timestamp())
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=func.utc_timestamp(),
+        onupdate=func.utc_timestamp()
+    )
 
     __table_args__ = (
         DB.ForeignKeyConstraint(
