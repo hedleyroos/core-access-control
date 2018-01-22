@@ -1748,6 +1748,13 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      parent_id: 6
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
   domain_update:
     type: "object"
     properties:
@@ -1790,6 +1797,14 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      domain_id: 6
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      client_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
   site_update:
     type: "object"
     properties:
@@ -1829,6 +1844,13 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      is_admin_role: true
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      label: {}
   role_update:
     type: "object"
     properties:
@@ -1862,6 +1884,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      grant_implicitly: true
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
   site_role_update:
     type: "object"
     properties:
@@ -1890,6 +1918,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      domain_id: 0
+      grant_implicitly: true
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
   domain_role_update:
     type: "object"
     properties:
@@ -1919,6 +1953,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      domain_id: 0
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
   user_site_role:
     type: "object"
     required:
@@ -1943,6 +1983,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
   permission:
     type: "object"
     required:
@@ -1967,6 +2013,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
   permission_update:
     type: "object"
     properties:
@@ -1999,6 +2051,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      urn: "http://example.com/aeiou"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
   resource_update:
     type: "object"
     properties:
@@ -2030,6 +2088,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 0
+      resource_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      permission_id: 1
   invitation:
     type: "object"
     required:
@@ -2070,6 +2134,15 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      expires_at: "2000-01-23T04:56:07.000+00:00"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      invitor_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      last_name: "last_name"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      first_name: "first_name"
+      email: "email"
   invitation_update:
     type: "object"
     properties:
@@ -2109,6 +2182,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      domain_id: 0
+      invitation_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
   invitation_site_role:
     type: "object"
     required:
@@ -2133,6 +2212,12 @@ definitions:
         type: "string"
         format: "date-time"
         readOnly: true
+    example:
+      invitation_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
   site_role_labels_aggregated:
     type: "object"
     properties:
@@ -2144,6 +2229,11 @@ definitions:
           $ref: "#/definitions/role_label"
     description: "An object containing a site ID and an aggregated list of all the\
       \ role labels supported by the site and all the domains in its lineage."
+    example:
+      roles:
+      - {}
+      - {}
+      site_id: 0
   user_site_role_labels_aggregated:
     type: "object"
     properties:
@@ -2159,6 +2249,12 @@ definitions:
     description: "An object containing a user ID, site ID and an aggregated list of\
       \ all the role labels assigned to the user for the site and all the domains\
       \ in its lineage."
+    example:
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      roles:
+      - {}
+      - {}
+      site_id: 0
   domain_roles:
     type: "object"
     required:
@@ -2189,6 +2285,18 @@ definitions:
             type: "integer"
     description: "An object containing the domain roles defined for a given domain\
       \ and it's lineage."
+    example:
+      domain_id: 0
+      roles_map:
+        s:1:
+        - 1
+        - 2
+        - 3
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
   site_and_domain_roles:
     type: "object"
     required:
@@ -2199,6 +2307,8 @@ definitions:
         description: "The site for which the request was made."
     description: "An object containing the site- and domain lineage roles defined\
       \ for a given site."
+    example:
+      site_id: 0
   all_user_roles:
     type: "object"
     required:
@@ -2227,6 +2337,18 @@ definitions:
             type: "integer"
     description: "An object containing the effective roles that a user has in any\
       \ place in the organisational tree."
+    example:
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      roles_map:
+        s:1:
+        - 1
+        - 2
+        - 3
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
 parameters:
   optional_limit:
     name: "limit"
