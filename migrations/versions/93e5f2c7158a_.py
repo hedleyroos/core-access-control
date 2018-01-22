@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 2faa7d66591d
+Revision ID: 93e5f2c7158a
 Revises: 
-Create Date: 2018-01-19 16:27:29.497624
+Create Date: 2018-01-22 09:08:57.481813
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '2faa7d66591d'
+revision = '93e5f2c7158a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -93,6 +93,7 @@ def upgrade():
     )
     op.create_table('site',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.VARCHAR(length=30), nullable=True),
     sa.Column('domain_id', sa.Integer(), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
     sa.Column('client_id', sa.Integer(), nullable=True),
@@ -104,6 +105,7 @@ def upgrade():
     )
     op.create_index(op.f('ix_site_client_id'), 'site', ['client_id'], unique=True)
     op.create_index(op.f('ix_site_domain_id'), 'site', ['domain_id'], unique=False)
+    op.create_index(op.f('ix_site_name'), 'site', ['name'], unique=True)
     op.create_table('invitation_domain_role',
     sa.Column('invitation_id', postgresql.UUID(), nullable=False),
     sa.Column('domain_id', sa.Integer(), nullable=False),
@@ -162,6 +164,7 @@ def downgrade():
     op.drop_table('user_domain_role')
     op.drop_table('site_role')
     op.drop_table('invitation_domain_role')
+    op.drop_index(op.f('ix_site_name'), table_name='site')
     op.drop_index(op.f('ix_site_domain_id'), table_name='site')
     op.drop_index(op.f('ix_site_client_id'), table_name='site')
     op.drop_table('site')
