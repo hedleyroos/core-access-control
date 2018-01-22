@@ -1,6 +1,7 @@
 VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
+FLASK=$(VENV)/bin/flask
 FLAKE8=$(VENV)/bin/flake8
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
@@ -97,3 +98,8 @@ access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 
 check: $(FLAKE8)
 	$(FLAKE8)
+
+migrate:  $(VENV)
+	@echo "$(CYAN)Migrating...$(CLEAR)"
+	FLASK_APP=models.py $(FLASK) db migrate
+	FLASK_APP=models.py $(FLASK) db upgrade
