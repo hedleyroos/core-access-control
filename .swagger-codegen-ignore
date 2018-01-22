@@ -5,4 +5,3 @@ setup.py
 tox.ini
 .travis.yml
 requirements.txt
-swagger_server
