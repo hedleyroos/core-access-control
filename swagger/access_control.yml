@@ -178,14 +178,14 @@ definitions:
       id:
         type: integer
         readOnly: true
+      name:
+        type: string
+        maxLength: 30
       client_id:
         type: string
         format: uuid
       domain_id:
         type: integer
-      name:
-        type: string
-        maxLength: 100
       description:
         type: string
       created_at:
@@ -213,7 +213,7 @@ definitions:
         type: integer
       name:
         type: string
-        maxLength: 100
+        maxLength: 30
       description:
         type: string
     minProperties: 1

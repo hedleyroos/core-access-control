@@ -116,8 +116,8 @@ class SiteUpdate(Model):
         :param name: The name of this SiteUpdate.
         :type name: str
         """
-        if name is not None and len(name) > 100:
-            raise ValueError("Invalid value for `name`, length must be less than or equal to `100`")
+        if name is not None and len(name) > 30:
+            raise ValueError("Invalid value for `name`, length must be less than or equal to `30`")
 
         self._name = name
 
