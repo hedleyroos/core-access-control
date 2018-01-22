@@ -1,4 +1,3 @@
-import connexion
 import six
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
@@ -24,6 +23,8 @@ from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server import util
+
+from core_access_control import models
 
 
 def access_control_roleresourcepermission_delete(role_id, resource_id, permission_id):  # noqa: E501
@@ -53,8 +54,6 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    if connexion.request.is_json:
-        data = Domain.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -113,8 +112,6 @@ def domain_update(domain_id, data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    if connexion.request.is_json:
-        data = DomainUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -128,8 +125,6 @@ def domainrole_create(data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
-    if connexion.request.is_json:
-        data = DomainRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -196,8 +191,6 @@ def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
-    if connexion.request.is_json:
-        data = DomainRoleUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -211,8 +204,6 @@ def invitation_create(data=None):  # noqa: E501
 
     :rtype: Invitation
     """
-    if connexion.request.is_json:
-        data = Invitation.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -226,8 +217,6 @@ def invitation_delete(invitation_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -247,8 +236,6 @@ def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=Non
 
     :rtype: List[Invitation]
     """
-    if connexion.request.is_json:
-        invitor_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -262,8 +249,6 @@ def invitation_read(invitation_id):  # noqa: E501
 
     :rtype: Invitation
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -279,10 +264,6 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -298,10 +279,6 @@ def invitation_update(invitation_id, data=None):  # noqa: E501
 
     :rtype: Invitation
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
-    if connexion.request.is_json:
-        data = InvitationUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -315,8 +292,6 @@ def invitationdomainrole_create(data=None):  # noqa: E501
 
     :rtype: InvitationDomainRole
     """
-    if connexion.request.is_json:
-        data = InvitationDomainRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -334,8 +309,6 @@ def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E50
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -357,8 +330,6 @@ def invitationdomainrole_list(offset=None, limit=None, invitation_id=None, domai
 
     :rtype: List[InvitationDomainRole]
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -376,8 +347,6 @@ def invitationdomainrole_read(invitation_id, domain_id, role_id):  # noqa: E501
 
     :rtype: InvitationDomainRole
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -391,8 +360,6 @@ def invitationsiterole_create(data=None):  # noqa: E501
 
     :rtype: InvitationSiteRole
     """
-    if connexion.request.is_json:
-        data = InvitationSiteRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -410,8 +377,6 @@ def invitationsiterole_delete(invitation_id, site_id, role_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -433,8 +398,6 @@ def invitationsiterole_list(offset=None, limit=None, invitation_id=None, site_id
 
     :rtype: List[InvitationSiteRole]
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -452,8 +415,6 @@ def invitationsiterole_read(invitation_id, site_id, role_id):  # noqa: E501
 
     :rtype: InvitationSiteRole
     """
-    if connexion.request.is_json:
-        invitation_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -467,8 +428,6 @@ def permission_create(data=None):  # noqa: E501
 
     :rtype: Permission
     """
-    if connexion.request.is_json:
-        data = Permission.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -527,8 +486,6 @@ def permission_update(permission_id, data=None):  # noqa: E501
 
     :rtype: Permission
     """
-    if connexion.request.is_json:
-        data = PermissionUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -542,8 +499,6 @@ def resource_create(data=None):  # noqa: E501
 
     :rtype: Resource
     """
-    if connexion.request.is_json:
-        data = Resource.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -604,8 +559,6 @@ def resource_update(resource_id, data=None):  # noqa: E501
 
     :rtype: Resource
     """
-    if connexion.request.is_json:
-        data = ResourceUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -619,8 +572,6 @@ def role_create(data=None):  # noqa: E501
 
     :rtype: Role
     """
-    if connexion.request.is_json:
-        data = Role.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -679,8 +630,6 @@ def role_update(role_id, data=None):  # noqa: E501
 
     :rtype: Role
     """
-    if connexion.request.is_json:
-        data = RoleUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -694,8 +643,6 @@ def roleresourcepermission_create(data=None):  # noqa: E501
 
     :rtype: RoleResourcePermission
     """
-    if connexion.request.is_json:
-        data = RoleResourcePermission.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -747,8 +694,6 @@ def site_create(data=None):  # noqa: E501
 
     :rtype: Site
     """
-    if connexion.request.is_json:
-        data = Site.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -807,8 +752,6 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :rtype: Site
     """
-    if connexion.request.is_json:
-        data = SiteUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -822,8 +765,6 @@ def siterole_create(data=None):  # noqa: E501
 
     :rtype: SiteRole
     """
-    if connexion.request.is_json:
-        data = SiteRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -890,8 +831,6 @@ def siterole_update(site_id, role_id, data=None):  # noqa: E501
 
     :rtype: SiteRole
     """
-    if connexion.request.is_json:
-        data = SiteRoleUpdate.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -905,8 +844,6 @@ def userdomainrole_create(data=None):  # noqa: E501
 
     :rtype: UserDomainRole
     """
-    if connexion.request.is_json:
-        data = UserDomainRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -924,8 +861,6 @@ def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -947,8 +882,6 @@ def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, r
 
     :rtype: List[UserDomainRole]
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -966,8 +899,6 @@ def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
 
     :rtype: UserDomainRole
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -981,8 +912,6 @@ def usersiterole_create(data=None):  # noqa: E501
 
     :rtype: UserSiteRole
     """
-    if connexion.request.is_json:
-        data = UserSiteRole.from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -1004,6 +933,4 @@ def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_
 
     :rtype: List[UserSiteRole]
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'

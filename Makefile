@@ -96,6 +96,10 @@ access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
 	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
 
+runserver: $(VENV)
+	@echo "$(CYAN)Firing up server...$(CLEAR)"
+	$(PYTHON) -m swagger_server
+
 check: $(FLAKE8)
 	$(FLAKE8)
 

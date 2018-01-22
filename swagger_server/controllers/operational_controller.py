@@ -1,4 +1,3 @@
-import connexion
 import six
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
@@ -19,8 +18,6 @@ def get_all_user_roles(user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
 
 
@@ -75,6 +72,4 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
 
     :rtype: UserSiteRoleLabelsAggregated
     """
-    if connexion.request.is_json:
-        user_id = .from_dict(connexion.request.get_json())  # noqa: E501
     return 'do some magic!'
