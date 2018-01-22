@@ -67,6 +67,9 @@ docs-build:  $(VENV)
 	rm -rf docs/build/
 	@echo "$(GREEN)DONE$(CLEAR)"
 
+swagger-codegen-cli-$(CODEGEN_VERSION).jar:
+	wget https://oss.sonatype.org/content/repositories/releases/io/swagger/swagger-codegen-cli/$(CODEGEN_VERSION)/swagger-codegen-cli-$(CODEGEN_VERSION).jar
+
 prism:
 	curl -L https://github.com/stoplightio/prism/releases/download/v0.6.21/prism_linux_amd64 -o prism
 	chmod +x prism
@@ -81,7 +84,7 @@ $(FLAKE8): $(VENV)
 	$(PIP) install flake8
 
 # Generate the client code to interface with Access Control
-access-control-0lient: swagger-codegen-cli-$(CODEGEN_VERSION).jar
+access-control-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
 	@echo "$(CYAN)Generating the client for the Access Control API...$(CLEAR)"
 	$(CODEGEN) -l python -i swagger/access_control.yml -o /tmp/$(ACCESS_CONTROL_CLIENT_DIR)
 	cp -r /tmp/$(ACCESS_CONTROL_CLIENT_DIR)/swagger_client* $(ACCESS_CONTROL_CLIENT_DIR)
