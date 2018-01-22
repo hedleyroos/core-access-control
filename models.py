@@ -85,6 +85,7 @@ class RoleResourcePermission(DB.Model):
 
 class Site(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
+    name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True)
     description = DB.Column(DB.Text)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
