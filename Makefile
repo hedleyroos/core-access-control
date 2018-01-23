@@ -103,7 +103,10 @@ runserver: $(VENV)
 check: $(FLAKE8)
 	$(FLAKE8)
 
-migrate:  $(VENV)
+models-migrate:  $(VENV)
 	@echo "$(CYAN)Migrating...$(CLEAR)"
-	FLASK_APP=models.py $(FLASK) db migrate
-	FLASK_APP=models.py $(FLASK) db upgrade
+	FLASK_APP=core_access_control/models.py $(FLASK) db migrate -d core_access_control/migrations
+
+db-upgrade:  $(VENV)
+	@echo "$(CYAN)Migrating...$(CLEAR)"
+	FLASK_APP=core_access_control/models.py $(FLASK) db upgrade -d core_access_control/migrations

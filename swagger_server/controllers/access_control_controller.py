@@ -23,9 +23,7 @@ from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server import util
-
-from core_access_control import models
-
+from swagger_server import db_actions
 
 def access_control_roleresourcepermission_delete(role_id, resource_id, permission_id):  # noqa: E501
     """access_control_roleresourcepermission_delete
@@ -54,7 +52,11 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Domain",
+        action="create",
+        data=data,
+    )
 
 
 def domain_delete(domain_id):  # noqa: E501
@@ -67,7 +69,11 @@ def domain_delete(domain_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Domain",
+        action="delete",
+        data=data,
+    )
 
 
 def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
@@ -84,7 +90,11 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
 
     :rtype: List[Domain]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Domain",
+        action="list",
+        query={"offset": offset, "limit": limit, "domain_ids": domain_ids}
+    )
 
 
 def domain_read(domain_id):  # noqa: E501
@@ -97,7 +107,11 @@ def domain_read(domain_id):  # noqa: E501
 
     :rtype: Domain
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Domain",
+        action="read",
+        data=data,
+    )
 
 
 def domain_update(domain_id, data=None):  # noqa: E501
@@ -112,7 +126,12 @@ def domain_update(domain_id, data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Domain",
+        action="update",
+        data=data,
+        query={"domain_id": domain_id},
+    )
 
 
 def domainrole_create(data=None):  # noqa: E501

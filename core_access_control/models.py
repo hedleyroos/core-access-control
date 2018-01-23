@@ -5,8 +5,10 @@ import uuid
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.sql import expression
 
 
 APP = Flask(__name__)
@@ -20,16 +22,26 @@ DB = SQLAlchemy(APP)
 MIGRATE = Migrate(APP, DB)
 
 
+# func.utc_timestamp() is only supports MySQL out of the box.
+# http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function
+class utcnow(expression.FunctionElement):
+    type = types.DateTime()
+
+@compiles(utcnow, "postgresql")
+def pg_utcnow(element, compiler, **kw):
+    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+
+
 class Domain(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     parent_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), nullable=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -41,11 +53,11 @@ class Role(DB.Model):
     label = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
     requires_2fa = DB.Column(DB.Boolean, default=True)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -56,11 +68,11 @@ class Permission(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -71,11 +83,11 @@ class Resource(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     urn = DB.Column(DB.VARCHAR(100), unique=True, index=True)
     description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -90,11 +102,11 @@ class RoleResourcePermission(DB.Model):
     permission_id = DB.Column(
         DB.Integer, DB.ForeignKey("permission.id"), primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -110,11 +122,11 @@ class Site(DB.Model):
     description = DB.Column(DB.Text)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -131,11 +143,11 @@ class DomainRole(DB.Model):
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
     grant_implicitly = DB.Column(DB.Boolean, default=False)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -152,11 +164,11 @@ class SiteRole(DB.Model):
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
     grant_implicitly = DB.Column(DB.Boolean, default=False)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -172,11 +184,11 @@ class UserSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     __table_args__ = (
@@ -200,11 +212,11 @@ class UserDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     __table_args__ = (
@@ -228,11 +240,11 @@ class Invitation(DB.Model):
     expires_at = DB.Column(DB.DateTime)
     invitor_id = DB.Column(UUID)
     is_system_user = DB.Column(DB.Boolean, default=False)
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     def __repr__(self):
@@ -249,11 +261,11 @@ class InvitationDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     __table_args__ = (
@@ -277,11 +289,11 @@ class InvitationSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=func.utc_timestamp())
+    created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
-        default=func.utc_timestamp(),
-        onupdate=func.utc_timestamp()
+        default=utcnow(),
+        onupdate=utcnow()
     )
 
     __table_args__ = (
