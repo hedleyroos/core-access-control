@@ -9,7 +9,7 @@ info:
     \ (most notably the\nManagement Layer) to consume.\n"
   version: ""
   title: "Access Control API"
-host: "localhost:8000"
+host: "localhost:8080"
 basePath: "/api/v1"
 schemes:
 - "https"
@@ -191,7 +191,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/domain"
+          $ref: "#/definitions/domain_create"
       responses:
         201:
           description: ""
@@ -311,7 +311,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/domain_role"
+          $ref: "#/definitions/domain_role_create"
       responses:
         201:
           description: ""
@@ -451,7 +451,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/invitation"
+          $ref: "#/definitions/invitation_create"
       responses:
         201:
           description: ""
@@ -610,7 +610,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/invitation_domain_role"
+          $ref: "#/definitions/invitation_domain_role_create"
       responses:
         201:
           description: ""
@@ -735,7 +735,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/invitation_site_role"
+          $ref: "#/definitions/invitation_site_role_create"
       responses:
         201:
           description: ""
@@ -849,7 +849,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/permission"
+          $ref: "#/definitions/permission_create"
       responses:
         201:
           description: ""
@@ -971,7 +971,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/resource"
+          $ref: "#/definitions/resource_create"
       responses:
         201:
           description: ""
@@ -1088,7 +1088,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/role"
+          $ref: "#/definitions/role_create"
       responses:
         201:
           description: ""
@@ -1213,7 +1213,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/role_resource_permission"
+          $ref: "#/definitions/role_resource_permission_create"
       responses:
         201:
           description: ""
@@ -1325,7 +1325,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/site"
+          $ref: "#/definitions/site_create"
       responses:
         201:
           description: ""
@@ -1445,7 +1445,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/site_role"
+          $ref: "#/definitions/site_role_create"
       responses:
         201:
           description: ""
@@ -1586,7 +1586,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/user_domain_role"
+          $ref: "#/definitions/user_domain_role_create"
       responses:
         201:
           description: ""
@@ -1709,7 +1709,7 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/user_site_role"
+          $ref: "#/definitions/user_site_role_create"
       responses:
         201:
           description: ""
@@ -1755,6 +1755,18 @@ definitions:
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
+  domain_create:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      parent_id:
+        type: "integer"
+      name:
+        type: "string"
+        maxLength: 100
+      description:
+        type: "string"
   domain_update:
     type: "object"
     properties:
@@ -1805,6 +1817,22 @@ definitions:
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
       client_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+  site_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "name"
+    properties:
+      name:
+        type: "string"
+        maxLength: 30
+      client_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      description:
+        type: "string"
   site_update:
     type: "object"
     properties:
@@ -1851,6 +1879,18 @@ definitions:
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
       label: {}
+  role_create:
+    type: "object"
+    required:
+    - "is_admin_role"
+    - "label"
+    properties:
+      label:
+        $ref: "#/definitions/role_label"
+      is_admin_role:
+        type: "boolean"
+      description:
+        type: "string"
   role_update:
     type: "object"
     properties:
@@ -1890,6 +1930,19 @@ definitions:
       role_id: 6
       site_id: 0
       created_at: "2000-01-23T04:56:07.000+00:00"
+  site_role_create:
+    type: "object"
+    required:
+    - "grant_implicitly"
+    - "role_id"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
   site_role_update:
     type: "object"
     properties:
@@ -1924,6 +1977,18 @@ definitions:
       updated_at: "2000-01-23T04:56:07.000+00:00"
       role_id: 6
       created_at: "2000-01-23T04:56:07.000+00:00"
+  domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "role_id"
+    properties:
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
   domain_role_update:
     type: "object"
     properties:
@@ -1959,6 +2024,20 @@ definitions:
       user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       role_id: 6
       created_at: "2000-01-23T04:56:07.000+00:00"
+  user_domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "role_id"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
   user_site_role:
     type: "object"
     required:
@@ -1989,6 +2068,20 @@ definitions:
       role_id: 6
       site_id: 0
       created_at: "2000-01-23T04:56:07.000+00:00"
+  user_site_role_create:
+    type: "object"
+    required:
+    - "role_id"
+    - "site_id"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
   permission:
     type: "object"
     required:
@@ -2019,6 +2112,16 @@ definitions:
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
+  permission_create:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        maxLength: 50
+      description:
+        type: "string"
   permission_update:
     type: "object"
     properties:
@@ -2057,6 +2160,16 @@ definitions:
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
+  resource_create:
+    type: "object"
+    required:
+    - "urn"
+    properties:
+      urn:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
   resource_update:
     type: "object"
     properties:
@@ -2094,6 +2207,19 @@ definitions:
       resource_id: 6
       created_at: "2000-01-23T04:56:07.000+00:00"
       permission_id: 1
+  role_resource_permission_create:
+    type: "object"
+    required:
+    - "permission_id"
+    - "resource_id"
+    - "role_id"
+    properties:
+      role_id:
+        type: "integer"
+      resource_id:
+        type: "integer"
+      permission_id:
+        type: "integer"
   invitation:
     type: "object"
     required:
@@ -2143,6 +2269,30 @@ definitions:
       id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       first_name: "first_name"
       email: "email"
+  invitation_create:
+    type: "object"
+    required:
+    - "email"
+    - "first_name"
+    - "invitor_id"
+    - "last_name"
+    properties:
+      invitor_id:
+        type: "string"
+        format: "uuid"
+        description: "The user that created the invitation"
+      first_name:
+        type: "string"
+        maxLength: 100
+      last_name:
+        type: "string"
+        maxLength: 100
+      email:
+        type: "string"
+        format: "email"
+      expires_at:
+        type: "string"
+        format: "date-time"
   invitation_update:
     type: "object"
     properties:
@@ -2188,6 +2338,20 @@ definitions:
       updated_at: "2000-01-23T04:56:07.000+00:00"
       role_id: 6
       created_at: "2000-01-23T04:56:07.000+00:00"
+  invitation_domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "invitation_id"
+    - "role_id"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
   invitation_site_role:
     type: "object"
     required:
@@ -2218,6 +2382,20 @@ definitions:
       role_id: 6
       site_id: 0
       created_at: "2000-01-23T04:56:07.000+00:00"
+  invitation_site_role_create:
+    type: "object"
+    required:
+    - "invitation_id"
+    - "role_id"
+    - "site_id"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
   site_role_labels_aggregated:
     type: "object"
     properties:
