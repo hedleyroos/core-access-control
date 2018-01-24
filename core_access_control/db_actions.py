@@ -45,7 +45,15 @@ def list_entry(model, **kwargs):
     db.session.query(model)
     db.session.commit()
 
+
 def serializer(instance):
+    """
+    Translate model object into a dictionary, to assist with json
+    serialization.
+
+    :param instance: SQLAlchemy model instance
+    :return: python dict
+    """
     data = {}
     for prop in instance.__mapper__.iterate_properties:
         data[prop.key] = getattr(instance, prop.key)
