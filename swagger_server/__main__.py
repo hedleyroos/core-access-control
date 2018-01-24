@@ -5,7 +5,7 @@ import connexion
 from swagger_server import encoder
 from flask_sqlalchemy import SQLAlchemy
 
-from core_access_control import models
+from access_control import models
 
 DB = SQLAlchemy()
 

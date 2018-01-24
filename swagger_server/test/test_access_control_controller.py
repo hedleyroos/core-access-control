@@ -34,7 +34,9 @@ from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from core_access_control import models, db_actions
+from access_control import models, db_actions
+
+
 class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):

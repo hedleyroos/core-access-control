@@ -6,7 +6,7 @@ from flask_testing import TestCase
 
 from swagger_server.encoder import JSONEncoder
 
-from core_access_control import models
+from access_control import models
 
 DB = SQLAlchemy()
 
