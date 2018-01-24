@@ -124,19 +124,19 @@ class TestAccessControlRead(BaseTestCase):
             },
         ]
 
+        objects = []
         for item in data:
-            db_actions.crud(
+            objects.append(db_actions.crud(
                 model="Domain",
                 api_model=Domain,
                 data=item,
                 action="create"
-            )
+            ))
         query_string = [('offset', 1),
-                        ('limit', 100),
-                        ('domain_ids', 56)]
+                        #('limit', ),
+                        ('domain_ids', objects[2].id)]
         response = self.client.open(
             '/api/v1/domains/',
             method='GET',
             query_string=query_string)
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+        r_data = json.loads(response.data)
