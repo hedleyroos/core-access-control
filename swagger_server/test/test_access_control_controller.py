@@ -47,7 +47,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
-    def test_domainrole_create(self):
+    def test_domain_create(self):
         """Test case for domainrole_create
         """
         data = Domain(**{
@@ -102,3 +102,37 @@ class TestAccessControlRead(BaseTestCase):
             raise Exception
         except werkzeug.exceptions.NotFound:
             pass
+
+    def test_domain_list(self):
+        """Test case for domain_list
+        """
+        data = [
+            {
+                "name": ("%s" % uuid.uuid4())[:30],
+                "description": "Domain list 1",
+            },
+            {
+                "name": ("%s" % uuid.uuid4())[:30],
+                "description": "Domain list 2",
+            },
+            {
+                "name": ("%s" % uuid.uuid4())[:30],
+                "description": "Domain list 3",
+            },
+        ]
+
+        for item in data:
+            db_actions.crud(
+                model="Domain",
+                data=item,
+                action="create"
+            )
+        query_string = [('offset', 1),
+                        ('limit', 100),
+                        ('domain_ids', 56)]
+        response = self.client.open(
+            '/api/v1/domains/',
+            method='GET',
+            query_string=query_string)
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))

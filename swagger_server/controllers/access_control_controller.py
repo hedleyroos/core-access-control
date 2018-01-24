@@ -94,7 +94,7 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
     return db_actions.crud(
         model="Domain",
         action="list",
-        query={"offset": offset, "limit": limit, "domain_ids": domain_ids}
+        query={"offset": offset, "limit": limit, "ids": domain_ids}
     )
 
 
