@@ -39,10 +39,11 @@ class TestAccessControlRead(BaseTestCase):
     def setUp(self):
         self.domain_data = {
             "name": ("%s" % uuid.uuid4())[:30],
-            "description": "a super cool test demain",
+            "description": "a super cool test domain",
         }
         self.domain_model = db_actions.crud(
             model="Domain",
+            api_model=Domain,
             data=self.domain_data,
             action="create"
         )
@@ -68,12 +69,12 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for domain_read
         """
         response = self.client.open(
-            '/api/v1/domains/{domain_id}/'.format(domain_id=self.domain_model["id"]),
+            '/api/v1/domains/{domain_id}/'.format(domain_id=self.domain_model.id),
             method='GET')
         r_data = json.loads(response.data)
-        self.assertEqual(r_data["name"], self.domain_model["name"])
-        self.assertEqual(r_data["description"], self.domain_model["description"])
-        self.assertEqual(r_data["id"], self.domain_model["id"])
+        self.assertEqual(r_data["name"], self.domain_model.name)
+        self.assertEqual(r_data["description"], self.domain_model.description)
+        self.assertEqual(r_data["id"], self.domain_model.id)
 
     def test_domain_delete(self):
         """Test case for domain_delete
@@ -84,11 +85,12 @@ class TestAccessControlRead(BaseTestCase):
         }
         model = db_actions.crud(
             model="Domain",
+            api_model=Domain,
             data=data,
             action="create"
         )
         response = self.client.open(
-            '/api/v1/domains/{domain_id}/'.format(domain_id=model["id"]),
+            '/api/v1/domains/{domain_id}/'.format(domain_id=model.id),
             method='DELETE')
 
         # Little crude. Raise an error if the object actually still exists else
@@ -96,8 +98,9 @@ class TestAccessControlRead(BaseTestCase):
         try:
             db_actions.crud(
                 model="Domain",
+                api_model=Domain,
                 action="read",
-                query={"id": model["id"]}
+                query={"id": model.id}
             )
             raise Exception
         except werkzeug.exceptions.NotFound:
@@ -124,6 +127,7 @@ class TestAccessControlRead(BaseTestCase):
         for item in data:
             db_actions.crud(
                 model="Domain",
+                api_model=Domain,
                 data=item,
                 action="create"
             )

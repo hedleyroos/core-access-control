@@ -6,12 +6,15 @@ from .models import DB as db
 
 # NOTE Actions will need error handling in the long run. However a KeyError is better
 # than no error at this stage,
-def crud(model, action, data=None, query=None):
+def crud(model, api_model, action, data=None, query=None):
     model = getattr(models, model)
-    return serializer(globals()["%s_entry" % action](
-        model=model,
-        **{"data": data, "query": query}
-    ))
+    return serializer(
+        globals()["%s_entry" % action](
+            model=model,
+            **{"data": data, "query": query}
+        ),
+        api_model=api_model
+    )
 
 
 def create_entry(model, **kwargs):
@@ -53,7 +56,7 @@ def list_entry(model, **kwargs):
     ).all()
 
 
-def serializer(instance):
+def serializer(instance, api_model):
     """
     Translate model object into a dictionary, to assist with json
     serialization.
@@ -68,10 +71,11 @@ def serializer(instance):
             obj_data = {}
             for key in obj.__table__.columns.keys():
                 obj_data[key] = getattr(obj, key)
-            data.append(obj_data)
+            data.append(api_model(**obj_data))
     else:
         data = {}
         for key in instance.__table__.columns.keys():
             data[key] = getattr(instance, key)
+        data = api_model(**data)
 
     return data

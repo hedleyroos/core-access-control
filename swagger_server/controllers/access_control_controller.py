@@ -53,11 +53,12 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    return Domain(**db_actions.crud(
+    return db_actions.crud(
         model="Domain",
+        api_model=Domain,
         action="create",
         data=data,
-    ))
+    )
 
 
 def domain_delete(domain_id):  # noqa: E501
@@ -72,6 +73,7 @@ def domain_delete(domain_id):  # noqa: E501
     """
     return db_actions.crud(
         model="Domain",
+        api_model=Domain,
         action="delete",
         query={"id": domain_id},
     )
@@ -93,6 +95,7 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
     """
     return db_actions.crud(
         model="Domain",
+        api_model=Domain,
         action="list",
         query={"offset": offset, "limit": limit, "ids": domain_ids}
     )
@@ -108,11 +111,12 @@ def domain_read(domain_id):  # noqa: E501
 
     :rtype: Domain
     """
-    return Domain(**db_actions.crud(
+    return db_actions.crud(
         model="Domain",
+        api_model=Domain,
         action="read",
         query={"id": domain_id}
-    ))
+    )
 
 
 def domain_update(domain_id, data=None):  # noqa: E501
@@ -129,6 +133,7 @@ def domain_update(domain_id, data=None):  # noqa: E501
     """
     return db_actions.crud(
         model="Domain",
+        api_model=Domain,
         action="update",
         data=data,
         query={"domain_id": domain_id},
