@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import datetime
+import random
 import uuid
 import werkzeug
 
@@ -109,27 +110,16 @@ class TestAccessControlRead(BaseTestCase):
     def test_domain_list(self):
         """Test case for domain_list
         """
-        data = [
-            {
-                "name": ("%s" % uuid.uuid4())[:30],
-                "description": "Domain list 1",
-            },
-            {
-                "name": ("%s" % uuid.uuid4())[:30],
-                "description": "Domain list 2",
-            },
-            {
-                "name": ("%s" % uuid.uuid4())[:30],
-                "description": "Domain list 3",
-            },
-        ]
-
         objects = []
-        for item in data:
+        for index in range(1, random.randint(2, 20)):
+            data = {
+                "name": ("%s" % uuid.uuid4())[:30],
+                "description": "Domain list %s" % index,
+            }
             objects.append(db_actions.crud(
                 model="Domain",
                 api_model=Domain,
-                data=item,
+                data=data,
                 action="create"
             ))
         query_string = [#('offset', 0),
