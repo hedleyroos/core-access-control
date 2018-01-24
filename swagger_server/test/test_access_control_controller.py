@@ -3,6 +3,7 @@
 from __future__ import absolute_import
 
 import datetime
+import uuid
 
 from flask import json
 from six import BytesIO
@@ -31,24 +32,26 @@ from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.test import BaseTestCase
 
+from core_access_control import models
 
-class TestAccessControlController(BaseTestCase):
-    """AccessControlController integration test stubs"""
+class TestAccessControlGet(BaseTestCase):
 
-    def test_domain_create(self):
-        """Test case for domain_create
-        """
-        data = Domain(**{
-            "id": 1,
-            "name": "test-domain",
+    def setUp(self):
+        db = models.DB
+        self.domain = models.Domain(**{
+            "name": ("%s" % uuid.uuid4())[:30],
             "description": "a super cool test demain",
-            "created_at": datetime.datetime.now(),
-            "updated_at": datetime.datetime.now()
         })
+        db.session.add(self.domain)
+        db.session.commit()
+
+    """AccessControlController integration test stubs"""
+    def test_domain_read(self):
+        """Test case for domain_read
+        """
         response = self.client.open(
-            '/api/v1/domains/',
-            method='POST',
-            data=json.dumps(data),
-            content_type='application/json')
+            '/api/v1/domains/{domain_id}/'.format(domain_id=self.domain.id),
+            method='GET')
+        import pdb; pdb.set_trace()
         self.assert200(response,
                        'Response body is : ' + response.data.decode('utf-8'))

@@ -9,7 +9,7 @@ info:
     \ (most notably the\nManagement Layer) to consume.\n"
   version: ""
   title: "Access Control API"
-host: "localhost:8000"
+host: "localhost:8080"
 basePath: "/api/v1"
 schemes:
 - "https"

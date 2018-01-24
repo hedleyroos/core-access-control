@@ -107,11 +107,12 @@ def domain_read(domain_id):  # noqa: E501
 
     :rtype: Domain
     """
-    return db_actions.crud(
+    instance =  db_actions.crud(
         model="Domain",
         action="read",
-        data=data,
+        query={"id": domain_id}
     )
+    return instance
 
 
 def domain_update(domain_id, data=None):  # noqa: E501
