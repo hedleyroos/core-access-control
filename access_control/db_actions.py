@@ -1,5 +1,6 @@
 from flask import jsonify
 
+from . import mappings
 from . import models
 from .models import DB as db
 
@@ -65,17 +66,19 @@ def serializer(instance, api_model):
     :return: python dict
     """
     data = None
+    transformer = mappings.DOMAIN_TRANSFORMATION
     if isinstance(instance, list):
         data = []
         for obj in instance:
             obj_data = {}
             for key in obj.__table__.columns.keys():
                 obj_data[key] = getattr(obj, key)
-            data.append(api_model.from_dict(obj_data))
+            data.append(
+                api_model.from_dict(transformer.apply(obj_data))
+            )
     else:
         data = {}
         for key in instance.__table__.columns.keys():
             data[key] = getattr(instance, key)
-        data = api_model.from_dict(data)
-
+        data = api_model.from_dict(transformer.apply(data))
     return data
