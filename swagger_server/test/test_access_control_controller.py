@@ -132,11 +132,12 @@ class TestAccessControlRead(BaseTestCase):
                 data=item,
                 action="create"
             ))
-        query_string = [('offset', 1),
+        query_string = [#('offset', 0),
                         #('limit', ),
-                        ('domain_ids', objects[2].id)]
+                        ('domain_ids', ",".join(map(str, [domain.id for domain in objects])))]
         response = self.client.open(
             '/api/v1/domains/',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
+        self.assertEqual(len(r_data), len(objects))
