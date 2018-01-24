@@ -1,14 +1,14 @@
 from flask import jsonify
 
-from core_access_control import models
-from core_access_control.models import DB as db
+from . import models
+from .models import DB as db
 
 def crud(model, action, data=None, query=None):
     model = getattr(models, model)
-    return globals()["%s_entry" % action](
+    return serializer(globals()["%s_entry" % action](
         model=model,
         **{"data": data, "query": query}
-    )
+    ))
 
 
 def create_entry(model, **kwargs):
@@ -47,10 +47,7 @@ def list_entry(model, **kwargs):
 
 def serializer(instance):
     data = {}
-    for key, val in instance.__dict__.items():
-        try:
-            data[key] = jsonify(val)
-        except TypeError as e:
-            print (e)
+    for prop in instance.__mapper__.iterate_properties:
+        data[prop.key] = getattr(instance, prop.key)
 
     return data
