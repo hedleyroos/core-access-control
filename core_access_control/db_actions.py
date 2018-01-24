@@ -71,11 +71,11 @@ def serializer(instance, api_model):
             obj_data = {}
             for key in obj.__table__.columns.keys():
                 obj_data[key] = getattr(obj, key)
-            data.append(api_model(**obj_data))
+            data.append(api_model.from_dict(obj_data))
     else:
         data = {}
         for key in instance.__table__.columns.keys():
             data[key] = getattr(instance, key)
-        data = api_model(**data)
+        data = api_model.from_dict(data)
 
     return data

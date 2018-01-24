@@ -6,6 +6,8 @@ FLAKE8=$(VENV)/bin/flake8
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
 ACCESS_CONTROL_CLIENT_DIR=access_control_client
+DB_NAME=access_control
+DB_USER=access_control
 
 # Colours.
 CLEAR=\033[0m
@@ -102,6 +104,9 @@ runserver: $(VENV)
 
 check: $(FLAKE8)
 	$(FLAKE8)
+
+database:
+	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrating...$(CLEAR)"
