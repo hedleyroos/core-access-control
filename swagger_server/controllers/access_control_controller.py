@@ -53,11 +53,11 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
-    return db_actions.crud(
+    return Domain(**db_actions.crud(
         model="Domain",
         action="create",
         data=data,
-    )
+    ))
 
 
 def domain_delete(domain_id):  # noqa: E501
@@ -108,12 +108,11 @@ def domain_read(domain_id):  # noqa: E501
 
     :rtype: Domain
     """
-    instance =  db_actions.crud(
+    return Domain(**db_actions.crud(
         model="Domain",
         action="read",
         query={"id": domain_id}
-    )
-    return instance
+    ))
 
 
 def domain_update(domain_id, data=None):  # noqa: E501
