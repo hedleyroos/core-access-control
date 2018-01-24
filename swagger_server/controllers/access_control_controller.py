@@ -53,6 +53,7 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
+    import pdb; pdb.set_trace()
     return Domain(**db_actions.crud(
         model="Domain",
         action="create",

@@ -19,7 +19,8 @@ def create_entry(model, **kwargs):
 
 
 def read_entry(model, **kwargs):
-    instance = db.session.query(model).get(kwargs["query"]["id"])
+    # Get query only takes PKs, no kwargs. Filter however is more flexible.
+    instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     return instance
 
 
@@ -32,7 +33,8 @@ def update_entry(model, **kwargs):
 
 
 def delete_entry(model, **kwargs):
-    instance = model.query.get(**kwargs["query"])
+    # Can not safely without explicit select on id.
+    instance = model.query.get(kwargs["query"]["id"])
     db.session.delete(instance)
     db.session.commit()
 

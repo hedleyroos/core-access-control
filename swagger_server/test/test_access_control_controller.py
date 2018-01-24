@@ -32,26 +32,61 @@ from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from core_access_control import models
+from core_access_control import models, db_actions
 
-class TestAccessControlGet(BaseTestCase):
+class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
-        db = models.DB
-        self.domain = models.Domain(**{
+        self.domain_data = {
             "name": ("%s" % uuid.uuid4())[:30],
             "description": "a super cool test demain",
-        })
-        db.session.add(self.domain)
-        db.session.commit()
+        }
+        self.domain_model = db_actions.crud(
+            model="Domain",
+            data=self.domain_data,
+            action="create"
+        )
 
-    """AccessControlController integration test stubs"""
+    def test_domainrole_create(self):
+        """Test case for domainrole_create
+        """
+        data = Domain(**{
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "Domain to create",
+        })
+        response = self.client.open(
+            '/api/v1/domains/',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json')
+        r_data = json.loads(response.data)
+        self.assertEqual(r_data["name"], data.name)
+        self.assertEqual(r_data["description"], data.description)
+
+
     def test_domain_read(self):
         """Test case for domain_read
         """
         response = self.client.open(
-            '/api/v1/domains/{domain_id}/'.format(domain_id=self.domain.id),
+            '/api/v1/domains/{domain_id}/'.format(domain_id=self.domain_model["id"]),
             method='GET')
-        import pdb; pdb.set_trace()
-        self.assert200(response,
-                       'Response body is : ' + response.data.decode('utf-8'))
+        r_data = json.loads(response.data)
+        self.assertEqual(r_data["name"], self.domain_model["name"])
+        self.assertEqual(r_data["description"], self.domain_model["description"])
+        self.assertEqual(r_data["id"], self.domain_model["id"])
+
+    def test_domain_delete(self):
+        """Test case for domain_delete
+        """
+        data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "Domain to delete",
+        }
+        model = db_actions.crud(
+            model="Domain",
+            data=data,
+            action="create"
+        )
+        response = self.client.open(
+            '/api/v1/domains/{domain_id}/'.format(domain_id=model["id"]),
+            method='DELETE')
