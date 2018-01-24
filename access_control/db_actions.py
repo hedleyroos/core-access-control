@@ -66,7 +66,8 @@ def serializer(instance, api_model):
     :return: python dict
     """
     data = None
-    transformer = mappings.DOMAIN_TRANSFORMATION
+    model_name = instance.__class__.__name__ if not isinstance(instance, list) else instance[0].__class__.__name__
+    transformer = getattr(mappings, "%s_TRANSFORMATION" % model_name.upper())
     if isinstance(instance, list):
         data = []
         for obj in instance:
