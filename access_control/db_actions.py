@@ -63,11 +63,15 @@ def serializer(instance, api_model):
     serialization.
 
     :param instance: SQLAlchemy model instance
-    :return: python dict
+    :return: Swagger API model instance
     """
     data = None
-    model_name = instance.__class__.__name__ if not isinstance(instance, list) else instance[0].__class__.__name__
+    model_name = instance.__class__.__name__ \
+        if not isinstance(instance, list) else instance[0].__class__.__name__
     transformer = getattr(mappings, "%s_TRANSFORMATION" % model_name.upper())
+
+    # TODO look at instance.__dict__ later, seems to not always provide the
+    # expected dict.
     if isinstance(instance, list):
         data = []
         for obj in instance:
