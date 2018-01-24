@@ -48,7 +48,7 @@ def domain_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Domain
