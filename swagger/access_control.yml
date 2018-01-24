@@ -13,7 +13,7 @@ securityDefinitions:
 security:
   - APIKeyHeader: []
 
-host: 'localhost:8000'
+host: 'localhost:8080'
 
 info:
   title: Access Control API
@@ -156,6 +156,19 @@ definitions:
       - created_at
       - updated_at
 
+  domain_create:
+    type: object
+    properties:
+      parent_id:
+        type: integer
+      name:
+        type: string
+        maxLength: 100
+      description:
+        type: string
+    required:
+      - name
+
   domain_update:
     type: object
     properties:
@@ -203,6 +216,23 @@ definitions:
       - created_at
       - updated_at
 
+  site_create:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 30
+      client_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      description:
+        type: string
+    required:
+      - domain_id
+      - name
+
   site_update:
     type: object
     properties:
@@ -245,6 +275,19 @@ definitions:
       - created_at
       - updated_at
 
+  role_create:
+    type: object
+    properties:
+      label:
+        $ref: '#/definitions/role_label'
+      is_admin_role:
+        type: boolean
+      description:
+        type: string
+    required:
+      - label
+      - is_admin_role
+
   role_update:
     type: object
     properties:
@@ -281,6 +324,20 @@ definitions:
       - created_at
       - updated_at
 
+  site_role_create:
+    type: object
+    properties:
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+    required:
+      - site_id
+      - role_id
+      - grant_implicitly
+
   site_role_update:
     type: object
     properties:
@@ -311,6 +368,19 @@ definitions:
       - grant_implicitly
       - created_at
       - updated_at
+
+  domain_role_create:
+    type: object
+    properties:
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+      grant_implicitly:
+        type: boolean
+    required:
+      - domain_id
+      - role_id
 
   domain_role_update:
     type: object
@@ -344,6 +414,21 @@ definitions:
       - created_at
       - updated_at
 
+  user_domain_role_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - user_id
+      - domain_id
+      - role_id
+
   user_site_role:
     type: object
     properties:
@@ -369,6 +454,21 @@ definitions:
       - created_at
       - updated_at
 
+  user_site_role_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - user_id
+      - site_id
+      - role_id
+
   permission:
     type: object
     properties:
@@ -393,6 +493,17 @@ definitions:
       - name
       - created_at
       - updated_at
+
+  permission_create:
+    type: object
+    properties:
+      name:
+        type: string
+        maxLength: 50
+      description:
+        type: string
+    required:
+      - name
 
   permission_update:
     type: object
@@ -429,6 +540,17 @@ definitions:
       - created_at
       - updated_at
 
+  resource_create:
+    type: object
+    properties:
+      urn:
+        type: string
+        format: uri
+      description:
+        type: string
+    required:
+      - urn
+
   resource_update:
     type: object
     properties:
@@ -462,6 +584,20 @@ definitions:
       - permission_id
       - created_at
       - updated_at
+
+  role_resource_permission_create:
+    type: object
+    properties:
+      role_id:
+        type: integer
+      resource_id:
+        type: integer
+      permission_id:
+        type: integer
+    required:
+      - role_id
+      - resource_id
+      - permission_id
 
   invitation:
     type: object
@@ -503,6 +639,31 @@ definitions:
       - expires_at
       - created_at
       - updated_at
+
+  invitation_create:
+    type: object
+    properties:
+      invitor_id:
+        type: string
+        format: uuid
+        description: The user that created the invitation
+      first_name:
+        type: string
+        maxLength: 100
+      last_name:
+        type: string
+        maxLength: 100
+      email:
+        type: string
+        format: email
+      expires_at:
+        type: string
+        format: 'date-time'
+    required:
+      - invitor_id
+      - first_name
+      - last_name
+      - email
 
   invitation_update:
     type: object
@@ -546,6 +707,21 @@ definitions:
       - created_at
       - updated_at
 
+  invitation_domain_role_create:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      domain_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - invitation_id
+      - domain_id
+      - role_id
+
   invitation_site_role:
     type: object
     properties:
@@ -570,6 +746,21 @@ definitions:
       - role_id
       - created_at
       - updated_at
+
+  invitation_site_role_create:
+    type: object
+    properties:
+      invitation_id:
+        type: string
+        format: uuid
+      site_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - invitation_id
+      - site_id
+      - role_id
 
   site_role_labels_aggregated:
     description: 'An object containing a site ID and an aggregated list of all the role labels supported
@@ -792,7 +983,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/domain'
+            $ref: '#/definitions/domain_create'
       produces:
         - application/json
       responses:
@@ -870,7 +1061,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/domain_role'
+            $ref: '#/definitions/domain_role_create'
       produces:
         - application/json
       responses:
@@ -961,7 +1152,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/invitation'
+            $ref: '#/definitions/invitation_create'
       produces:
         - application/json
       responses:
@@ -1061,7 +1252,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/invitation_domain_role'
+            $ref: '#/definitions/invitation_domain_role_create'
       produces:
         - application/json
       responses:
@@ -1126,7 +1317,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/invitation_site_role'
+            $ref: '#/definitions/invitation_site_role_create'
       produces:
         - application/json
       responses:
@@ -1193,7 +1384,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/permission'
+            $ref: '#/definitions/permission_create'
       produces:
         - application/json
       responses:
@@ -1281,7 +1472,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/resource'
+            $ref: '#/definitions/resource_create'
       produces:
         - application/json
       responses:
@@ -1364,7 +1555,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/role'
+            $ref: '#/definitions/role_create'
       produces:
         - application/json
       responses:
@@ -1451,7 +1642,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/role_resource_permission'
+            $ref: '#/definitions/role_resource_permission_create'
       produces:
         - application/json
       responses:
@@ -1518,7 +1709,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/site'
+            $ref: '#/definitions/site_create'
       produces:
         - application/json
       responses:
@@ -1596,7 +1787,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/site_role'
+            $ref: '#/definitions/site_role_create'
       produces:
         - application/json
       responses:
@@ -1676,7 +1867,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/user_domain_role'
+            $ref: '#/definitions/user_domain_role_create'
       produces:
         - application/json
       responses:
@@ -1739,7 +1930,7 @@ paths:
         - in: body
           name: data
           schema:
-            $ref: '#/definitions/user_site_role'
+            $ref: '#/definitions/user_site_role_create'
       produces:
         - application/json
       responses:
