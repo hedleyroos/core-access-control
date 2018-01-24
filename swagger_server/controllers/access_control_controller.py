@@ -136,7 +136,7 @@ def domain_update(domain_id, data=None):  # noqa: E501
         api_model=Domain,
         action="update",
         data=data,
-        query={"domain_id": domain_id},
+        query={"id": domain_id},
     )
 
 

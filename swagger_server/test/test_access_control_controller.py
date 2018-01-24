@@ -133,3 +133,38 @@ class TestAccessControlRead(BaseTestCase):
             query_string=query_string)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
+
+    def test_domain_update(self):
+        """Test case for domain_update
+        """
+        data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "Domain to update",
+        }
+        model = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data=data,
+            action="create"
+        )
+        data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "Domain updated",
+        }
+        data = DomainUpdate(
+            **data
+        )
+        response = self.client.open(
+            '/api/v1/domains/{domain_id}/'.format(domain_id=model.id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json')
+        r_data = json.loads(response.data)
+        updated_entry = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            action="read",
+            query={"id": model.id}
+        )
+        self.assertEqual(r_data["name"], updated_entry.name)
+        self.assertEqual(r_data["description"], updated_entry.description)
