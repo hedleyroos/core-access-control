@@ -43,11 +43,9 @@ def delete_entry(model, **kwargs):
 
 
 def list_entry(model, **kwargs):
-    query = None
+    query = model.query
     if kwargs["query"].get("ids"):
-        query = model.query.filter(model.id.in_(query["ids"]))
-    else:
-        query = model.query
+        query = query.filter(model.id.in_(query["ids"]))
     return query.offset(
         kwargs["query"].get("offet", None)
     ).limit(
