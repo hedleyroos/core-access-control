@@ -38,9 +38,6 @@ def delete_entry(model, **kwargs):
     db.session.delete(instance)
     db.session.commit()
 
-    # TODO decide what to return.
-    return None
-
 
 def list_entry(model, **kwargs):
     model.query.all()

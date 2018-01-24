@@ -4,6 +4,7 @@ from __future__ import absolute_import
 
 import datetime
 import uuid
+import werkzeug
 
 from flask import json
 from six import BytesIO
@@ -33,7 +34,6 @@ from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 from core_access_control import models, db_actions
-
 class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
@@ -90,3 +90,15 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/domains/{domain_id}/'.format(domain_id=model["id"]),
             method='DELETE')
+
+        # Little crude. Raise an error if the object actually still exists else
+        # pass after the 404 error.
+        try:
+            db_actions.crud(
+                model="Domain",
+                action="read",
+                query={"id": model["id"]}
+            )
+            raise Exception
+        except werkzeug.exceptions.NotFound:
+            pass
