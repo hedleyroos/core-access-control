@@ -22,7 +22,7 @@ DB = SQLAlchemy(APP)
 MIGRATE = Migrate(APP, DB)
 
 
-# func.utc_timestamp() is only supports MySQL out of the box.
+# func.utc_timestamp() it is only supported by MySQL out of the box.
 # http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function
 class utcnow(expression.FunctionElement):
     type = types.DateTime()

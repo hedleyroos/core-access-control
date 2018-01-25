@@ -109,9 +109,9 @@ database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
 
 makemigrations: $(VENV)
-	@echo "$(CYAN)Creating migrating...$(CLEAR)"
-	FLASK_APP=core_user_data_store/models.py $(FLASK) db migrate -d core_user_data_store/migrations
+	@echo "$(CYAN)Creating migrations...$(CLEAR)"
+	FLASK_APP=access_control/models.py $(FLASK) db migrate -d access_control/migrations
 
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
-	FLASK_APP=core_user_data_store/models.py $(FLASK) db upgrade -d core_user_data_store/migrations
+	FLASK_APP=access_control/models.py $(FLASK) db upgrade -d access_control/migrations
