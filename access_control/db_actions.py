@@ -67,7 +67,7 @@ def serializer(instance, api_model):
     data = None
     model_name = instance.__class__.__name__ \
         if not isinstance(instance, list) else instance[0].__class__.__name__
-    transformer = getattr(mappings, "%s_TRANSFORMATION" % model_name.upper())
+    transformer = getattr(mappings, "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
 
     # TODO look at instance.__dict__ later, seems to not always provide the
     # expected dict.
