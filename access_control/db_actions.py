@@ -12,7 +12,7 @@ SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
 
 # NOTE Actions will need error handling in the long run. However a KeyError is better
 # than no error at this stage,
-def crud(model, api_model, action, data=None, query=None):
+def crud(model: SqlAlchemyModel, api_model: ApiModel, action: str, data: dict = None, query: dict = None) -> typing.Union[ApiModel, typing.List[ApiModel]]:
     model = getattr(models, model)
     return transform(
         globals()["%s_entry" % action](
@@ -23,20 +23,20 @@ def crud(model, api_model, action, data=None, query=None):
     )
 
 
-def create_entry(model, **kwargs):
+def create_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
     instance = model(**kwargs["data"])
     db.session.add(instance)
     db.session.commit()
     return instance
 
 
-def read_entry(model, **kwargs):
+def read_entry(model: SqlAlchemyModel, **kwargs)  -> SqlAlchemyModel:
     # Get query only takes PKs, no kwargs. Filter however is more flexible.
     instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     return instance
 
 
-def update_entry(model, **kwargs):
+def update_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
     instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     for key, value in kwargs["data"].items():
         setattr(instance, key, value)
@@ -44,13 +44,13 @@ def update_entry(model, **kwargs):
     return instance
 
 
-def delete_entry(model, **kwargs):
+def delete_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
     instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     db.session.delete(instance)
     db.session.commit()
 
 
-def list_entry(model, **kwargs):
+def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]:
     query = model.query
     if kwargs["query"].get("ids"):
         query = query.filter(model.id.in_(kwargs["query"].get("ids")))
