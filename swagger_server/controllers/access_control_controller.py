@@ -736,7 +736,12 @@ def roleresourcepermission_create(data=None):  # noqa: E501
 
     :rtype: RoleResourcePermission
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="RoleResourcePermission",
+        api_model=RoleResourcePermission,
+        action="create",
+        data=data,
+    )
 
 
 def roleresourcepermission_list(offset=None, limit=None, role_id=None, resource_id=None, permission_id=None):  # noqa: E501
@@ -757,7 +762,16 @@ def roleresourcepermission_list(offset=None, limit=None, role_id=None, resource_
 
     :rtype: List[RoleResourcePermission]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="RoleResourcePermission",
+        api_model=RoleResourcePermission,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {"role_id": role_id, "resource_id": resource_id, "permission_id": permission_id},
+            "order_by": ["role_id"]}
+    )
 
 
 def roleresourcepermission_read(role_id, resource_id, permission_id):  # noqa: E501
@@ -774,7 +788,16 @@ def roleresourcepermission_read(role_id, resource_id, permission_id):  # noqa: E
 
     :rtype: RoleResourcePermission
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="RoleResourcePermission",
+        api_model=RoleResourcePermission,
+        action="read",
+        query={
+            "role_id": role_id,
+            "resource_id": resource_id,
+            "permission_id": permission_id
+        }
+    )
 
 
 def site_create(data=None):  # noqa: E501

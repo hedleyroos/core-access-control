@@ -48,3 +48,13 @@ DB_TO_API_RESOURCE_TRANSFORMATION = Transformation(
         "id", "urn", "description"
     ]
 )
+
+DB_TO_API_ROLERESOURCEPERMISSION_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string)
+    ],
+    copy_fields=[
+        "role_id", "resource_id", "permission_id"
+    ]
+)

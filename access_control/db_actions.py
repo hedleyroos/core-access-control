@@ -58,8 +58,16 @@ def delete_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
 
 def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]:
     query = model.query
-    if kwargs["query"].get("ids"):
-        query = query.filter(model.id.in_(kwargs["query"].get("ids")))
+    ids = kwargs["query"].get("ids")
+    if ids:
+        if isinstance(ids, dict):
+            for key, id in ids.items():
+                if id != None:
+                    query = query.filter(
+                        getattr(model, key)==id
+                    )
+        else:
+            query = query.filter(model.id.in_(ids))
 
     # Append order by
     # NOTE: order_by(SqlAlchemyModel.column, SqlAlchemyModel.column ...) is
@@ -87,6 +95,9 @@ def transform(instance: SqlAlchemyModel, api_model: ApiModel) -> \
     :return: List[Swagger API model instance]
     """
     data = None
+    if instance == None or instance == []:
+        # TODO raise 404
+        return None
     model_name = instance.__class__.__name__ \
         if not isinstance(instance, list) else instance[0].__class__.__name__
     transformer = getattr(mappings, "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
