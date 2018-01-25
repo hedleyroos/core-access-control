@@ -4,6 +4,7 @@ from flask import jsonify
 
 from . import mappings
 from . import models
+from . import settings
 from .models import DB as db
 
 ApiModel = typing.TypeVar("ApiModel")
@@ -62,7 +63,7 @@ def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]
     return query.offset(
         kwargs["query"].get("offet", 0)
     ).limit(
-        kwargs["query"].get("limit", None)
+        kwargs["query"].get("limit", settings.DEFAULT_API_LIMIT)
     ).all()
 
 

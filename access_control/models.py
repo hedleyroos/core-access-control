@@ -10,14 +10,11 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 
+from . import settings
 
 APP = Flask(__name__)
 
-APP.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get(
-    "DB_URI",
-    "postgres+psycopg2://core-access-control" \
-    ":core-access-control@localhost:5432/core-access-control"
-)
+APP.config["SQLALCHEMY_DATABASE_URI"] = settings.DB_URI
 DB = SQLAlchemy(APP)
 MIGRATE = Migrate(APP, DB)
 
