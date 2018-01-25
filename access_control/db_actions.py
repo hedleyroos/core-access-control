@@ -51,7 +51,7 @@ def list_entry(model, **kwargs):
     if kwargs["query"].get("ids"):
         query = query.filter(model.id.in_(kwargs["query"].get("ids")))
     return query.offset(
-        kwargs["query"].get("offet", None)
+        kwargs["query"].get("offet", 0)
     ).limit(
         kwargs["query"].get("limit", None)
     ).all()
