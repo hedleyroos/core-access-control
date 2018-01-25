@@ -555,7 +555,12 @@ def resource_create(data=None):  # noqa: E501
 
     :rtype: Resource
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Resource",
+        api_model=Resource,
+        action="create",
+        data=data,
+    )
 
 
 def resource_delete(resource_id):  # noqa: E501
@@ -568,7 +573,12 @@ def resource_delete(resource_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Resource",
+        api_model=Resource,
+        action="delete",
+        query={"id": resource_id},
+    )
 
 
 def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # noqa: E501
@@ -587,7 +597,12 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
 
     :rtype: List[Resource]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Resource",
+        api_model=Resource,
+        action="list",
+        query={"offset": offset, "limit": limit, "ids": resource_ids, "order_by": ["id"]}
+    )
 
 
 def resource_read(resource_id):  # noqa: E501
@@ -600,7 +615,12 @@ def resource_read(resource_id):  # noqa: E501
 
     :rtype: Resource
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Resource",
+        api_model=Resource,
+        action="read",
+        query={"id": resource_id}
+    )
 
 
 def resource_update(resource_id, data=None):  # noqa: E501
@@ -615,7 +635,13 @@ def resource_update(resource_id, data=None):  # noqa: E501
 
     :rtype: Resource
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Resource",
+        api_model=Resource,
+        action="update",
+        data=data,
+        query={"id": resource_id},
+    )
 
 
 def role_create(data=None):  # noqa: E501
