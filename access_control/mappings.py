@@ -1,8 +1,13 @@
+import datetime
+
 from .transformation import Transformation, Mapping
-from werkzeug.http import http_date
 
 def datetime_to_string(date):
-    return http_date(date.timetuple())
+    """
+    :param date: Timezone unaware datetime object
+    :return str: RFC 3339 format datetime string
+    """
+    return date.astimezone(datetime.timezone.utc).isoformat()
 
 DB_TO_API_DOMAIN_TRANSFORMATION = Transformation(
     mappings=[
