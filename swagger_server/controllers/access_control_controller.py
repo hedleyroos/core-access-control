@@ -150,7 +150,12 @@ def domainrole_create(data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DomainRole",
+        api_model=Domain,
+        action="create",
+        data=data,
+    )
 
 
 def domainrole_delete(domain_id, role_id):  # noqa: E501
@@ -453,7 +458,12 @@ def permission_create(data=None):  # noqa: E501
 
     :rtype: Permission
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Permission",
+        api_model=Permission,
+        action="create",
+        data=data,
+    )
 
 
 def permission_delete(permission_id):  # noqa: E501
@@ -466,7 +476,12 @@ def permission_delete(permission_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Permission",
+        api_model=Permission,
+        action="delete",
+        query={"id": permission_id},
+    )
 
 
 def permission_list(offset=None, limit=None, permission_ids=None):  # noqa: E501
@@ -483,7 +498,12 @@ def permission_list(offset=None, limit=None, permission_ids=None):  # noqa: E501
 
     :rtype: List[Permission]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Permission",
+        api_model=Permission,
+        action="list",
+        query={"offset": offset, "limit": limit, "ids": permission_ids, "order_by": ["id"]}
+    )
 
 
 def permission_read(permission_id):  # noqa: E501
@@ -496,7 +516,12 @@ def permission_read(permission_id):  # noqa: E501
 
     :rtype: Permission
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Permission",
+        api_model=Permission,
+        action="read",
+        query={"id": permission_id}
+    )
 
 
 def permission_update(permission_id, data=None):  # noqa: E501
@@ -511,7 +536,13 @@ def permission_update(permission_id, data=None):  # noqa: E501
 
     :rtype: Permission
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Permission",
+        api_model=Permission,
+        action="update",
+        data=data,
+        query={"id": permission_id},
+    )
 
 
 def resource_create(data=None):  # noqa: E501
@@ -597,7 +628,12 @@ def role_create(data=None):  # noqa: E501
 
     :rtype: Role
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Role",
+        api_model=Role,
+        action="create",
+        data=data,
+    )
 
 
 def role_delete(role_id):  # noqa: E501
@@ -655,7 +691,13 @@ def role_update(role_id, data=None):  # noqa: E501
 
     :rtype: Role
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Role",
+        api_model=Role,
+        action="update",
+        data=data,
+        query={"id": role_id},
+    )
 
 
 def roleresourcepermission_create(data=None):  # noqa: E501
