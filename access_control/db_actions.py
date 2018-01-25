@@ -40,8 +40,7 @@ def update_entry(model, **kwargs):
 
 
 def delete_entry(model, **kwargs):
-    # Can not safely without explicit select on id.
-    instance = model.query.get(kwargs["query"]["id"])
+    instance = model.query.filter_by(**kwargs["query"]).first_or_404()
     db.session.delete(instance)
     db.session.commit()
 
