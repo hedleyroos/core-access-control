@@ -125,7 +125,6 @@ class TestAccessControlRead(BaseTestCase):
                 action="create"
             ))
         query_string = [#('offset', 0),
-                        #('limit', ),
                         ('domain_ids', ",".join(map(str, [domain.id for domain in objects])))]
         response = self.client.open(
             '/api/v1/domains/',
@@ -133,6 +132,14 @@ class TestAccessControlRead(BaseTestCase):
             query_string=query_string)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
+        query_string = [('limit', 2),
+                        ('domain_ids', ",".join(map(str, [domain.id for domain in objects])))]
+        response = self.client.open(
+            '/api/v1/domains/',
+            method='GET',
+            query_string=query_string)
+        r_data = json.loads(response.data)
+        self.assertEqual(len(r_data), 2)
 
     def test_domain_update(self):
         """Test case for domain_update
