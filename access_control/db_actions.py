@@ -12,7 +12,12 @@ SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
 
 # NOTE Actions will need error handling in the long run. However a KeyError is better
 # than no error at this stage,
-def crud(model: SqlAlchemyModel, api_model: ApiModel, action: str, data: dict = None, query: dict = None) -> typing.Union[ApiModel, typing.List[ApiModel]]:
+def crud(
+        model: SqlAlchemyModel,
+        api_model: ApiModel,
+        action: str,
+        data: dict = None,
+        query: dict = None) -> typing.Union[ApiModel, typing.List[ApiModel]]:
     model = getattr(models, model)
     return transform(
         globals()["%s_entry" % action](
