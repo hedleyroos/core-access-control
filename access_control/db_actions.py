@@ -1,15 +1,20 @@
+import typing
+
 from flask import jsonify
 
 from . import mappings
 from . import models
 from .models import DB as db
 
+ApiModel = typing.TypeVar("ApiModel")
+SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
+
 
 # NOTE Actions will need error handling in the long run. However a KeyError is better
 # than no error at this stage,
 def crud(model, api_model, action, data=None, query=None):
     model = getattr(models, model)
-    return serializer(
+    return transform(
         globals()["%s_entry" % action](
             model=model,
             **{"data": data, "query": query}
@@ -56,13 +61,17 @@ def list_entry(model, **kwargs):
     ).all()
 
 
-def serializer(instance, api_model):
+def transform(instance: SqlAlchemyModel, api_model: ApiModel) -> \
+        typing.Union[ApiModel, typing.List[ApiModel]]:
     """
-    Translate model object into a dictionary, to assist with json
-    serialization.
+    Translate model object into a swagger API model instance or a list of
+    swagger API model instances. To assist with json serialization later on in
+    flask.
 
     :param instance: SQLAlchemy model instance
+    :param api_model: Swagger API model class
     :return: Swagger API model instance
+    :return: List[Swagger API model instance]
     """
     data = None
     model_name = instance.__class__.__name__ \
