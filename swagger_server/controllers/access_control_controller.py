@@ -97,7 +97,7 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
         model="Domain",
         api_model=Domain,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": domain_ids}
+        query={"offset": offset, "limit": limit, "ids": domain_ids, "order_by": ["id"]}
     )
 
 

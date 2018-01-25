@@ -60,6 +60,13 @@ def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]
     query = model.query
     if kwargs["query"].get("ids"):
         query = query.filter(model.id.in_(kwargs["query"].get("ids")))
+
+    # Append order by
+    # NOTE: order_by(SqlAlchemyModel.column, SqlAlchemyModel.column ...) is
+    # equal to order_by(SqlAlchemyModel.column).order_by(
+    # SqlAlchemyModel.column)...
+    for column in  kwargs["query"]["order_by"]:
+        query = query.order_by(getattr(model, column))
     return query.offset(
         kwargs["query"].get("offet", 0)
     ).limit(
