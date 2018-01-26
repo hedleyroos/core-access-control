@@ -10,6 +10,7 @@ import werkzeug
 from flask import json
 from six import BytesIO
 
+from swagger_server.models import InvitationSiteRoleCreate
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
@@ -170,3 +171,19 @@ class TestAccessControlRead(BaseTestCase):
         )
         self.assertEqual(r_data["name"], updated_entry.name)
         self.assertEqual(r_data["description"], updated_entry.description)
+
+    def test_invitation_site_role_create(self):
+        """Test case for invitationsiterole_create"""
+        data = InvitationSiteRoleCreate(**{
+            "invitation_id": self.invitation_model.id,
+            "site_id": random.randint(2, 2000000),
+            "role_id": random.randint(2, 2000000)
+        })
+        response = self.client.open(
+            '/api/v1/invitationsiteroles/',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json')
+        r_data = json.loads(response.data)
+        self.assertEqual(r_data["name"], data.name)
+        self.assertEqual(r_data["description"], data.description)
