@@ -1716,6 +1716,61 @@ paths:
           schema:
             $ref: "#/definitions/user_site_role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /usersiteroles/{user_id}/{site_id}/{role_id}/:
+    get:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
