@@ -1947,3 +1947,27 @@ paths:
             $ref: '#/definitions/user_site_role'
       tags:
         - access_control
+
+  '/usersiteroles/{user_id}/{site_id}/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/user_id'
+      - $ref: '#/parameters/site_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: usersiterole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: usersiterole_read
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/user_site_role'
+      tags:
+        - access_control
