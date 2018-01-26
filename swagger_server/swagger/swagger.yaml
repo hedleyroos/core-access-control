@@ -1851,8 +1851,8 @@ definitions:
     required:
     - "created_at"
     - "id"
-    - "is_admin_role"
     - "label"
+    - "requires_2fa"
     - "updated_at"
     properties:
       id:
@@ -1860,7 +1860,7 @@ definitions:
         readOnly: true
       label:
         $ref: "#/definitions/role_label"
-      is_admin_role:
+      requires_2fa:
         type: "boolean"
       description:
         type: "string"
@@ -1874,20 +1874,20 @@ definitions:
         readOnly: true
     example:
       updated_at: "2000-01-23T04:56:07.000+00:00"
-      is_admin_role: true
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
       label: {}
+      requires_2fa: true
   role_create:
     type: "object"
     required:
-    - "is_admin_role"
     - "label"
+    - "requires_2fa"
     properties:
       label:
         $ref: "#/definitions/role_label"
-      is_admin_role:
+      requires_2fa:
         type: "boolean"
       description:
         type: "string"
@@ -1897,7 +1897,7 @@ definitions:
       label:
         type: "string"
         maxLength: 100
-      is_admin_role:
+      requires_2fa:
         type: "boolean"
       description:
         type: "string"

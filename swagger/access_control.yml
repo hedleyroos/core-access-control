@@ -256,7 +256,7 @@ definitions:
         readOnly: true
       label:
         $ref: '#/definitions/role_label'
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
@@ -271,7 +271,7 @@ definitions:
     required:
       - id
       - label
-      - is_admin_role
+      - requires_2fa
       - created_at
       - updated_at
 
@@ -280,13 +280,13 @@ definitions:
     properties:
       label:
         $ref: '#/definitions/role_label'
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
     required:
       - label
-      - is_admin_role
+      - requires_2fa
 
   role_update:
     type: object
@@ -294,7 +294,7 @@ definitions:
       label:
         type: string
         maxLength: 100
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
