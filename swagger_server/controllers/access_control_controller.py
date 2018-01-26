@@ -1151,7 +1151,12 @@ def usersiterole_create(data=None):  # noqa: E501
 
     :rtype: UserSiteRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="UserSiteRole",
+        api_model=UserSiteRole,
+        action="create",
+        data=data,
+    )
 
 
 def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_id=None):  # noqa: E501
@@ -1172,4 +1177,17 @@ def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_
 
     :rtype: List[UserSiteRole]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="UserSiteRole",
+        api_model=UserSiteRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "user_id": site_id,
+                "site_id": site_id,
+                "role_id": role_id
+            },
+            "order_by": ["site_id"]}
+    )

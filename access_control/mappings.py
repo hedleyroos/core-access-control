@@ -9,6 +9,9 @@ def datetime_to_string(date):
     """
     return date.astimezone(datetime.timezone.utc).isoformat()
 
+def uuid_to_string(uuid):
+    return str(uuid)
+
 DB_TO_API_DOMAIN_TRANSFORMATION = Transformation(
     mappings=[
         Mapping(input_field="created_at", conversion=datetime_to_string),
@@ -86,5 +89,26 @@ DB_TO_API_SITEROLE_TRANSFORMATION = Transformation(
     ],
     copy_fields=[
         "site_id", "role_id", "grant_implicitly",
+    ]
+)
+
+DB_TO_API_USERSITEROLE_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+    ],
+    copy_fields=[
+        "site_id", "role_id", "user_id"
+    ]
+)
+
+API_TO_DB_USERSITEROLE_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+        #Mapping(input_field="user_id", conversion=uuid_to_string)
+    ],
+    copy_fields=[
+        "site_id", "role_id", "user_id"
     ]
 )
