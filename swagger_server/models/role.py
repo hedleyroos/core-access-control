@@ -16,15 +16,15 @@ class Role(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, label: RoleLabel=None, is_admin_role: bool=None, description: str=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: int=None, label: RoleLabel=None, requires_2fa: bool=None, description: str=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """Role - a model defined in Swagger
 
         :param id: The id of this Role.  # noqa: E501
         :type id: int
         :param label: The label of this Role.  # noqa: E501
         :type label: RoleLabel
-        :param is_admin_role: The is_admin_role of this Role.  # noqa: E501
-        :type is_admin_role: bool
+        :param requires_2fa: The requires_2fa of this Role.  # noqa: E501
+        :type requires_2fa: bool
         :param description: The description of this Role.  # noqa: E501
         :type description: str
         :param created_at: The created_at of this Role.  # noqa: E501
@@ -35,7 +35,7 @@ class Role(Model):
         self.swagger_types = {
             'id': int,
             'label': RoleLabel,
-            'is_admin_role': bool,
+            'requires_2fa': bool,
             'description': str,
             'created_at': datetime,
             'updated_at': datetime
@@ -44,7 +44,7 @@ class Role(Model):
         self.attribute_map = {
             'id': 'id',
             'label': 'label',
-            'is_admin_role': 'is_admin_role',
+            'requires_2fa': 'requires_2fa',
             'description': 'description',
             'created_at': 'created_at',
             'updated_at': 'updated_at'
@@ -52,7 +52,7 @@ class Role(Model):
 
         self._id = id
         self._label = label
-        self._is_admin_role = is_admin_role
+        self._requires_2fa = requires_2fa
         self._description = description
         self._created_at = created_at
         self._updated_at = updated_at
@@ -115,27 +115,27 @@ class Role(Model):
         self._label = label
 
     @property
-    def is_admin_role(self) -> bool:
-        """Gets the is_admin_role of this Role.
+    def requires_2fa(self) -> bool:
+        """Gets the requires_2fa of this Role.
 
 
-        :return: The is_admin_role of this Role.
+        :return: The requires_2fa of this Role.
         :rtype: bool
         """
-        return self._is_admin_role
+        return self._requires_2fa
 
-    @is_admin_role.setter
-    def is_admin_role(self, is_admin_role: bool):
-        """Sets the is_admin_role of this Role.
+    @requires_2fa.setter
+    def requires_2fa(self, requires_2fa: bool):
+        """Sets the requires_2fa of this Role.
 
 
-        :param is_admin_role: The is_admin_role of this Role.
-        :type is_admin_role: bool
+        :param requires_2fa: The requires_2fa of this Role.
+        :type requires_2fa: bool
         """
-        if is_admin_role is None:
-            raise ValueError("Invalid value for `is_admin_role`, must not be `None`")  # noqa: E501
+        if requires_2fa is None:
+            raise ValueError("Invalid value for `requires_2fa`, must not be `None`")  # noqa: E501
 
-        self._is_admin_role = is_admin_role
+        self._requires_2fa = requires_2fa
 
     @property
     def description(self) -> str:

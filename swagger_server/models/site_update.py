@@ -15,7 +15,7 @@ class SiteUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, client_id: str=None, domain_id: int=None, name: str=None, description: str=None):  # noqa: E501
+    def __init__(self, client_id: str=None, domain_id: int=None, name: str=None, description: str=None, is_active: bool=None):  # noqa: E501
         """SiteUpdate - a model defined in Swagger
 
         :param client_id: The client_id of this SiteUpdate.  # noqa: E501
@@ -26,25 +26,30 @@ class SiteUpdate(Model):
         :type name: str
         :param description: The description of this SiteUpdate.  # noqa: E501
         :type description: str
+        :param is_active: The is_active of this SiteUpdate.  # noqa: E501
+        :type is_active: bool
         """
         self.swagger_types = {
             'client_id': str,
             'domain_id': int,
             'name': str,
-            'description': str
+            'description': str,
+            'is_active': bool
         }
 
         self.attribute_map = {
             'client_id': 'client_id',
             'domain_id': 'domain_id',
             'name': 'name',
-            'description': 'description'
+            'description': 'description',
+            'is_active': 'is_active'
         }
 
         self._client_id = client_id
         self._domain_id = domain_id
         self._name = name
         self._description = description
+        self._is_active = is_active
 
     @classmethod
     def from_dict(cls, dikt) -> 'SiteUpdate':
@@ -142,3 +147,24 @@ class SiteUpdate(Model):
         """
 
         self._description = description
+
+    @property
+    def is_active(self) -> bool:
+        """Gets the is_active of this SiteUpdate.
+
+
+        :return: The is_active of this SiteUpdate.
+        :rtype: bool
+        """
+        return self._is_active
+
+    @is_active.setter
+    def is_active(self, is_active: bool):
+        """Sets the is_active of this SiteUpdate.
+
+
+        :param is_active: The is_active of this SiteUpdate.
+        :type is_active: bool
+        """
+
+        self._is_active = is_active
