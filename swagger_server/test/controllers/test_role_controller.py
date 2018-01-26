@@ -23,6 +23,7 @@ class TestAccessControlRead(BaseTestCase):
         self.role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "a super cool test role",
+            "requires_2fa": True,
         }
         self.role_model = db_actions.crud(
             model="Role",
@@ -37,6 +38,7 @@ class TestAccessControlRead(BaseTestCase):
         data = Role(**{
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "role to create",
+            "requires_2fa": True,
         })
         response = self.client.open(
             '/api/v1/roles/',
@@ -64,6 +66,7 @@ class TestAccessControlRead(BaseTestCase):
         data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "role to delete",
+            "requires_2fa": True,
         }
         model = db_actions.crud(
             model="Role",
@@ -91,6 +94,7 @@ class TestAccessControlRead(BaseTestCase):
             data = {
                 "label": ("%s" % uuid.uuid4())[:30],
                 "description": "role list %s" % index,
+                "requires_2fa": True,
             }
             objects.append(db_actions.crud(
                 model="Role",

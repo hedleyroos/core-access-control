@@ -315,88 +315,88 @@ class TestAccessControlRead(BaseTestCase):
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
-    def test_user_site_role_update(self):
-        """Test case for user_site_role_update
-        """
-        role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
-            "description": "user_site_role to create",
-        }
-        role_model = db_actions.crud(
-            model="Role",
-            api_model=Role,
-            data=role_data,
-            action="create"
-        )
-        domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
-            "description": "user_site_role to create",
-        }
-        domain_model = db_actions.crud(
-            model="Domain",
-            api_model=Domain,
-            data=domain_data,
-            action="create"
-        )
-        site_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
-            "domain_id": domain_model.id,
-            "description": "a super cool test site",
-            "client_id": uuid.uuid4().int>>97,
-            "is_active": True,
-        }
-        site_model = db_actions.crud(
-            model="Site",
-            api_model=Site,
-            data=site_data,
-            action="create"
-        )
-        site_role_data = {
-            "role_id": role_model.id,
-            "site_id": site_model.id,
-        }
-        site_role_model = db_actions.crud(
-            model="SiteRole",
-            api_model=SiteRole,
-            data=site_role_data,
-            action="create"
-        )
-        user_site_role_data = {
-            "role_id": role_model.id,
-            "site_id": site_model.id,
-            "user_id": "%s" % uuid.uuid1(),
-        }
-        user_site_role_model = db_actions.crud(
-            model="UserSiteRole",
-            api_model=UserSiteRole,
-            data=user_site_role_data,
-            action="create"
-        )
+    #def test_user_site_role_update(self):
+    #    """Test case for user_site_role_update
+    #    """
+    #    role_data = {
+    #        "label": ("%s" % uuid.uuid4())[:30],
+    #        "description": "user_site_role to create",
+    #    }
+    #    role_model = db_actions.crud(
+    #        model="Role",
+    #        api_model=Role,
+    #        data=role_data,
+    #        action="create"
+    #    )
+    #    domain_data = {
+    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "description": "user_site_role to create",
+    #    }
+    #    domain_model = db_actions.crud(
+    #        model="Domain",
+    #        api_model=Domain,
+    #        data=domain_data,
+    #        action="create"
+    #    )
+    #    site_data = {
+    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "domain_id": domain_model.id,
+    #        "description": "a super cool test site",
+    #        "client_id": uuid.uuid4().int>>97,
+    #        "is_active": True,
+    #    }
+    #    site_model = db_actions.crud(
+    #        model="Site",
+    #        api_model=Site,
+    #        data=site_data,
+    #        action="create"
+    #    )
+    #    site_role_data = {
+    #        "role_id": role_model.id,
+    #        "site_id": site_model.id,
+    #    }
+    #    site_role_model = db_actions.crud(
+    #        model="SiteRole",
+    #        api_model=SiteRole,
+    #        data=site_role_data,
+    #        action="create"
+    #    )
+    #    user_site_role_data = {
+    #        "role_id": role_model.id,
+    #        "site_id": site_model.id,
+    #        "user_id": "%s" % uuid.uuid1(),
+    #    }
+    #    user_site_role_model = db_actions.crud(
+    #        model="UserSiteRole",
+    #        api_model=UserSiteRole,
+    #        data=user_site_role_data,
+    #        action="create"
+    #    )
 
-        # Change user_id on the model.
-        data = {
-            "user_id": "%s" % uuid.uuid1(),
-        }
-        data = UserSiteRoleCreate(
-            **data
-        )
-        response = self.client.open(
-            '/api/v1/usersiteroles/{user_id}/{site_id}/{role_id}/'.format(
-                user_id=user_site_role_model.user_id,
-                site_id=user_site_role_model.site_id,
-                role_id=user_site_role_model.role_id,
-            ),
-            method='PUT',
-            data=json.dumps(data),
-            content_type='application/json')
-        r_data = json.loads(response.data)
-        updated_entry = db_actions.crud(
-            model="UserSiteRole",
-            api_model=UserSiteRole,
-            action="read",
-            query={
-                "role_id": user_site_role_model.role_id,
-                "site_id": user_site_role_model.site_id,
-            }
-        )
-        self.assertEqual(r_data["user_id"], updated_entry.user_id)
+    #    # Change user_id on the model.
+    #    data = {
+    #        "user_id": "%s" % uuid.uuid1(),
+    #    }
+    #    data = UserSiteRoleCreate(
+    #        **data
+    #    )
+    #    response = self.client.open(
+    #        '/api/v1/usersiteroles/{user_id}/{site_id}/{role_id}/'.format(
+    #            user_id=user_site_role_model.user_id,
+    #            site_id=user_site_role_model.site_id,
+    #            role_id=user_site_role_model.role_id,
+    #        ),
+    #        method='PUT',
+    #        data=json.dumps(data),
+    #        content_type='application/json')
+    #    r_data = json.loads(response.data)
+    #    updated_entry = db_actions.crud(
+    #        model="UserSiteRole",
+    #        api_model=UserSiteRole,
+    #        action="read",
+    #        query={
+    #            "role_id": user_site_role_model.role_id,
+    #            "site_id": user_site_role_model.site_id,
+    #        }
+    #    )
+    #    self.assertEqual(r_data["user_id"], updated_entry.user_id)

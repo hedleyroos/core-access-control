@@ -15,7 +15,7 @@ class Site(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, name: str=None, client_id: str=None, domain_id: int=None, description: str=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: int=None, name: str=None, client_id: str=None, domain_id: int=None, description: str=None, is_active: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """Site - a model defined in Swagger
 
         :param id: The id of this Site.  # noqa: E501
@@ -28,6 +28,8 @@ class Site(Model):
         :type domain_id: int
         :param description: The description of this Site.  # noqa: E501
         :type description: str
+        :param is_active: The is_active of this Site.  # noqa: E501
+        :type is_active: bool
         :param created_at: The created_at of this Site.  # noqa: E501
         :type created_at: datetime
         :param updated_at: The updated_at of this Site.  # noqa: E501
@@ -39,6 +41,7 @@ class Site(Model):
             'client_id': str,
             'domain_id': int,
             'description': str,
+            'is_active': bool,
             'created_at': datetime,
             'updated_at': datetime
         }
@@ -49,6 +52,7 @@ class Site(Model):
             'client_id': 'client_id',
             'domain_id': 'domain_id',
             'description': 'description',
+            'is_active': 'is_active',
             'created_at': 'created_at',
             'updated_at': 'updated_at'
         }
@@ -58,6 +62,7 @@ class Site(Model):
         self._client_id = client_id
         self._domain_id = domain_id
         self._description = description
+        self._is_active = is_active
         self._created_at = created_at
         self._updated_at = updated_at
 
@@ -184,6 +189,29 @@ class Site(Model):
         """
 
         self._description = description
+
+    @property
+    def is_active(self) -> bool:
+        """Gets the is_active of this Site.
+
+
+        :return: The is_active of this Site.
+        :rtype: bool
+        """
+        return self._is_active
+
+    @is_active.setter
+    def is_active(self, is_active: bool):
+        """Sets the is_active of this Site.
+
+
+        :param is_active: The is_active of this Site.
+        :type is_active: bool
+        """
+        if is_active is None:
+            raise ValueError("Invalid value for `is_active`, must not be `None`")  # noqa: E501
+
+        self._is_active = is_active
 
     @property
     def created_at(self) -> datetime:

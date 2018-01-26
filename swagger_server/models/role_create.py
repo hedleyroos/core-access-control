@@ -16,30 +16,30 @@ class RoleCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, label: RoleLabel=None, is_admin_role: bool=None, description: str=None):  # noqa: E501
+    def __init__(self, label: RoleLabel=None, requires_2fa: bool=None, description: str=None):  # noqa: E501
         """RoleCreate - a model defined in Swagger
 
         :param label: The label of this RoleCreate.  # noqa: E501
         :type label: RoleLabel
-        :param is_admin_role: The is_admin_role of this RoleCreate.  # noqa: E501
-        :type is_admin_role: bool
+        :param requires_2fa: The requires_2fa of this RoleCreate.  # noqa: E501
+        :type requires_2fa: bool
         :param description: The description of this RoleCreate.  # noqa: E501
         :type description: str
         """
         self.swagger_types = {
             'label': RoleLabel,
-            'is_admin_role': bool,
+            'requires_2fa': bool,
             'description': str
         }
 
         self.attribute_map = {
             'label': 'label',
-            'is_admin_role': 'is_admin_role',
+            'requires_2fa': 'requires_2fa',
             'description': 'description'
         }
 
         self._label = label
-        self._is_admin_role = is_admin_role
+        self._requires_2fa = requires_2fa
         self._description = description
 
     @classmethod
@@ -77,27 +77,27 @@ class RoleCreate(Model):
         self._label = label
 
     @property
-    def is_admin_role(self) -> bool:
-        """Gets the is_admin_role of this RoleCreate.
+    def requires_2fa(self) -> bool:
+        """Gets the requires_2fa of this RoleCreate.
 
 
-        :return: The is_admin_role of this RoleCreate.
+        :return: The requires_2fa of this RoleCreate.
         :rtype: bool
         """
-        return self._is_admin_role
+        return self._requires_2fa
 
-    @is_admin_role.setter
-    def is_admin_role(self, is_admin_role: bool):
-        """Sets the is_admin_role of this RoleCreate.
+    @requires_2fa.setter
+    def requires_2fa(self, requires_2fa: bool):
+        """Sets the requires_2fa of this RoleCreate.
 
 
-        :param is_admin_role: The is_admin_role of this RoleCreate.
-        :type is_admin_role: bool
+        :param requires_2fa: The requires_2fa of this RoleCreate.
+        :type requires_2fa: bool
         """
-        if is_admin_role is None:
-            raise ValueError("Invalid value for `is_admin_role`, must not be `None`")  # noqa: E501
+        if requires_2fa is None:
+            raise ValueError("Invalid value for `requires_2fa`, must not be `None`")  # noqa: E501
 
-        self._is_admin_role = is_admin_role
+        self._requires_2fa = requires_2fa
 
     @property
     def description(self) -> str:

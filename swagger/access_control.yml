@@ -201,6 +201,8 @@ definitions:
         type: integer
       description:
         type: string
+      is_active:
+        type: boolean
       created_at:
         type: string
         format: 'date-time'
@@ -213,6 +215,7 @@ definitions:
       - id
       - domain_id
       - name
+      - is_active
       - created_at
       - updated_at
 
@@ -229,6 +232,8 @@ definitions:
         type: integer
       description:
         type: string
+      is_active:
+        type: boolean
     required:
       - domain_id
       - name
@@ -246,6 +251,8 @@ definitions:
         maxLength: 30
       description:
         type: string
+      is_active:
+        type: boolean
     minProperties: 1
 
   role:
@@ -256,7 +263,7 @@ definitions:
         readOnly: true
       label:
         $ref: '#/definitions/role_label'
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
@@ -271,7 +278,7 @@ definitions:
     required:
       - id
       - label
-      - is_admin_role
+      - requires_2fa
       - created_at
       - updated_at
 
@@ -280,13 +287,13 @@ definitions:
     properties:
       label:
         $ref: '#/definitions/role_label'
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
     required:
       - label
-      - is_admin_role
+      - requires_2fa
 
   role_update:
     type: object
@@ -294,7 +301,7 @@ definitions:
       label:
         type: string
         maxLength: 100
-      is_admin_role:
+      requires_2fa:
         type: boolean
       description:
         type: string
@@ -1935,6 +1942,30 @@ paths:
         - application/json
       responses:
         '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/user_site_role'
+      tags:
+        - access_control
+
+  '/usersiteroles/{user_id}/{site_id}/{role_id}/':
+    parameters:
+      - $ref: '#/parameters/user_id'
+      - $ref: '#/parameters/site_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: usersiterole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: usersiterole_read
+      produces:
+        - application/json
+      responses:
+        '200':
           description: ''
           schema:
             $ref: '#/definitions/user_site_role'
