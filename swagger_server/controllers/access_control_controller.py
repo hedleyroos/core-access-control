@@ -161,7 +161,7 @@ def domainrole_create(data=None):  # noqa: E501
     """
     return db_actions.crud(
         model="DomainRole",
-        api_model=Domain,
+        api_model=DomainRole,
         action="create",
         data=data,
     )
@@ -179,7 +179,15 @@ def domainrole_delete(domain_id, role_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DomainRole",
+        api_model=DomainRole,
+        action="delete",
+        query={
+            "domain_id": domain_id,
+            "role_id": role_id,
+        }
+    )
 
 
 def domainrole_list(offset=None, limit=None, domain_id=None, role_id=None):  # noqa: E501
@@ -198,7 +206,16 @@ def domainrole_list(offset=None, limit=None, domain_id=None, role_id=None):  # n
 
     :rtype: List[DomainRole]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DomainRole",
+        api_model=DomainRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {"domain_id": domain_id, "role_id": role_id},
+            "order_by": ["domain_id"]}
+    )
 
 
 def domainrole_read(domain_id, role_id):  # noqa: E501
@@ -213,7 +230,15 @@ def domainrole_read(domain_id, role_id):  # noqa: E501
 
     :rtype: DomainRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DomainRole",
+        api_model=DomainRole,
+        action="read",
+        query={
+            "domain_id": domain_id,
+            "role_id": role_id,
+        }
+    )
 
 
 def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
@@ -230,7 +255,16 @@ def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="DomainRole",
+        api_model=DomainRole,
+        action="update",
+        data=data,
+        query={
+            "domain_id": domain_id,
+            "role_id": role_id,
+        },
+    )
 
 
 def invitation_create(data=None):  # noqa: E501

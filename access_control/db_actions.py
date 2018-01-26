@@ -81,7 +81,7 @@ def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]
     for column in  kwargs["query"]["order_by"]:
         query = query.order_by(getattr(model, column))
     return query.offset(
-        kwargs["query"].get("offet", 0)
+        kwargs["query"].get("offset", 0)
     ).limit(
         kwargs["query"].get("limit", settings.DEFAULT_API_LIMIT)
     ).all()

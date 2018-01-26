@@ -68,3 +68,13 @@ DB_TO_API_SITE_TRANSFORMATION = Transformation(
         "id", "name", "domain_id", "description", "client_id", "is_active"
     ]
 )
+
+DB_TO_API_DOMAINROLE_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string)
+    ],
+    copy_fields=[
+        "domain_id", "role_id", "grant_implicitly",
+    ]
+)

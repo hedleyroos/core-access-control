@@ -214,17 +214,17 @@ class TestAccessControlRead(BaseTestCase):
             data=role_data,
             action="create"
         )
-        resource_data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
-            "description": "role_resource_permission to create",
-        }
-        resource_model = db_actions.crud(
-            model="Resource",
-            api_model=Resource,
-            data=resource_data,
-            action="create"
-        )
-        for index in range(1, random.randint(2, 20)):
+        for index in range(3, random.randint(4, 20)):
+            resource_data = {
+                "urn": ("%s" % uuid.uuid4())[:30],
+                "description": "role_resource_permission to create",
+            }
+            resource_model = db_actions.crud(
+                model="Resource",
+                api_model=Resource,
+                data=resource_data,
+                action="create"
+            )
             permission_data = {
                 "name": ("%s" % uuid.uuid4())[:30],
                 "description": "role_resource_permission to create",
@@ -247,6 +247,7 @@ class TestAccessControlRead(BaseTestCase):
                 data=role_resource_permission_data,
                 action="create"
             ))
+        print ("Role: %s" % role_model.id)
         query_string = [#('offset', 0),
                         ('role_id', role_model.id),
         ]
