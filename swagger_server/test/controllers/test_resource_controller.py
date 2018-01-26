@@ -75,18 +75,13 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/resources/{resource_id}/'.format(resource_id=model.id),
             method='DELETE')
 
-        # Little crude. Raise an error if the object actually still exists else
-        # pass after the 404 error.
-        try:
+        with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
                 model="Resource",
                 api_model=Resource,
                 action="read",
                 query={"id": model.id}
             )
-            raise Exception
-        except werkzeug.exceptions.NotFound:
-            pass
 
     def test_resource_list(self):
         """Test case for resource_list
