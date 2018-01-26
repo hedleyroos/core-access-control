@@ -130,35 +130,75 @@ class TestAccessControlRead(BaseTestCase):
         self.assertEqual(r_data["resource_id"], self.role_resource_permission_model.resource_id)
         self.assertEqual(r_data["permission_id"], self.role_resource_permission_model.permission_id)
 
-    #def test_role_resource_permission_delete(self):
-    #    """Test case for role_resource_permission_delete
-    #    """
-    #    data = {
-    #        "name": ("%s" % uuid.uuid4())[:30],
-    #        "description": "role_resource_permission to delete",
-    #    }
-    #    model = db_actions.crud(
-    #        model="RoleResourcePermission",
-    #        api_model=RoleResourcePermission,
-    #        data=data,
-    #        action="create"
-    #    )
-    #    response = self.client.open(
-    #        '/api/v1/role_resource_permissions/{role_resource_permission_id}/'.format(role_resource_permission_id=model.id),
-    #        method='DELETE')
+    def test_role_resource_permission_delete(self):
+        """Test case for role_resource_permission_delete
+        """
+        role_data = {
+            "label": ("%s" % uuid.uuid4())[:30],
+            "description": "role_resource_permission to create",
+        }
+        role_model = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data=role_data,
+            action="create"
+        )
+        resource_data = {
+            "urn": ("%s" % uuid.uuid4())[:30],
+            "description": "role_resource_permission to create",
+        }
+        resource_model = db_actions.crud(
+            model="Resource",
+            api_model=Resource,
+            data=resource_data,
+            action="create"
+        )
+        permission_data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "role_resource_permission to create",
+        }
+        permission_model = db_actions.crud(
+            model="Permission",
+            api_model=Permission,
+            data=permission_data,
+            action="create"
+        )
 
-    #    # Little crude. Raise an error if the object actually still exists else
-    #    # pass after the 404 error.
-    #    try:
-    #        db_actions.crud(
-    #            model="RoleResourcePermission",
-    #            api_model=RoleResourcePermission,
-    #            action="read",
-    #            query={"id": model.id}
-    #        )
-    #        raise Exception
-    #    except werkzeug.exceptions.NotFound:
-    #        pass
+        role_resource_permission_data = {
+            "role_id": role_model.id,
+            "resource_id": resource_model.id,
+            "permission_id": permission_model.id,
+        }
+        model = db_actions.crud(
+            model="RoleResourcePermission",
+            api_model=RoleResourcePermission,
+            data=role_resource_permission_data,
+            action="create"
+        )
+        response = self.client.open(
+            '/api/v1/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}/'.format(
+                role_id=model.role_id,
+                resource_id=model.resource_id,
+                permission_id=model.permission_id,
+            ),
+            method='DELETE')
+
+        # Little crude. Raise an error if the object actually still exists else
+        # pass after the 404 error.
+        try:
+            db_actions.crud(
+                model="RoleResourcePermission",
+                api_model=RoleResourcePermission,
+                action="read",
+                query={
+                    "role_id": model.role_id,
+                    "resource_id": model.resource_id,
+                    "permission_id": model.permission_id,
+                }
+            )
+            raise Exception
+        except werkzeug.exceptions.NotFound:
+            pass
 
     def test_role_resource_permission_list(self):
         """Test case for role_resource_permission_list

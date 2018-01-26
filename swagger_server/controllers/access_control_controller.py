@@ -40,7 +40,16 @@ def access_control_roleresourcepermission_delete(role_id, resource_id, permissio
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="RoleResourcePermission",
+        api_model=RoleResourcePermission,
+        action="delete",
+        query={
+            "role_id": role_id,
+            "resource_id": resource_id,
+            "permission_id": permission_id
+        }
+    )
 
 
 def domain_create(data=None):  # noqa: E501
