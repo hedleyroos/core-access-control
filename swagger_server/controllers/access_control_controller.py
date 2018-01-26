@@ -672,7 +672,12 @@ def role_delete(role_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Role",
+        api_model=Role,
+        action="delete",
+        query={"id": role_id},
+    )
 
 
 def role_list(offset=None, limit=None, role_ids=None):  # noqa: E501
@@ -689,7 +694,12 @@ def role_list(offset=None, limit=None, role_ids=None):  # noqa: E501
 
     :rtype: List[Role]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Role",
+        api_model=Role,
+        action="list",
+        query={"offset": offset, "limit": limit, "ids": role_ids, "order_by": ["id"]}
+    )
 
 
 def role_read(role_id):  # noqa: E501
@@ -702,7 +712,12 @@ def role_read(role_id):  # noqa: E501
 
     :rtype: Role
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Role",
+        api_model=Role,
+        action="read",
+        query={"id": role_id}
+    )
 
 
 def role_update(role_id, data=None):  # noqa: E501
