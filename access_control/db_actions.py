@@ -60,7 +60,12 @@ def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]
     query = model.query
     ids = kwargs["query"].get("ids")
     if ids:
+        # Need to do some more work to handle composite PKs. Pass the set of
+        # ids in a dictionary.
         if isinstance(ids, dict):
+            # Unpack the dictionary and only do some work if the value is not
+            # None. No sense in passing another filter value if it has to do
+            # nothing.
             for key, id in ids.items():
                 if id != None:
                     query = query.filter(
