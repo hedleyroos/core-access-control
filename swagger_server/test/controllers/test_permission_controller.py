@@ -87,7 +87,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for permission_list
         """
         objects = []
-        for index in range(1, random.randint(2, 20)):
+        for index in range(3, random.randint(4, 20)):
             data = {
                 "name": ("%s" % uuid.uuid4())[:30],
                 "description": "permission list %s" % index,

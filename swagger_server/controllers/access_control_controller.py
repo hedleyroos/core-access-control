@@ -154,7 +154,7 @@ def domainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DomainRole
@@ -941,7 +941,7 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Site
@@ -960,12 +960,17 @@ def siterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteRole",
+        api_model=SiteRole,
+        action="create",
+        data=data,
+    )
 
 
 def siterole_delete(site_id, role_id):  # noqa: E501
@@ -980,7 +985,15 @@ def siterole_delete(site_id, role_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteRole",
+        api_model=SiteRole,
+        action="delete",
+        query={
+            "site_id": site_id,
+            "role_id": role_id,
+        }
+    )
 
 
 def siterole_list(offset=None, limit=None, site_id=None, role_id=None):  # noqa: E501
@@ -999,7 +1012,16 @@ def siterole_list(offset=None, limit=None, site_id=None, role_id=None):  # noqa:
 
     :rtype: List[SiteRole]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteRole",
+        api_model=SiteRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {"site_id": site_id, "role_id": role_id},
+            "order_by": ["site_id"]}
+    )
 
 
 def siterole_read(site_id, role_id):  # noqa: E501
@@ -1014,7 +1036,15 @@ def siterole_read(site_id, role_id):  # noqa: E501
 
     :rtype: SiteRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteRole",
+        api_model=SiteRole,
+        action="read",
+        query={
+            "site_id": site_id,
+            "role_id": role_id,
+        }
+    )
 
 
 def siterole_update(site_id, role_id, data=None):  # noqa: E501
@@ -1031,7 +1061,16 @@ def siterole_update(site_id, role_id, data=None):  # noqa: E501
 
     :rtype: SiteRole
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="SiteRole",
+        api_model=SiteRole,
+        action="update",
+        data=data,
+        query={
+            "site_id": site_id,
+            "role_id": role_id,
+        },
+    )
 
 
 def userdomainrole_create(data=None):  # noqa: E501
