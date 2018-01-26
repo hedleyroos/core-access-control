@@ -52,7 +52,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid4())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid4().int>>97,
+            "client_id": "%s" % (uuid.uuid4().int>>97),
             "is_active": True,
         })
         response = self.client.open(
@@ -163,7 +163,7 @@ class TestAccessControlRead(BaseTestCase):
         data = {
             "name": ("%s" % uuid.uuid4())[:30],
             "description": "site updated",
-            "client_id": uuid.uuid4().int>>97,
+            "client_id": "%s" % (uuid.uuid4().int>>97),
             "is_active": False,
         }
         data = SiteUpdate(
