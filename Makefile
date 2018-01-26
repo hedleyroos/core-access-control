@@ -1,8 +1,9 @@
 VENV=./ve
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
-FLASK=$(VENV)/bin/flask
 FLAKE8=$(VENV)/bin/flake8
+PYTEST=$(VENV)/bin/pytest
+FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
 ACCESS_CONTROL_CLIENT_DIR=access_control_client
@@ -100,6 +101,12 @@ access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 
 check: $(FLAKE8)
 	$(FLAKE8)
+
+$(PYTEST): $(VENV)
+	$(PIP) install pytest pytest-cov
+
+test: $(PYTEST)
+	$(PYTEST) --verbose --cov=access_control access_control/
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
