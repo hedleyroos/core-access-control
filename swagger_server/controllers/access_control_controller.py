@@ -825,7 +825,12 @@ def site_create(data=None):  # noqa: E501
 
     :rtype: Site
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Site",
+        api_model=Site,
+        action="create",
+        data=data,
+    )
 
 
 def site_delete(site_id):  # noqa: E501
@@ -838,7 +843,12 @@ def site_delete(site_id):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Site",
+        api_model=Site,
+        action="delete",
+        query={"id": site_id},
+    )
 
 
 def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
@@ -855,7 +865,12 @@ def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
 
     :rtype: List[Site]
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Site",
+        api_model=Site,
+        action="list",
+        query={"offset": offset, "limit": limit, "ids": site_ids, "order_by": ["id"]}
+    )
 
 
 def site_read(site_id):  # noqa: E501
@@ -868,7 +883,12 @@ def site_read(site_id):  # noqa: E501
 
     :rtype: Site
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Site",
+        api_model=Site,
+        action="read",
+        query={"id": site_id}
+    )
 
 
 def site_update(site_id, data=None):  # noqa: E501
@@ -883,7 +903,13 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :rtype: Site
     """
-    return 'do some magic!'
+    return db_actions.crud(
+        model="Site",
+        api_model=Site,
+        action="update",
+        data=data,
+        query={"id": site_id},
+    )
 
 
 def siterole_create(data=None):  # noqa: E501
