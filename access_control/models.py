@@ -9,6 +9,7 @@ from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
+from sqlalchemy.types import TypeDecorator
 
 from . import settings
 
@@ -27,6 +28,43 @@ class utcnow(expression.FunctionElement):
 @compiles(utcnow, "postgresql")
 def pg_utcnow(element, compiler, **kw):
     return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
+
+
+# Copied wholesale from SQLAlchemy docs.
+class GUID(TypeDecorator):
+    """Platform-independent GUID type.
+
+    Uses PostgreSQL's UUID type, otherwise uses
+    CHAR(32), storing as stringified hex values.
+
+    """
+    impl = UUID
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            return dialect.type_descriptor(UUID())
+        else:
+            return dialect.type_descriptor(CHAR(32))
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        elif dialect.name == 'postgresql':
+            return str(value)
+        else:
+            if not isinstance(value, uuid.UUID):
+                return "%.32x" % uuid.UUID(value).int
+            else:
+                # hexstring
+                return "%.32x" % value.int
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            return value
+        else:
+            if not isinstance(value, uuid.UUID):
+                value = uuid.UUID(value)
+            return value
 
 
 class Domain(DB.Model):
@@ -230,7 +268,7 @@ class UserDomainRole(DB.Model):
 
 
 class Invitation(DB.Model):
-    id = DB.Column(UUID, default=uuid.uuid1, primary_key=True)
+    id = DB.Column(GUID(), default=uuid.uuid1, primary_key=True)
     first_name = DB.Column(DB.Text)
     last_name = DB.Column(DB.Text)
     email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
