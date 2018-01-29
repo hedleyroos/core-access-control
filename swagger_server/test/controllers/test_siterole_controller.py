@@ -215,7 +215,7 @@ class TestAccessControlRead(BaseTestCase):
             data=role_data,
             action="create"
         )
-        for index in range(3, random.randint(4, 20)):
+        for index in range(1, random.randint(5, 20)):
             domain_data = {
                 "name": ("%s" % uuid.uuid4())[:30],
                 "description": "site_role to create",

@@ -113,7 +113,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_list
         """
         objects = []
-        for index in range(3, random.randint(4, 20)):
+        for index in range(1, random.randint(5, 20)):
             data = {
                 "name": ("%s" % uuid.uuid4())[:30],
                 "domain_id": self.domain_model.id,
