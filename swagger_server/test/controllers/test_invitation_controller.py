@@ -12,7 +12,7 @@ class InvitationTestCase(BaseTestCase):
             "first_name": "first",
             "last_name": "last",
             "email": "first.last@test.com",
-            "invitor_id": "%s" % uuid.uuid4()
+            "invitor_id": "%s" % uuid.uuid1()
         })
         response = self.client.open(
             '/api/v1/invitations/',
@@ -22,3 +22,17 @@ class InvitationTestCase(BaseTestCase):
         r_data = json.loads(response.data)
         self.assertEqual(r_data["first_name"], data.first_name)
         self.assertEqual(r_data["last_name"], data.last_name)
+        self.assertEqual(r_data["email"], data.email)
+        self.assertEqual(r_data["invitor_id"], data.invitor_id)
+
+    def test_invitation_read(self):
+        pass
+
+    def test_invitation_list(self):
+        pass
+
+    def test_invitation_update(self):
+        pass
+
+    def test_invitation_redeem(self):
+        pass
