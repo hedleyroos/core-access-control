@@ -1,5 +1,7 @@
 import uuid
 
+from datetime import datetime
+
 from swagger_server.models import InvitationCreate
 from swagger_server.test import BaseTestCase
 from flask import json
@@ -11,8 +13,9 @@ class InvitationTestCase(BaseTestCase):
         data = InvitationCreate(**{
             "first_name": "first",
             "last_name": "last",
-            "email": "first.last@test.com",
-            "invitor_id": "%s" % uuid.uuid1()
+            "email": "0firstlast@test.com",
+            "invitor_id": "%s" % uuid.uuid1(),
+            "expires_at": datetime.now()
         })
         response = self.client.open(
             '/api/v1/invitations/',
