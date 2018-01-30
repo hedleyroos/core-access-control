@@ -152,8 +152,15 @@ def transform(
     :return: List[Swagger API model instances]
     """
     data = None
-    if instance is None or instance == []:
+
+    # If there is nothing to return we return immediately.
+    if instance is None:
         return None
+    elif instance == []:
+        return []
+
+    # Grab model name from the SQLAlchemy model class, as this transforms from
+    # DB to API.
     model_name = instance.__class__.__name__ \
         if not isinstance(instance, list) else instance[0].__class__.__name__
     transformer = getattr(mappings, "DB_TO_API_%s_TRANSFORMATION" % model_name.upper())
