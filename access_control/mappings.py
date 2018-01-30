@@ -2,12 +2,14 @@ import datetime
 
 from .transformation import Transformation, Mapping
 
+
 def datetime_to_string(date):
     """
     :param date: Timezone unaware datetime object
     :return str: Python iso formatted string
     """
     return date.astimezone(datetime.timezone.utc).isoformat()
+
 
 DB_TO_API_DOMAIN_TRANSFORMATION = Transformation(
     mappings=[

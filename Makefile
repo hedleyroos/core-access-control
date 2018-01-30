@@ -6,7 +6,6 @@ PYTEST=$(VENV)/bin/pytest
 FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
-ACCESS_CONTROL_CLIENT_DIR=access_control_client
 DB_NAME=access_control
 DB_USER=access_control
 
@@ -86,13 +85,6 @@ validate-swagger: prism
 
 $(FLAKE8): $(VENV)
 	$(PIP) install flake8
-
-# Generate the client code to interface with Access Control
-access-control-client: swagger-codegen-cli-$(CODEGEN_VERSION).jar
-	@echo "$(CYAN)Generating the client for the Access Control API...$(CLEAR)"
-	$(CODEGEN) -l python -i swagger/access_control.yml -o /tmp/$(ACCESS_CONTROL_CLIENT_DIR)
-	cp -r /tmp/$(ACCESS_CONTROL_CLIENT_DIR)/swagger_client* $(ACCESS_CONTROL_CLIENT_DIR)
-	rm -rf /tmp/$(ACCESS_CONTROL_CLIENT_DIR)
 
 # Generate the flask server code for Access Control
 access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
