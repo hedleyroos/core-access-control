@@ -21,7 +21,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.resource_data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test resource",
         }
         self.resource_model = db_actions.crud(
@@ -35,7 +35,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for resource_create
         """
         data = Resource(**{
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "resource to create",
         })
         response = self.client.open(
@@ -62,7 +62,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for resource_delete
         """
         data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "resource to delete",
         }
         model = db_actions.crud(
@@ -89,7 +89,7 @@ class TestAccessControlRead(BaseTestCase):
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
-                "urn": ("%s" % uuid.uuid4())[:30],
+                "urn": ("%s" % uuid.uuid1())[:30],
                 "description": "resource list %s" % index,
             }
             objects.append(db_actions.crud(
@@ -119,7 +119,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for resource_update
         """
         data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "resource to update",
         }
         model = db_actions.crud(
@@ -129,7 +129,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "resource updated",
         }
         data = ResourceUpdate(
