@@ -115,7 +115,7 @@ def list_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> typing.List[Sql
             # None. No sense in passing another filter value if it has to do
             # nothing.
             for key, id in ids.items():
-                if id != None:
+                if id is not None:
                     query = query.filter(
                         getattr(model, key)==id
                     )
@@ -151,7 +151,7 @@ def transform(
     :return: List[Swagger API model instance]
     """
     data = None
-    if instance == None or instance == []:
+    if instance is None or instance == []:
         # TODO raise 404
         return None
     model_name = instance.__class__.__name__ \
