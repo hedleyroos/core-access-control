@@ -109,13 +109,22 @@ API_TO_DB_USERSITEROLE_TRANSFORMATION = Transformation(
     ]
 )
 
-DB_TO_API_INVITATION_TRANSFORMATION = Transformation(
+DB_TO_API_DOMAINROLE_TRANSFORMATION = Transformation(
     mappings=[
-        Mapping(input_field="expires_at", conversion=datetime_to_string),
         Mapping(input_field="created_at", conversion=datetime_to_string),
         Mapping(input_field="updated_at", conversion=datetime_to_string)
     ],
     copy_fields=[
-        "id", "first_name", "last_name", "email", "invitor_id", "is_system_user"
+        "domain_id", "role_id", "grant_implicitly",
+    ]
+)
+
+DB_TO_API_USERDOMAINROLE_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+    ],
+    copy_fields=[
+        "domain_id", "role_id", "user_id"
     ]
 )
