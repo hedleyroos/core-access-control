@@ -1,3 +1,6 @@
+.. image:: https://travis-ci.org/girleffect/core-access-control.svg?branch=develop
+    :target: https://travis-ci.org/girleffect/core-access-control
+
 core-access-control
 ===================
 
