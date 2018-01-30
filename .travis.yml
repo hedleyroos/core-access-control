@@ -9,10 +9,12 @@ services:
 
 install:
   - pip install -r requirements.txt -r test-requirements.txt
+  - pip install coveralls
 
 script: tox
 
 after_success:
+  - coveralls
   - export REPO=dockerhubowner/core-access-control
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
   - docker build -t $REPO:$TAG .
