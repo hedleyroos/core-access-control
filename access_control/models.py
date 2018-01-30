@@ -31,6 +31,7 @@ def pg_utcnow(element, compiler, **kw):
 
 
 # Copied wholesale from SQLAlchemy docs.
+# http://docs.sqlalchemy.org/en/latest/core/custom_types.html?highlight=guid#backend-agnostic-guid-type
 class GUID(TypeDecorator):
     """Platform-independent GUID type.
 
