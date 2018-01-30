@@ -145,10 +145,11 @@ def transform(
     instances, respectively. To assist with json serialization later on in
     flask.
 
-    :param instance: SQLAlchemy model instance
+    :param instance: SQLAlchemy model instance OR
+    :param instance: List[SQLAlchemy model instances]
     :param api_model: Swagger API model class
     :return: Swagger API model instance
-    :return: List[Swagger API model instance]
+    :return: List[Swagger API model instances]
     """
     data = None
     if instance is None or instance == []:
