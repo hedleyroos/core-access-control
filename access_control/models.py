@@ -1,12 +1,10 @@
-import datetime
-import os
 import uuid
 
 from flask import Flask
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import types
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, CHAR
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 from sqlalchemy.types import TypeDecorator
@@ -24,6 +22,7 @@ MIGRATE = Migrate(APP, DB)
 # http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function
 class utcnow(expression.FunctionElement):
     type = types.DateTime()
+
 
 @compiles(utcnow, "postgresql")
 def pg_utcnow(element, compiler, **kw):
@@ -211,6 +210,7 @@ class SiteRole(DB.Model):
         return "<SiteRole(%s-%s-%s)>" % (
             self.site_id, self.role_id, self.grant_implicitly
         )
+
 
 class UserSiteRole(DB.Model):
     user_id = DB.Column(UUID, primary_key=True)

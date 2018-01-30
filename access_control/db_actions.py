@@ -1,7 +1,5 @@
 import typing
 
-from flask import jsonify
-
 from . import mappings
 from . import models
 from . import settings
@@ -59,7 +57,7 @@ def create_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> SqlAlchemyMod
     return instance
 
 
-def read_entry(model: typing.Type[SqlAlchemyModel], **kwargs)  -> SqlAlchemyModel:
+def read_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> SqlAlchemyModel:
     """
     Does a database select, based of of the query data provided, returns the
     first object in the result set.
@@ -114,10 +112,10 @@ def list_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> typing.List[Sql
             # Unpack the dictionary and only do some work if the value is not
             # None. No sense in passing another filter value if it has to do
             # nothing.
-            for key, id in ids.items():
-                if id is not None:
+            for key, _id in ids.items():
+                if _id is not None:
                     query = query.filter(
-                        getattr(model, key)==id
+                        getattr(model, key) == _id
                     )
         else:
             query = query.filter(model.id.in_(ids))
