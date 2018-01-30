@@ -152,7 +152,6 @@ def transform(
     """
     data = None
     if instance is None or instance == []:
-        # TODO raise 404
         return None
     model_name = instance.__class__.__name__ \
         if not isinstance(instance, list) else instance[0].__class__.__name__
