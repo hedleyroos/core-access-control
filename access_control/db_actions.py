@@ -12,8 +12,8 @@ SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
 
 
 def crud(
-        model: SqlAlchemyModel,
-        api_model: ApiModel,
+        model: typing.Type[SqlAlchemyModel],
+        api_model: typing.Type[ApiModel],
         action: str,
         data: dict = None,
         query: dict = None) -> typing.Union[ApiModel, typing.List[ApiModel], None]:
@@ -48,7 +48,7 @@ def crud(
     )
 
 
-def create_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
+def create_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> SqlAlchemyModel:
     """
     Instantiate a SQLAlchemy model instance and saves it to the corresponding
     database table.
@@ -59,7 +59,7 @@ def create_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
     return instance
 
 
-def read_entry(model: SqlAlchemyModel, **kwargs)  -> SqlAlchemyModel:
+def read_entry(model: typing.Type[SqlAlchemyModel], **kwargs)  -> SqlAlchemyModel:
     """
     Does a database select, based of of the query data provided, returns the
     first object in the result set.
@@ -71,7 +71,7 @@ def read_entry(model: SqlAlchemyModel, **kwargs)  -> SqlAlchemyModel:
     return instance
 
 
-def update_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
+def update_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> SqlAlchemyModel:
     """
     Does a database select, based of of the query data provided, readies up an
     instance of the specific model based on the result data.
@@ -86,7 +86,7 @@ def update_entry(model: SqlAlchemyModel, **kwargs) -> SqlAlchemyModel:
     return instance
 
 
-def delete_entry(model: SqlAlchemyModel, **kwargs) -> None:
+def delete_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> None:
     """
     Does a database select, based of of the query data provided, readies up an
     instance of the specific model based on the result data.
@@ -99,7 +99,7 @@ def delete_entry(model: SqlAlchemyModel, **kwargs) -> None:
     db.session.commit()
 
 
-def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]:
+def list_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> typing.List[SqlAlchemyModel]:
     """
     Builds a SQLAlchemy query up from incoming kwargs.
 
@@ -135,7 +135,9 @@ def list_entry(model: SqlAlchemyModel, **kwargs) -> typing.List[SqlAlchemyModel]
     ).all()
 
 
-def transform(instance: SqlAlchemyModel, api_model: ApiModel) -> \
+def transform(
+        instance: typing.Union[SqlAlchemyModel, typing.List[SqlAlchemyModel]],
+        api_model: typing.Type[ApiModel]) -> \
         typing.Union[ApiModel, typing.List[ApiModel]]:
     """
     Translate model object into a swagger API model instance or a list of
