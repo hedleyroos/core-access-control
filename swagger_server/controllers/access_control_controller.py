@@ -1,3 +1,4 @@
+import connexion
 import six
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
@@ -62,6 +63,9 @@ def domain_create(data=None):  # noqa: E501
 
     :rtype: Domain
     """
+    if connexion.request.is_json:
+        data =connexion.request.get_json()
+
     return db_actions.crud(
         model="Domain",
         api_model=Domain,
@@ -140,6 +144,9 @@ def domain_update(domain_id, data=None):  # noqa: E501
 
     :rtype: Domain
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Domain",
         api_model=Domain,
@@ -159,6 +166,9 @@ def domainrole_create(data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="DomainRole",
         api_model=DomainRole,
@@ -255,6 +265,9 @@ def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
 
     :rtype: DomainRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="DomainRole",
         api_model=DomainRole,
@@ -277,6 +290,9 @@ def invitation_create(data=None):  # noqa: E501
 
     :rtype: Invitation
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Invitation",
         api_model=Invitation,
@@ -393,6 +409,9 @@ def invitationdomainrole_create(data=None):  # noqa: E501
 
     :rtype: InvitationDomainRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="InvitationDomainRole",
         api_model=InvitationDomainRole,
@@ -494,6 +513,9 @@ def invitationsiterole_create(data=None):  # noqa: E501
 
     :rtype: InvitationSiteRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="InvitationSiteRole",
         api_model=InvitationSiteRole,
@@ -596,6 +618,9 @@ def permission_create(data=None):  # noqa: E501
 
     :rtype: Permission
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Permission",
         api_model=Permission,
@@ -674,6 +699,9 @@ def permission_update(permission_id, data=None):  # noqa: E501
 
     :rtype: Permission
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Permission",
         api_model=Permission,
@@ -693,6 +721,9 @@ def resource_create(data=None):  # noqa: E501
 
     :rtype: Resource
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Resource",
         api_model=Resource,
@@ -773,6 +804,9 @@ def resource_update(resource_id, data=None):  # noqa: E501
 
     :rtype: Resource
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Resource",
         api_model=Resource,
@@ -792,6 +826,9 @@ def role_create(data=None):  # noqa: E501
 
     :rtype: Role
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Role",
         api_model=Role,
@@ -870,6 +907,9 @@ def role_update(role_id, data=None):  # noqa: E501
 
     :rtype: Role
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Role",
         api_model=Role,
@@ -889,6 +929,9 @@ def roleresourcepermission_create(data=None):  # noqa: E501
 
     :rtype: RoleResourcePermission
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="RoleResourcePermission",
         api_model=RoleResourcePermission,
@@ -963,6 +1006,9 @@ def site_create(data=None):  # noqa: E501
 
     :rtype: Site
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Site",
         api_model=Site,
@@ -1041,6 +1087,9 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :rtype: Site
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="Site",
         api_model=Site,
@@ -1060,6 +1109,9 @@ def siterole_create(data=None):  # noqa: E501
 
     :rtype: SiteRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="SiteRole",
         api_model=SiteRole,
@@ -1156,6 +1208,9 @@ def siterole_update(site_id, role_id, data=None):  # noqa: E501
 
     :rtype: SiteRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="SiteRole",
         api_model=SiteRole,
@@ -1178,6 +1233,9 @@ def userdomainrole_create(data=None):  # noqa: E501
 
     :rtype: UserDomainRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="UserDomainRole",
         api_model=UserDomainRole,
@@ -1278,6 +1336,9 @@ def usersiterole_create(data=None):  # noqa: E501
 
     :rtype: UserSiteRole
     """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
     return db_actions.crud(
         model="UserSiteRole",
         api_model=UserSiteRole,
