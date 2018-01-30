@@ -17,7 +17,7 @@ GREEN=\033[0;32m
 CYAN=\033[0;36m
 
 .SILENT: docs-build
-.PHONY: check
+.PHONY: check test
 
 help:
 	@echo "usage: make <target>"
@@ -31,7 +31,7 @@ help:
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
-	virtualenv $(VENV) -p python3.5
+	virtualenv $(VENV) -p python3
 	@echo "$(GREEN)DONE$(CLEAR)"
 
 # Creates the virtual environment.
@@ -99,6 +99,10 @@ access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
 	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
 	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
 
+runserver: $(VENV)
+	@echo "$(CYAN)Firing up server...$(CLEAR)"
+	$(PYTHON) -m swagger_server
+
 check: $(FLAKE8)
 	$(FLAKE8)
 
@@ -106,12 +110,16 @@ $(PYTEST): $(VENV)
 	$(PIP) install pytest pytest-cov
 
 test: $(PYTEST)
-	$(PYTEST) --verbose --cov=access_control access_control/
+	$(PYTEST) --verbose --cov=access_control access_control/ swagger_server/test/
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
+	make migrate
 
-migrate:  $(VENV)
-	@echo "$(CYAN)Migrating...$(CLEAR)"
-	FLASK_APP=models.py $(FLASK) db migrate
-	FLASK_APP=models.py $(FLASK) db upgrade
+makemigrations: $(VENV)
+	@echo "$(CYAN)Creating migrations...$(CLEAR)"
+	FLASK_APP=access_control/models.py $(FLASK) db migrate -d access_control/migrations
+
+migrate: $(VENV)
+	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
+	FLASK_APP=access_control/models.py $(FLASK) db upgrade -d access_control/migrations
