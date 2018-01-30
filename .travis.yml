@@ -9,7 +9,7 @@ services:
   - postgres
 
 install:
-  - pip install -r requirements.txt -r test-requirements.tx
+  - pip install -r requirements.txt -r test-requirements.txt
 
 script: make database test
 
