@@ -3,6 +3,7 @@ PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
 FLAKE8=$(VENV)/bin/flake8
 PYTEST=$(VENV)/bin/pytest
+TOX=$(VENV)/bin/tox
 FLASK=$(VENV)/bin/flask
 CODEGEN_VERSION=2.3.1
 CODEGEN=java -jar swagger-codegen-cli-$(CODEGEN_VERSION).jar generate
@@ -31,7 +32,7 @@ help:
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
-	virtualenv $(VENV) -p python3.5
+	virtualenv $(VENV) -p python3
 	@echo "$(GREEN)DONE$(CLEAR)"
 
 # Creates the virtual environment.
@@ -109,8 +110,8 @@ check: $(FLAKE8)
 $(PYTEST): $(VENV)
 	$(PIP) install pytest pytest-cov
 
-test: $(PYTEST)
-	$(PYTEST) --fulltrace --verbose --cov=access_control access_control/ swagger_server/test/
+test: $(TOX) $(PYTEST)
+	$(TOX)
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -

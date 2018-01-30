@@ -11,7 +11,7 @@ services:
 install:
   - pip install -r requirements.txt -r test-requirements.txt
 
-script: make database test
+script: make test
 
 after_success:
   - export REPO=dockerhubowner/core-access-control
