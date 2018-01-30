@@ -140,8 +140,9 @@ def transform(
         api_model: typing.Type[ApiModel]) -> \
         typing.Union[ApiModel, typing.List[ApiModel]]:
     """
-    Translate model object into a swagger API model instance or a list of
-    swagger API model instances. To assist with json serialization later on in
+    Translates a SqlAlchemy model instance or list of SqlAlchemy model
+    instances into a Swagger API model instance or list of Swagger API model
+    instances, respectively. To assist with json serialization later on in
     flask.
 
     :param instance: SQLAlchemy model instance
