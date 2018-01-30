@@ -174,15 +174,17 @@ def transform(
     if is_list:
         data = []
         for obj in instance:
-            obj_data = {}
-            for key in obj.__table__.columns.keys():
-                obj_data[key] = getattr(obj, key)
+            obj_data = {
+                key: getattr(obj, key) for key in obj.__table__.columns.keys()
+            }
             data.append(
                 api_model.from_dict(transformer.apply(obj_data))
             )
     else:
-        data = {}
-        for key in instance.__table__.columns.keys():
-            data[key] = getattr(instance, key)
+        data = {
+            key: getattr(
+                instance, key
+            ) for key in instance.__table__.columns.keys()
+        }
         data = api_model.from_dict(transformer.apply(data))
     return data
