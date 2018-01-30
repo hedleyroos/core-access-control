@@ -119,7 +119,6 @@ class UserDomainRoleTestCase(BaseTestCase):
         self.assertEqual(r_data["role_id"], user_domain_role.role_id)
         self.assertEqual(r_data["domain_id"], user_domain_role.domain_id)
 
-
     def test_userdomainrole_list(self):
         objects = []
         for index in range(1, random.randint(5, 20)):
@@ -139,10 +138,10 @@ class UserDomainRoleTestCase(BaseTestCase):
             ("limit", 2),
             ("role_id", self.role_model.id)
         ]
-
         response = self.client.open(
-            '/api/v1/userdomainrole/',
+            '/api/v1/userdomainroles/',
             method='GET',
             query_string=query_string)
+
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
