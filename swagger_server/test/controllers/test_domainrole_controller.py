@@ -24,7 +24,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         self.role_model = db_actions.crud(
@@ -34,7 +34,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         self.domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "domain to create",
         }
         self.domain_model = db_actions.crud(
@@ -59,7 +59,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for domain_role_create
         """
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         role_model = db_actions.crud(
@@ -69,7 +69,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         domain_model = db_actions.crud(
@@ -110,7 +110,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for domain_role_delete
         """
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         role_model = db_actions.crud(
@@ -120,7 +120,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         domain_model = db_actions.crud(
@@ -165,7 +165,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         objects = []
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         role_model = db_actions.crud(
@@ -176,7 +176,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         for index in range(1, random.randint(5, 20)):
             domain_data = {
-                "name": ("%s" % uuid.uuid4())[:30],
+                "name": ("%s" % uuid.uuid1())[:30],
                 "description": "domain_role to create",
             }
             domain_model = db_actions.crud(
@@ -220,7 +220,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for domain_role_update
         """
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         role_model = db_actions.crud(
@@ -230,7 +230,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         domain_model = db_actions.crud(
@@ -252,7 +252,7 @@ class TestAccessControlRead(BaseTestCase):
 
         # Change domain on the model.
         domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "domain_role to create",
         }
         domain_model = db_actions.crud(

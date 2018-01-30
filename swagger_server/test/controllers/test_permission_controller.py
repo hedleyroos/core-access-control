@@ -21,7 +21,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.permission_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test permission",
         }
         self.permission_model = db_actions.crud(
@@ -35,7 +35,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for permission_create
         """
         data = Permission(**{
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "permission to create",
         })
         response = self.client.open(
@@ -62,7 +62,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for permission_delete
         """
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "permission to delete",
         }
         model = db_actions.crud(
@@ -89,7 +89,7 @@ class TestAccessControlRead(BaseTestCase):
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
-                "name": ("%s" % uuid.uuid4())[:30],
+                "name": ("%s" % uuid.uuid1())[:30],
                 "description": "permission list %s" % index,
             }
             objects.append(db_actions.crud(
@@ -119,7 +119,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for permission_update
         """
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "permission to update",
         }
         model = db_actions.crud(
@@ -129,7 +129,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "permission updated",
         }
         data = PermissionUpdate(

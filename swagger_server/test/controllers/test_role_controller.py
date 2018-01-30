@@ -21,7 +21,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test role",
             "requires_2fa": True,
         }
@@ -36,7 +36,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_create
         """
         data = Role(**{
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role to create",
             "requires_2fa": True,
         })
@@ -64,7 +64,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_delete
         """
         data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role to delete",
             "requires_2fa": True,
         }
@@ -92,7 +92,7 @@ class TestAccessControlRead(BaseTestCase):
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
-                "label": ("%s" % uuid.uuid4())[:30],
+                "label": ("%s" % uuid.uuid1())[:30],
                 "description": "role list %s" % index,
                 "requires_2fa": True,
             }
@@ -123,7 +123,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_update
         """
         data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role to update",
         }
         model = db_actions.crud(
@@ -133,7 +133,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role updated",
         }
         data = RoleUpdate(

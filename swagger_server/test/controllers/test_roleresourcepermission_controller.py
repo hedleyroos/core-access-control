@@ -24,7 +24,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         self.role_model = db_actions.crud(
@@ -34,7 +34,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         self.resource_data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         self.resource_model = db_actions.crud(
@@ -44,7 +44,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         self.permission_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         self.permission_model = db_actions.crud(
@@ -70,7 +70,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_resource_permission_create
         """
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         role_model = db_actions.crud(
@@ -80,7 +80,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         resource_data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         resource_model = db_actions.crud(
@@ -90,7 +90,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         permission_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         permission_model = db_actions.crud(
@@ -134,7 +134,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_resource_permission_delete
         """
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         role_model = db_actions.crud(
@@ -144,7 +144,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         resource_data = {
-            "urn": ("%s" % uuid.uuid4())[:30],
+            "urn": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         resource_model = db_actions.crud(
@@ -154,7 +154,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         permission_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         permission_model = db_actions.crud(
@@ -200,7 +200,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         objects = []
         role_data = {
-            "label": ("%s" % uuid.uuid4())[:30],
+            "label": ("%s" % uuid.uuid1())[:30],
             "description": "role_resource_permission to create",
         }
         role_model = db_actions.crud(
@@ -211,7 +211,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         for index in range(1, random.randint(5, 20)):
             resource_data = {
-                "urn": ("%s" % uuid.uuid4())[:30],
+                "urn": ("%s" % uuid.uuid1())[:30],
                 "description": "role_resource_permission to create",
             }
             resource_model = db_actions.crud(
@@ -221,7 +221,7 @@ class TestAccessControlRead(BaseTestCase):
                 action="create"
             )
             permission_data = {
-                "name": ("%s" % uuid.uuid4())[:30],
+                "name": ("%s" % uuid.uuid1())[:30],
                 "description": "role_resource_permission to create",
             }
             permission_model = db_actions.crud(
@@ -267,7 +267,7 @@ class TestAccessControlRead(BaseTestCase):
     #    """Test case for role_resource_permission_update
     #    """
     #    data = {
-    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "name": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission to update",
     #    }
     #    model = db_actions.crud(
@@ -277,11 +277,11 @@ class TestAccessControlRead(BaseTestCase):
     #        action="create"
     #    )
     #    data = {
-    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "name": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission updated",
     #    }
     #    role_data = {
-    #        "label": ("%s" % uuid.uuid4())[:30],
+    #        "label": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission to create",
     #    }
     #    role_model = db_actions.crud(
@@ -291,7 +291,7 @@ class TestAccessControlRead(BaseTestCase):
     #        action="create"
     #    )
     #    resource_data = {
-    #        "urn": ("%s" % uuid.uuid4())[:30],
+    #        "urn": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission to create",
     #    }
     #    resource_model = db_actions.crud(
@@ -301,7 +301,7 @@ class TestAccessControlRead(BaseTestCase):
     #        action="create"
     #    )
     #    permission_data = {
-    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "name": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission to create",
     #    }
     #    permission_model = db_actions.crud(
@@ -324,7 +324,7 @@ class TestAccessControlRead(BaseTestCase):
 
     #    # Change permission on the model.
     #    permission_data = {
-    #        "name": ("%s" % uuid.uuid4())[:30],
+    #        "name": ("%s" % uuid.uuid1())[:30],
     #        "description": "role_resource_permission to create",
     #    }
     #    permission_model = db_actions.crud(

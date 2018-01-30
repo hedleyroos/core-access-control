@@ -22,7 +22,7 @@ class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
         self.domain_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
         }
         self.domain_model = db_actions.crud(
@@ -32,10 +32,10 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         self.site_data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid4().int>>97,
+            "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
         self.site_model = db_actions.crud(
@@ -49,10 +49,10 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_create
         """
         data = Site(**{
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": "%s" % (uuid.uuid4().int>>97),
+            "client_id": "%s" % (uuid.uuid1().int>>97),
             "is_active": True,
         })
         response = self.client.open(
@@ -85,10 +85,10 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_delete
         """
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid4().int>>97,
+            "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -115,10 +115,10 @@ class TestAccessControlRead(BaseTestCase):
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
-                "name": ("%s" % uuid.uuid4())[:30],
+                "name": ("%s" % uuid.uuid1())[:30],
                 "domain_id": self.domain_model.id,
                 "description": "a super cool test site",
-                "client_id": uuid.uuid4().int>>97,
+                "client_id": uuid.uuid1().int>>97,
                 "is_active": True,
             }
             objects.append(db_actions.crud(
@@ -148,10 +148,10 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_update
         """
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid4().int>>97,
+            "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -161,9 +161,9 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         data = {
-            "name": ("%s" % uuid.uuid4())[:30],
+            "name": ("%s" % uuid.uuid1())[:30],
             "description": "site updated",
-            "client_id": "%s" % (uuid.uuid4().int>>97),
+            "client_id": "%s" % (uuid.uuid1().int>>97),
             "is_active": False,
         }
         data = SiteUpdate(
