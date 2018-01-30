@@ -10,7 +10,7 @@ services:
 install:
   - pip install -r requirements.txt -r test-requirements.txt
 
-script: make test
+script: tox
 
 after_success:
   - export REPO=dockerhubowner/core-access-control
