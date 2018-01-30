@@ -1,22 +1,17 @@
 sudo: required
 cache: pip
 language: python
-
+python:
+  - "3.5"
+  - "3.6"
 services:
   - docker
-
-matrix:
-  include:
-    - python: 3.5
-      env: TOXENV=py35
-    - python: 3.6
-      env: TOXENV=py36
+  - postgres
 
 install:
-  - pip install tox
+  - pip install -r requirements.txt -r test-requirements.tx
 
-script:
-  - tox
+script: make database test
 
 after_success:
   - export REPO=dockerhubowner/core-access-control

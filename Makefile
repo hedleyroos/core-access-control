@@ -17,7 +17,7 @@ GREEN=\033[0;32m
 CYAN=\033[0;36m
 
 .SILENT: docs-build
-.PHONY: check
+.PHONY: check test
 
 help:
 	@echo "usage: make <target>"
@@ -110,10 +110,11 @@ $(PYTEST): $(VENV)
 	$(PIP) install pytest pytest-cov
 
 test: $(PYTEST)
-	$(PYTEST) --verbose --cov=access_control access_control/
+	$(PYTEST) --fulltrace --verbose --cov=access_control access_control/ swagger_server/test/
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
+	make migrate
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrations...$(CLEAR)"
