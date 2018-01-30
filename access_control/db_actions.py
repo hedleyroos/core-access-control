@@ -126,7 +126,7 @@ def list_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> typing.List[Sql
     # NOTE: order_by(SqlAlchemyModel.column, SqlAlchemyModel.column ...) is
     # equal to order_by(SqlAlchemyModel.column).order_by(
     # SqlAlchemyModel.column)...
-    for column in  kwargs["query"]["order_by"]:
+    for column in kwargs["query"]["order_by"]:
         query = query.order_by(getattr(model, column))
     return query.offset(
         kwargs["query"].get("offset", 0)
