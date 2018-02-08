@@ -17,7 +17,7 @@ schemes:
 security:
 - APIKeyHeader: []
 paths:
-  /ops/site_role_labels_aggregated/{site_id}/:
+  /ops/site_role_labels_aggregated/{site_id}:
     get:
       tags:
       - "operational"
@@ -40,7 +40,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/user_site_role_labels_aggregated/{user_id}/{site_id}/:
+  /ops/user_site_role_labels_aggregated/{user_id}/{site_id}:
     get:
       tags:
       - "operational"
@@ -69,7 +69,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/domain_roles/{domain_id}/:
+  /ops/domain_roles/{domain_id}:
     get:
       tags:
       - "operational"
@@ -91,7 +91,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/site_and_domain_roles/{site_id}/:
+  /ops/site_and_domain_roles/{site_id}:
     get:
       tags:
       - "operational"
@@ -113,7 +113,7 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/all_user_roles/{user_id}/:
+  /ops/all_user_roles/{user_id}:
     get:
       tags:
       - "operational"
@@ -139,7 +139,7 @@ paths:
         404:
           description: "User not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /domains/:
+  /domains:
     get:
       tags:
       - "access_control"
@@ -198,7 +198,7 @@ paths:
           schema:
             $ref: "#/definitions/domain"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /domains/{domain_id}/:
+  /domains/{domain_id}:
     get:
       tags:
       - "access_control"
@@ -256,7 +256,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /domainroles/:
+  /domainroles:
     get:
       tags:
       - "access_control"
@@ -391,7 +391,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /invitations/:
+  /invitations:
     get:
       tags:
       - "access_control"
@@ -549,7 +549,7 @@ paths:
           schema:
             $ref: "#/definitions/all_user_roles"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /invitationdomainroles/:
+  /invitationdomainroles:
     get:
       tags:
       - "access_control"
@@ -674,7 +674,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /invitationsiteroles/:
+  /invitationsiteroles:
     get:
       tags:
       - "access_control"
@@ -797,7 +797,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /permissions/:
+  /permissions:
     get:
       tags:
       - "access_control"
@@ -914,7 +914,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /resources/:
+  /resources:
     get:
       tags:
       - "access_control"
@@ -1036,7 +1036,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /roles/:
+  /roles:
     get:
       tags:
       - "access_control"
@@ -1153,7 +1153,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /roleresourcepermissions/:
+  /roleresourcepermissions:
     get:
       tags:
       - "access_control"
@@ -1273,7 +1273,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /sites/:
+  /sites:
     get:
       tags:
       - "access_control"
@@ -1390,7 +1390,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /siteroles/:
+  /siteroles:
     get:
       tags:
       - "access_control"
@@ -1525,7 +1525,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /userdomainroles/:
+  /userdomainroles:
     get:
       tags:
       - "access_control"
@@ -1648,7 +1648,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /usersiteroles/:
+  /usersiteroles:
     get:
       tags:
       - "access_control"

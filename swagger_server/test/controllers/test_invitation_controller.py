@@ -20,7 +20,7 @@ class InvitationTestCase(BaseTestCase):
         #     "expires_at": datetime.now()
         # })
         # response = self.client.open(
-        #     '/api/v1/invitations/',
+        #     '/api/v1/invitations',
         #     method='POST',
         #     data=json.dumps(data),
         #     content_type='application/json')

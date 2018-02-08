@@ -2,20 +2,18 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -56,7 +54,7 @@ class TestAccessControlRead(BaseTestCase):
             "is_active": True,
         })
         response = self.client.open(
-            '/api/v1/sites/',
+            '/api/v1/sites',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -71,7 +69,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_read
         """
         response = self.client.open(
-            '/api/v1/sites/{site_id}/'.format(site_id=self.site_model.id),
+            '/api/v1/sites/{site_id}'.format(site_id=self.site_model.id),
             method='GET')
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], self.site_model.name)
@@ -98,7 +96,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/sites/{site_id}/'.format(site_id=model.id),
+            '/api/v1/sites/{site_id}'.format(site_id=model.id),
             method='DELETE')
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
@@ -130,7 +128,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [#('offset', 0),
                         ('site_ids', ",".join(map(str, [site.id for site in objects])))]
         response = self.client.open(
-            '/api/v1/sites/',
+            '/api/v1/sites',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -138,7 +136,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [('limit', 2),
                         ('site_ids', ",".join(map(str, [site.id for site in objects])))]
         response = self.client.open(
-            '/api/v1/sites/',
+            '/api/v1/sites',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -170,7 +168,7 @@ class TestAccessControlRead(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/sites/{site_id}/'.format(site_id=model.id),
+            '/api/v1/sites/{site_id}'.format(site_id=model.id),
             method='PUT',
             data=json.dumps(data),
             content_type='application/json')

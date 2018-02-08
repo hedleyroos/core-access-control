@@ -2,19 +2,17 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -41,7 +39,7 @@ class TestAccessControlRead(BaseTestCase):
             "requires_2fa": True,
         })
         response = self.client.open(
-            '/api/v1/roles/',
+            '/api/v1/roles',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -53,7 +51,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_read
         """
         response = self.client.open(
-            '/api/v1/roles/{role_id}/'.format(role_id=self.role_model.id),
+            '/api/v1/roles/{role_id}'.format(role_id=self.role_model.id),
             method='GET')
         r_data = json.loads(response.data)
         self.assertEqual(r_data["label"], self.role_model.label)
@@ -75,7 +73,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/roles/{role_id}/'.format(role_id=model.id),
+            '/api/v1/roles/{role_id}'.format(role_id=model.id),
             method='DELETE')
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
@@ -105,7 +103,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [#('offset', 0),
                         ('role_ids', ",".join(map(str, [role.id for role in objects])))]
         response = self.client.open(
-            '/api/v1/roles/',
+            '/api/v1/roles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -113,7 +111,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [('limit', 2),
                         ('role_ids', ",".join(map(str, [role.id for role in objects])))]
         response = self.client.open(
-            '/api/v1/roles/',
+            '/api/v1/roles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -140,7 +138,7 @@ class TestAccessControlRead(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/roles/{role_id}/'.format(role_id=model.id),
+            '/api/v1/roles/{role_id}'.format(role_id=model.id),
             method='PUT',
             data=json.dumps(data),
             content_type='application/json')
