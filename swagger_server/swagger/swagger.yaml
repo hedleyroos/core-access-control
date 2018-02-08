@@ -318,7 +318,7 @@ paths:
           schema:
             $ref: "#/definitions/domain_role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /domainroles/{domain_id}/{role_id}/:
+  /domainroles/{domain_id}/{role_id}:
     get:
       tags:
       - "access_control"
@@ -458,7 +458,7 @@ paths:
           schema:
             $ref: "#/definitions/invitation"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /invitations/{invitation_id}/:
+  /invitations/{invitation_id}:
     get:
       tags:
       - "access_control"
@@ -519,7 +519,7 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /invitations/{invitation_id}/redeem/{user_id}/:
+  /invitations/{invitation_id}/redeem/{user_id}:
     get:
       tags:
       - "access_control"
@@ -856,7 +856,7 @@ paths:
           schema:
             $ref: "#/definitions/permission"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /permissions/{permission_id}/:
+  /permissions/{permission_id}:
     get:
       tags:
       - "access_control"
@@ -978,7 +978,7 @@ paths:
           schema:
             $ref: "#/definitions/resource"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /resources/{resource_id}/:
+  /resources/{resource_id}:
     get:
       tags:
       - "access_control"
@@ -1095,7 +1095,7 @@ paths:
           schema:
             $ref: "#/definitions/role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /roles/{role_id}/:
+  /roles/{role_id}:
     get:
       tags:
       - "access_control"
@@ -1220,7 +1220,7 @@ paths:
           schema:
             $ref: "#/definitions/role_resource_permission"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /roleresourcepermissions/{role_id}/{resource_id}/{permission_id}/:
+  /roleresourcepermissions/{role_id}/{resource_id}/{permission_id}:
     get:
       tags:
       - "access_control"
@@ -1332,7 +1332,7 @@ paths:
           schema:
             $ref: "#/definitions/site"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /sites/{site_id}/:
+  /sites/{site_id}:
     get:
       tags:
       - "access_control"
@@ -1452,7 +1452,7 @@ paths:
           schema:
             $ref: "#/definitions/site_role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /siteroles/{site_id}/{role_id}/:
+  /siteroles/{site_id}/{role_id}:
     get:
       tags:
       - "access_control"
@@ -1593,7 +1593,7 @@ paths:
           schema:
             $ref: "#/definitions/user_domain_role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /userdomainroles/{user_id}/{domain_id}/{role_id}/:
+  /userdomainroles/{user_id}/{domain_id}/{role_id}:
     get:
       tags:
       - "access_control"
@@ -1716,7 +1716,7 @@ paths:
           schema:
             $ref: "#/definitions/user_site_role"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
-  /usersiteroles/{user_id}/{site_id}/{role_id}/:
+  /usersiteroles/{user_id}/{site_id}/{role_id}:
     get:
       tags:
       - "access_control"

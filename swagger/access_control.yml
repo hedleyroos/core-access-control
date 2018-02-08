@@ -1079,7 +1079,7 @@ paths:
       tags:
         - access_control
 
-  '/domainroles/{domain_id}/{role_id}/':
+  '/domainroles/{domain_id}/{role_id}':
     parameters:
       - $ref: '#/parameters/domain_id'
       - $ref: '#/parameters/role_id'
@@ -1170,7 +1170,7 @@ paths:
       tags:
         - access_control
 
-  '/invitations/{invitation_id}/':
+  '/invitations/{invitation_id}':
     parameters:
       - $ref: '#/parameters/invitation_id'
     delete:
@@ -1210,7 +1210,7 @@ paths:
       tags:
         - access_control
 
-  '/invitations/{invitation_id}/redeem/{user_id}/':
+  '/invitations/{invitation_id}/redeem/{user_id}':
     parameters:
       - $ref: '#/parameters/invitation_id'
       - $ref: '#/parameters/user_id'
@@ -1402,7 +1402,7 @@ paths:
       tags:
         - access_control
 
-  '/permissions/{permission_id}/':
+  '/permissions/{permission_id}':
     parameters:
       - $ref: '#/parameters/permission_id'
     delete:
@@ -1490,7 +1490,7 @@ paths:
       tags:
         - access_control
 
-  '/resources/{resource_id}/':
+  '/resources/{resource_id}':
     parameters:
       - $ref: '#/parameters/resource_id'
     delete:
@@ -1573,7 +1573,7 @@ paths:
       tags:
         - access_control
 
-  '/roles/{role_id}/':
+  '/roles/{role_id}':
     parameters:
       - $ref: '#/parameters/role_id'
     delete:
@@ -1660,7 +1660,7 @@ paths:
       tags:
         - access_control
 
-  '/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}/':
+  '/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}':
     parameters:
       - $ref: '#/parameters/role_id'
       - $ref: '#/parameters/resource_id'
@@ -1727,7 +1727,7 @@ paths:
       tags:
         - access_control
 
-  '/sites/{site_id}/':
+  '/sites/{site_id}':
     parameters:
       - $ref: '#/parameters/site_id'
     delete:
@@ -1805,7 +1805,7 @@ paths:
       tags:
         - access_control
 
-  '/siteroles/{site_id}/{role_id}/':
+  '/siteroles/{site_id}/{role_id}':
     parameters:
       - $ref: '#/parameters/site_id'
       - $ref: '#/parameters/role_id'
@@ -1885,7 +1885,7 @@ paths:
       tags:
         - access_control
 
-  '/userdomainroles/{user_id}/{domain_id}/{role_id}/':
+  '/userdomainroles/{user_id}/{domain_id}/{role_id}':
     parameters:
       - $ref: '#/parameters/user_id'
       - $ref: '#/parameters/domain_id'
@@ -1948,7 +1948,7 @@ paths:
       tags:
         - access_control
 
-  '/usersiteroles/{user_id}/{site_id}/{role_id}/':
+  '/usersiteroles/{user_id}/{site_id}/{role_id}':
     parameters:
       - $ref: '#/parameters/user_id'
       - $ref: '#/parameters/site_id'
