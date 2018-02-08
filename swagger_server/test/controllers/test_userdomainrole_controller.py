@@ -5,7 +5,6 @@ import werkzeug
 from access_control import db_actions
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
-from swagger_server.models import InvitationCreate
 from swagger_server.models import Role
 from swagger_server.models import UserDomainRole
 from swagger_server.models import UserDomainRoleCreate
@@ -55,7 +54,7 @@ class UserDomainRoleTestCase(BaseTestCase):
             "user_id": "%s" % uuid.uuid1()
         })
         response = self.client.open(
-            '/api/v1/userdomainroles/',
+            '/api/v1/userdomainroles',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -78,7 +77,7 @@ class UserDomainRoleTestCase(BaseTestCase):
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             response = self.client.open(
-                '/api/v1/userdomainroles/{user_id}/{domain_id}/{role_id}/'.format(
+                '/api/v1/userdomainroles/{user_id}/{domain_id}/{role_id}'.format(
                     user_id=user_domain_role.user_id,
                     domain_id=user_domain_role.domain_id,
                     role_id=user_domain_role.role_id,
@@ -109,7 +108,7 @@ class UserDomainRoleTestCase(BaseTestCase):
         )
 
         response = self.client.open(
-            '/api/v1/userdomainroles/{user_id}/{domain_id}/{role_id}/'.format(
+            '/api/v1/userdomainroles/{user_id}/{domain_id}/{role_id}'.format(
                 user_id=user_domain_role.user_id,
                 domain_id=user_domain_role.domain_id,
                 role_id=user_domain_role.role_id,
@@ -139,7 +138,7 @@ class UserDomainRoleTestCase(BaseTestCase):
             ("role_id", self.role_model.id)
         ]
         response = self.client.open(
-            '/api/v1/userdomainroles/',
+            '/api/v1/userdomainroles',
             method='GET',
             query_string=query_string)
 

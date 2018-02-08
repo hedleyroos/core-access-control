@@ -2,19 +2,17 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -39,7 +37,7 @@ class TestAccessControlRead(BaseTestCase):
             "description": "permission to create",
         })
         response = self.client.open(
-            '/api/v1/permissions/',
+            '/api/v1/permissions',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -51,7 +49,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for permission_read
         """
         response = self.client.open(
-            '/api/v1/permissions/{permission_id}/'.format(permission_id=self.permission_model.id),
+            '/api/v1/permissions/{permission_id}'.format(permission_id=self.permission_model.id),
             method='GET')
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], self.permission_model.name)
@@ -72,7 +70,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/permissions/{permission_id}/'.format(permission_id=model.id),
+            '/api/v1/permissions/{permission_id}'.format(permission_id=model.id),
             method='DELETE')
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
@@ -101,7 +99,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [#('offset', 0),
                         ('permission_ids', ",".join(map(str, [permission.id for permission in objects])))]
         response = self.client.open(
-            '/api/v1/permissions/',
+            '/api/v1/permissions',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -109,7 +107,7 @@ class TestAccessControlRead(BaseTestCase):
         query_string = [('limit', 2),
                         ('permission_ids', ",".join(map(str, [permission.id for permission in objects])))]
         response = self.client.open(
-            '/api/v1/permissions/',
+            '/api/v1/permissions',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -136,7 +134,7 @@ class TestAccessControlRead(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/permissions/{permission_id}/'.format(permission_id=model.id),
+            '/api/v1/permissions/{permission_id}'.format(permission_id=model.id),
             method='PUT',
             data=json.dumps(data),
             content_type='application/json')

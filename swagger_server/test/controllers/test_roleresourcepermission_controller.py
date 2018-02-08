@@ -2,13 +2,11 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
 from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
@@ -17,7 +15,7 @@ from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -106,7 +104,7 @@ class TestAccessControlRead(BaseTestCase):
             "permission_id": permission_model.id,
         })
         response = self.client.open(
-            '/api/v1/roleresourcepermissions/',
+            '/api/v1/roleresourcepermissions',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -119,7 +117,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for role_resource_permission_read
         """
         response = self.client.open(
-            '/api/v1/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}/'.format(
+            '/api/v1/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}'.format(
                 role_id=self.role_resource_permission_model.role_id,
                 resource_id=self.role_resource_permission_model.resource_id,
                 permission_id=self.role_resource_permission_model.permission_id,
@@ -176,7 +174,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}/'.format(
+            '/api/v1/roleresourcepermissions/{role_id}/{resource_id}/{permission_id}'.format(
                 role_id=model.role_id,
                 resource_id=model.resource_id,
                 permission_id=model.permission_id,
@@ -247,7 +245,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/roleresourcepermissions/',
+            '/api/v1/roleresourcepermissions',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -257,7 +255,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/roleresourcepermissions/',
+            '/api/v1/roleresourcepermissions',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)

@@ -2,13 +2,11 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.site_role_update import SiteRoleUpdate  # noqa: E501
@@ -16,10 +14,9 @@ from swagger_server.models.site_role_create import SiteRoleCreate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
-from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -113,7 +110,7 @@ class TestAccessControlRead(BaseTestCase):
             "grant_implicitly": True,
         })
         response = self.client.open(
-            '/api/v1/siteroles/',
+            '/api/v1/siteroles',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -125,7 +122,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for site_role_read
         """
         response = self.client.open(
-            '/api/v1/siteroles/{site_id}/{role_id}/'.format(
+            '/api/v1/siteroles/{site_id}/{role_id}'.format(
                 site_id=self.site_role_model.site_id,
                 role_id=self.site_role_model.role_id,
             ),
@@ -182,7 +179,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/siteroles/{site_id}/{role_id}/'.format(
+            '/api/v1/siteroles/{site_id}/{role_id}'.format(
                 site_id=model.site_id,
                 role_id=model.role_id,
             ),
@@ -254,7 +251,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/siteroles/',
+            '/api/v1/siteroles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -264,7 +261,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/siteroles/',
+            '/api/v1/siteroles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -326,7 +323,7 @@ class TestAccessControlRead(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/siteroles/{site_id}/{role_id}/'.format(
+            '/api/v1/siteroles/{site_id}/{role_id}'.format(
                 site_id=site_role_model.site_id,
                 role_id=site_role_model.role_id,
             ),

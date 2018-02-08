@@ -2,22 +2,19 @@
 
 from __future__ import absolute_import
 
-import datetime
 import random
 import uuid
 import werkzeug
 
 from flask import json
-from six import BytesIO
 
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
 from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
-from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.test import BaseTestCase
 
-from access_control import models, db_actions
+from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -85,7 +82,7 @@ class TestAccessControlRead(BaseTestCase):
             "grant_implicitly": True,
         })
         response = self.client.open(
-            '/api/v1/domainroles/',
+            '/api/v1/domainroles',
             method='POST',
             data=json.dumps(data),
             content_type='application/json')
@@ -97,7 +94,7 @@ class TestAccessControlRead(BaseTestCase):
         """Test case for domain_role_read
         """
         response = self.client.open(
-            '/api/v1/domainroles/{domain_id}/{role_id}/'.format(
+            '/api/v1/domainroles/{domain_id}/{role_id}'.format(
                 domain_id=self.domain_role_model.domain_id,
                 role_id=self.domain_role_model.role_id,
             ),
@@ -141,7 +138,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
         response = self.client.open(
-            '/api/v1/domainroles/{domain_id}/{role_id}/'.format(
+            '/api/v1/domainroles/{domain_id}/{role_id}'.format(
                 domain_id=model.domain_id,
                 role_id=model.role_id,
             ),
@@ -200,7 +197,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/domainroles/',
+            '/api/v1/domainroles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -210,7 +207,7 @@ class TestAccessControlRead(BaseTestCase):
                         ('role_id', role_model.id),
         ]
         response = self.client.open(
-            '/api/v1/domainroles/',
+            '/api/v1/domainroles',
             method='GET',
             query_string=query_string)
         r_data = json.loads(response.data)
@@ -269,7 +266,7 @@ class TestAccessControlRead(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/domainroles/{domain_id}/{role_id}/'.format(
+            '/api/v1/domainroles/{domain_id}/{role_id}'.format(
                 domain_id=domain_role_model.domain_id,
                 role_id=domain_role_model.role_id,
             ),
