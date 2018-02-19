@@ -78,7 +78,7 @@ prism:
 	chmod +x prism
 
 mock-access-control-api: prism
-	./prism run --mockDynamic --list -s swagger/access_control.yml -p 8010
+	./prism run --mockDynamic --list -s swagger/access_control.yml -p 8081
 
 validate-swagger: prism
 	@./prism validate -s swagger/access_control.yml && echo "The Swagger spec contains no errors"
