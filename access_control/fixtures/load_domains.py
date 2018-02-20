@@ -10,7 +10,8 @@ DOMAIN_HIERARCHY = {
             "subdomains": {
                 "A Markets": {
                     "description": "A markets",
-                    "roles": {},
+                    "roles": {
+                    },
                     "subdomains": {
                         "Philippines": {
                             "description": "Philippines",
@@ -79,19 +80,19 @@ DOMAIN_HIERARCHY = {
             "description": "TEGA",
             "roles": {},
             "subdomains": {
-                "Nigeria": {
+                "Nigeria_tega": {
                     "description": "Nigeria",
                     "roles": {},
                 },
-                "Malawi": {
+                "Malawi_tega": {
                     "description": "Malawi",
                     "roles": {},
                 },
-                "Rwanda": {
+                "Rwanda_tega": {
                     "description": "Rwanda",
                     "roles": {},
                 },
-                "India": {
+                "India_tega": {
                     "description": "India",
                     "roles": {},
                 },
@@ -136,7 +137,7 @@ DOMAIN_HIERARCHY = {
             "description": "Brand TBC",
             "roles": {},
             "subdomains": {
-                "India": {
+                "India_india": {
                     "description": "India",
                     "roles": {},
                     "subdomains": {}
