@@ -971,6 +971,9 @@ paths:
           items:
             type: integer
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
@@ -1140,6 +1143,9 @@ paths:
             type: string
             format: uuid
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
@@ -1372,6 +1378,9 @@ paths:
           items:
             type: integer
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
@@ -1460,6 +1469,9 @@ paths:
           items:
             type: integer
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
@@ -1543,6 +1555,9 @@ paths:
           items:
             type: integer
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
@@ -1697,6 +1712,9 @@ paths:
           items:
             type: integer
           required: false
+          minItems: 0
+          collectionFormat: multi
+          uniqueItems: true
       produces:
         - application/json
       responses:
