@@ -193,9 +193,9 @@ def get_or_create(model, **kwargs):
     """
     instance = db.session.query(model).filter_by(**kwargs).first()
     if instance:
-        return instance
+        return instance, False
     else:
         instance = model(**kwargs)
         db.session.add(instance)
         db.session.commit()
-        return instance
+        return instance, True
