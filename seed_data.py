@@ -1,5 +1,3 @@
-# TODO: Rename file to something more appropriate
-import sys
 from flask import Flask
 
 from access_control.db_actions import get_or_create
