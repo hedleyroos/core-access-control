@@ -27,6 +27,7 @@ help:
 	@echo "    $(CYAN)validate-swagger$(CLEAR): Check Swagger spec for errors."
 	@echo "    $(CYAN)access-control-client$(CLEAR): Generate a client for the Access Control API."
 	@echo "    $(CYAN)access-control-api$(CLEAR): Generate a Flask server for the Access Control API."
+	@echo "    $(CYAN)load-seed-data$(CLEAR): Generate seed data for Domains, Roles, Permissions, and Resources."
 
 $(VENV):
 	@echo "$(CYAN)Initialise base ve...$(CLEAR)"
@@ -115,3 +116,7 @@ makemigrations: $(VENV)
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
 	FLASK_APP=access_control/models.py $(FLASK) db upgrade -d access_control/migrations
+
+load-seed-data:
+	@echo "$(CYAN)Loading seed data to DB...$(CLEAR)"
+	$(PYTHON) seed_data.py

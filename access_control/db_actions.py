@@ -186,3 +186,16 @@ def transform(
         }
         data = api_model.from_dict(transformer.apply(data))
     return data
+
+
+def get_or_create(model, **kwargs):
+    """Django-like helper method to get or create objects.
+    """
+    instance = db.session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance, False
+    else:
+        instance = model(**kwargs)
+        db.session.add(instance)
+        db.session.commit()
+        return instance, True
