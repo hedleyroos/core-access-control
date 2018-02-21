@@ -45,7 +45,7 @@ class SeedDataLoader:
 
     def load_domain(self, detail: dict, parent: Domain):
         for item in detail:
-            print("Loading domain %s as child of %s" % (
+            print("Domain %s as child of %s loaded..." % (
                 item.get("name"),
                 parent.name if parent else None
             ))
