@@ -6,8 +6,7 @@ python:
 
 env:
   global:
-    IMAGE_NAME=girleffect/core-access-control
-    DOCKER_USER=geautomation
+    DOCKER_USERNAME=geautomation
     secure: "kG19tkU4gN4i2l0rgEs5+Q8eFgptbEnybpaGrMfXF8FGcrDSiNPvmGQ2T9/YiBnsWftgqUsiW4VeXfb1EDkq4FLWadCgX/hKbKxtzUI9dY1aJE6J53yfxaD5/H3eOWoBwRDelgSjPayAoB3KHWDVGN80jCysB4olivZgDS6JsOCxhhY0MSfVxYUV8DjbwJ8wLlyHiX2YiYlo4Na7nJKtrNvs8RHxtoatC/TsUyj13KAp7GjdGSL2Ev/GYecECqKwI+6iISoi7Y7l9r8sTO4K6PCudIhxdgpdnqwz1sPJ88q+GNUSmqeohPyR7YwQCWF0JAUHWdn18acmrr+rUgKFvW34AuftjammB1l6KxHa32UpCJ9qXBoDXnREjxPDYvkYi/RSVGtfabKaMVz/pOgpYtstO20glVfKFCrmO+dUyJ2Hoh5ekjvr31O9jM8/1EWal2IHFQmomy8XSsZ/9Tt2tMO3H0u/SVs1OALPJFokt4d9WsKD6oOb9KgQMQuOhwgpKeHafP0+ZbXdqZepaW7zscIvhXk0j8gUclhVsweLf0itxl4C70tYtaB45quuw8Aha6cKspHkkqpFFLogtSasElucmbStkR1Xq5G7PuVf4cIDFTxSNpGUxa4kX7qSfPZK0l2QbZG/IeJQurkdhYczJi3G/ZeTn6sCGylb64GpCdU="
 
 services:
@@ -22,14 +21,12 @@ script: tox
 
 after_success:
   - coveralls
+  - export REPO=girleffect/core-access-control
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
-  - docker build -t "$IMAGE_NAME:$TAG" .
-
-before_deploy:
-  - docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
+  - docker build -t $REPO:$TAG .
 
 deploy:
   provider: script
-  script: docker push "${IMAGE_NAME}:${TAG}"
+  script: bash ./docker_push.sh
   on:
     branch: $TRAVIS_BRANCH
