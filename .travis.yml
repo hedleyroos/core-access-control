@@ -28,3 +28,5 @@ after_success:
 deploy:
   provider: scrip
   script: bash docker_push
+  on:
+    branch: $TRAVIS_BRANCH
