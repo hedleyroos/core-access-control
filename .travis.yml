@@ -18,3 +18,9 @@ after_success:
   - export REPO=dockerhubowner/core-access-control
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
   - docker build -t $REPO:$TAG .
+
+deploy:
+  provider: scrip
+  script: bash docker_push
+  on:
+    branch: develop
