@@ -2,12 +2,12 @@ sudo: required
 cache: pip
 language: python
 python:
-  - "3.6"
+  - '3.6'
 
 env:
   global:
-    secure: "P+b5lplZJd8835q4DPQYXCpeXwt7+YznBdFoUqu0vwZDRXfX1e5Kbm9dcyxcXfUmeTcXnQVx1JKRh1jorV0bG4ZaFc2uo6WqyQ1m9izzopjAuOwsnhj3Q2Xnuc8PBninEU5n1ood0VPuhtz/jP3cy9FrGGqoa/DLXT8NIURvbPoG/jqhq2LrHlBdW0HtygZjhqULXfqzm+bzqKHDVMalhs2l4HsRkjojO7BpgbBS6c861fWIji2o068yP7YSoWxJyXUp2InDvm+oCU+5pMl3Hsb6/6vayPzH+OtiaFDog6RPLBEhmlgaecF1Y+q4N1t5vpk6ATlzGLscX2qb0xX4i0PDT0skqw1hS87FGx/jyIgqPVx30fAfpCyaTO8YkVXy8yteDmYGm+uEA7RXWWLTXaL/IcXOe6+1Pwjl4BZ9s9nzBtkIoanBaTmB3xeaoHyNlRY8yJP3QfUmYSqndX86Qr2ASIK96YtL7qW0lrzuc1pxoEFtYDud5/cP3JM/SlIRinK2H+2REnmBP6h55M5sMiBHD5t7L0boej9w5WNZmJiXkMoAt8eYYf+xYDrngMpkPej802BFky0jVKS84QzPKGp/t8tfDr7AGcehLPjeFbpivldRFadD5GXdmswB/itg0Eyjrj164d7mt0oudCGQwk+DejctSI5Gs/TTPKjAtxo="
-    secure: "BEFq8ivd1R+a6egmXRqSj0mc87e5jnbk0Qhhj9XmCwKCCKThozMURscw6X5D/2bM3lBs1EN6i0Hd3DluCCjps6J2wk4D3OZp2ltqWBD7cD5Ta7k5ySOBYY8D2IqMfyHJ/kcbyQbSbYTNDbGYY2XpUv3KQ3NbNha1LYVzyoywLp9au9b+VI/s/twWaApO1/3ls53stAg+qmjGR5wjcAl9hs9vwEGfMIPjDMRJuEW4S+pCIVC/7c/X3v8flDc0YBXhKRLeSdnbbjjtk6nzFznZ4jpdwuFWInpZcT9cziMUseNKNpl+Qm4BVEVqtCOqf+g6gYNLaSZcUY+8fXyr77VEUqoSxp05BTnzVt0L4lO3n72wtvTCWY18vZWsc0Yx525/f7ztaRSwhssKGFEiHboTnZ/UdssvahmecllZnyhmjXh0qdf9CftqPi6LPFPMdbGoEsE0w+2bc7ZPLJ2M+VQTVp2CAoyS0su2OFOHufG2F3szohfcnuu2EOffoyxMthHrXblMEZMZ/nYUqwQnEH4ofhCO/jae6cW712eyAfEao3YbqjVolwXSZJ8JHFzff9R1zsqhNdvUlyeFLpg+En5IrB6nxhUoSZYrL61BNqEdFb/WsNCu539SJ1rupjTL2Kvi6VmBb+9GyYF4IU2dvQrZMmHSYi0PQBHGnCcBzdAXT98="
+  - secure: FU2Cf4pO7ypcbNQd5sTMIs+juHpWVQCjPC5eWmyi+n1wPklB7aYABQkccIog553T1Sn23/A6A1Lmmp4KKmlUKxyJY7vNJXHIcxZYWC/+4PIjrnx0gg3s4NMcInOJz6IsJb4nTmJVHezfByTKTP9S5uyfj5bgHo9j+2wgNYQ7ESTyjRC1NnPRbQUSLyhqXya4zC+0VqpJD2Xl7jLPqSC08e7k2GplraSCUcUs3jH11kzhC0sFDqKcjcmAwEDYyrqCeSriH4g7ZWbPBhUpynnNdDhsgbyU3ndkr+7Ky1WUHLIL0sWl4Jdjr97zWr7UaQoJE/LWhhchA39/U6xE8QQR2R87GrHjvVKXxwMib/Xezf2V+COSpLKZm76wWSQlbGqH/WP9fZWOspICLHkZwZhleztGaZfr/vaF6eznabL6GToQhxn6mJEKvH9Eas41j/TYKdBkww3OKkuo2wpvbI2QLxBJ8FLQFcDdNeX/O7hDRsafoddc4XIFvTxT72GHW6f/Y9yF72lLxdk9mAVaqSEAA97yLha165fARdm2t5F1BB7heMl0iENiHxMUr+n2RTZczP55XKF9s3EanxxPSWYz7w4iGxe6MdpWhinNsSJrq5SoC3AGIdKCyG2nZrSSPpZL+mKVThaozY2QO+Lo2e3mzU1fMLLvlAFnzVNP888o5OI=
+  - secure: eL/dsTucyv5LuxT0SCMsZ8THjJqkGJ9DQkVT4cer1V4R5L/Rt+2DvTlDRfEImCvYgwfAlQz2NjRCVME+U1pCjvdOcoI1Hv5r3XD4g7ADl9uDAmjkFpNz8J5fzNdnZecJbeWQuJYqa+zeYRZUo5ghCnDO1+yMb1D/+GMJG66zW6ccrSS/DdvdkIb9K7+Iu9LcXXKtr4wV78j3lQfCqivm33bWam++nc6YbECywes1a43FvIUG2LlYd2aTaAq5YmZ1gyOQohLfB5okWJ9p9epR99hK5dfn5eJWVz4I7RstynvZwrXHbhuU53ofJ7zRa7IYm1WlnFzPZ42auw7XqdKB4mD5w/iZ5/4Fy0zlAscKfofIOyY9FT8BZ7tQu+jpPvndB04bTDSsGEGjn2guTngeMFYD+Fe11VUi9m0DrBn9Lgnx3H5AVdlOOrQ8tnA3SUh3IOijlfllnMwfW9OYv2QK/zCsYjbaZV41erxfdBAN4LFirG15WMVZ7i2KkUEi95Q5EMeiCiBFk2sSgwaYOSbTQlH8e86EyToC5mFljq3IiGuPSAlCa2iqHXmClQkRICsnB+TOxm9jwsHLuSMOfjflze5HRGq32buhv5dlfsXHwkR1jM9WYjPm6241Xo58DCNLpaQbuGCrQ6tacZB7idkFeCEThTvdDRPDiNXBzUacvUY=
 
 services:
   - docker
@@ -23,10 +23,10 @@ deploy:
   provider: script
   script: bash ./docker_push.sh
   on:
-    branch: $TRAVIS_BRANCH
+    branch: "$TRAVIS_BRANCH"
 
 after_success:
   - coveralls
   - export REPO=girleffect/core-access-control
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN ; fi`
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN; fi`
   - docker build -t $REPO:$TAG .
