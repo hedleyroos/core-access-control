@@ -19,14 +19,20 @@ install:
 
 script: tox
 
-deploy:
-  provider: script
-  script: bash ./docker_push.sh
-  on:
-    branch: "$TRAVIS_BRANCH"
-
 after_success:
   - coveralls
-  - export REPO=girleffect/core-access-control
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH_CLEAN; fi`
-  - docker build -t $REPO:$TAG .
+
+deploy:
+  - provider: script
+    script: bash ./docker_push.sh
+    on:
+      branch: master
+  - provider: script
+    script: bash ./docker_push.sh
+    on:
+      branch: develop
+  - provider: script
+    script: bash ./docker_push.sh
+    on:
+      branch: feature/GE-849
+

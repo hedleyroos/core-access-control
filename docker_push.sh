@@ -1,7 +1,9 @@
 #!/bin/bash
 
-echo ${DOCKER_USERNAME}
-echo ${DOCKER_PASSWORD}
+REPO=girleffect/core-access-control
+# Map "master" branch to "latest" tag. "develop" branch will have the "develop" tag.
+TAG=${TRAVIS_BRANCH/master/latest}
 
+docker build -t ${REPO}:${TAG} .
 docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-docker push girleffect/core-access-control
+docker push ${REPO}
