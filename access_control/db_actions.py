@@ -1,8 +1,6 @@
 import typing
 
-import werkzeug
 import sqlalchemy
-import connexion
 
 from . import mappings
 from . import models
