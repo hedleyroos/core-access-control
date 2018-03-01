@@ -41,21 +41,13 @@ def crud(
     :return: List[Swagger API model instance]
     :return: None, only delete can return this.
     """
-    try:
-        return transform(
-            globals()["%s_entry" % action](
-                model=model,
-                **{"data": data, "query": query}
-            ),
-            api_model=api_model
-        )
-    except werkzeug.exceptions.NotFound:
-        raise connexion.exceptions.ProblemException(
-            status=404,
-            title="Entry not found",
-            detail="No entry matching query: %s, found." % query,
-            type="NotFound"
-        )
+    return transform(
+        globals()["%s_entry" % action](
+            model=model,
+            **{"data": data, "query": query}
+        ),
+        api_model=api_model
+    )
 
 
 def create_entry(model: typing.Type[SqlAlchemyModel], **kwargs) -> SqlAlchemyModel:
