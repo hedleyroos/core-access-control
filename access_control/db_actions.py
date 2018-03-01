@@ -1,4 +1,3 @@
-import logging
 import typing
 
 import werkzeug
@@ -12,7 +11,6 @@ from .models import DB as db
 
 ApiModel = typing.TypeVar("ApiModel")
 SqlAlchemyModel = typing.TypeVar("SqlAlchemyModel")
-logger = logging.getLogger(__name__)
 
 
 def crud(
@@ -50,25 +48,6 @@ def crud(
                 **{"data": data, "query": query}
             ),
             api_model=api_model
-        )
-    except sqlalchemy.exc.IntegrityError as e:
-        # Immediately rollback the session, to open it up for reuse.
-        logger.error(e)
-        db.session.rollback()
-        raise connexion.exceptions.ProblemException(
-            title="Duplicate entry",
-            detail="An object with this data already exists: %s" % data,
-            type="IntegrityError"
-        )
-    except sqlalchemy.exc.InvalidRequestError as e:
-        # Roll back in the event something else left the session in an unusable
-        # state.
-        logger.error(e)
-        db.session.rollback()
-        raise connexion.exceptions.ProblemException(
-            title="DB request error",
-            detail="There was a problem with a request to the database, please try again",
-            type="InvalidRequestError"
         )
     except werkzeug.exceptions.NotFound:
         raise connexion.exceptions.ProblemException(
