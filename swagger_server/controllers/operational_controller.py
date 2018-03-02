@@ -61,9 +61,12 @@ def get_all_user_roles(user_id):  # noqa: E501
     """
     )
     result = db.session.get_bind().execute(sql, **{"user_id": user_id})
+    # {'roles_map': None, 'user_id': None}
+    items = []
     for row in result:
-        print (row)
-    return 'do some magic!'
+        # (82, 73, [None, None])
+        items.append(AllUserRoles(**{"roles_map": row[2], "user_id": user_id}))
+    return items
 
 
 def get_domain_roles(domain_id):  # noqa: E501
