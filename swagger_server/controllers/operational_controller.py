@@ -23,9 +23,6 @@ def get_all_user_roles(user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    if connexion.request.is_json:
-        user_id = AllUserRoles.from_dict(connexion.request.get_json())
-
     sql = text(
     """
     WITH RECURSIVE _domain_tree AS (
@@ -40,11 +37,11 @@ def get_all_user_roles(user_id):  # noqa: E501
         WHERE domain.parent_id = _domain_tree.id
     ),
     _roles AS (
-      SELECT domain.id, domain.parent_id,
+        SELECT domain.id, domain.parent_id,
              -- Domain roles are distinct per definition
-             array_agg(domain_role.role_id) AS implicit_roles,
+             array_agg(domainrole.role_id) AS implicit_roles,
              -- User domain roles are distinct per definition
-             array_agg(user_domain_role.role_id) AS explicit_roles
+             array_agg(userdomainrole.role_id) AS explicit_roles
         FROM _domain_tree AS domain
         LEFT OUTER JOIN domain_role AS domainrole
              ON (domain.id = domainrole.domain_id AND
@@ -120,9 +117,6 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
 
     :rtype: UserSiteRoleLabelsAggregated
     """
-    if connexion.request.is_json:
-        user_id = UserSiteRoleLabelsAggregated.from_dict(connexion.request.get_json())  # noqa: E501
-
     sql = text(
     """
     WITH _roles AS (
@@ -131,11 +125,11 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
               array_agg(siterole.role_id) AS implicit_roles,
              -- User site roles are distinct per definition
              array_agg(usersiterole.role_id) AS explicit_roles
-        FROM access_control_site AS site
-        LEFT OUTER JOIN access_control_siterole AS siterole
+        FROM site AS site
+        LEFT OUTER JOIN site_role AS siterole
           ON (site.id = siterole.site_id AND
               siterole.grant_implicitly)
-        LEFT OUTER JOIN access_control_usersiterole AS usersiterole
+        LEFT OUTER JOIN user_site_role AS usersiterole
           ON (site.id = usersiterole.site_id AND
               usersiterole.user_id = :user_id)
        GROUP BY site.id, site.domain_id
