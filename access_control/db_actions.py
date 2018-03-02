@@ -1,7 +1,5 @@
 import typing
 
-import sqlalchemy
-
 from . import mappings
 from . import models
 from . import settings
