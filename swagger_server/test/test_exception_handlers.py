@@ -37,7 +37,7 @@ class TestExceptions(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json')
         r_data = json.loads(response.data)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 500)
         self.assertEqual(
             r_data["error"],
             "(psycopg2.IntegrityError) duplicate key value violates unique " \
