@@ -1,6 +1,10 @@
 import connexion
 import six
 
+from access_control.models import DB as db
+
+from sqlalchemy import text
+
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
@@ -21,6 +25,47 @@ def get_all_user_roles(user_id):  # noqa: E501
     """
     if connexion.request.is_json:
         user_id = AllUserRoles.from_dict(connexion.request.get_json())
+
+    sql = text(
+    """
+    WITH RECURSIVE _domain_tree AS (
+        SELECT domain.id, domain.parent_id, 0 AS position
+            FROM domain AS domain
+        WHERE domain.parent_id IS NULL  -- The root domain
+        UNION
+        SELECT domain.id, domain.parent_id,
+             _domain_tree.position + 1 AS position
+            FROM _domain_tree,
+                domain AS domain
+        WHERE domain.parent_id = _domain_tree.id
+    ),
+    _roles AS (
+      SELECT domain.id, domain.parent_id,
+             -- Domain roles are distinct per definition
+             array_agg(domain_role.role_id) AS implicit_roles,
+             -- User domain roles are distinct per definition
+             array_agg(user_domain_role.role_id) AS explicit_roles
+        FROM _domain_tree AS domain
+        LEFT OUTER JOIN domain_role AS domainrole
+             ON (domain.id = domainrole.domain_id AND
+                 domainrole.grant_implicitly)
+        LEFT OUTER JOIN user_domain_role AS userdomainrole
+             ON (domain.id = userdomainrole.domain_id AND
+                 userdomainrole.user_id = :user_id)
+       GROUP BY domain.id, domain.parent_id, domain.position
+       ORDER BY domain.position
+    )
+    -- Return all the nodes of the tree with the implicit and explicit
+    -- roles for the specified user. The domains are returned in breadth-first
+    -- order. The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.
+    -- {6,null} or {null,null}
+    SELECT id, parent_id, implicit_roles || explicit_roles AS roles
+        FROM _roles;
+    """
+    )
+    result = db.session.get_bind().execute(sql, **{"user_id": user_id})
+    for row in result:
+        print (row)
     return 'do some magic!'
 
 
@@ -77,4 +122,33 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     """
     if connexion.request.is_json:
         user_id = UserSiteRoleLabelsAggregated.from_dict(connexion.request.get_json())  # noqa: E501
+
+    sql = text(
+    """
+    WITH _roles AS (
+      SELECT site.id, site.domain_id,
+              -- Site roles are distinct per definition
+              array_agg(siterole.role_id) AS implicit_roles,
+             -- User site roles are distinct per definition
+             array_agg(usersiterole.role_id) AS explicit_roles
+        FROM access_control_site AS site
+        LEFT OUTER JOIN access_control_siterole AS siterole
+          ON (site.id = siterole.site_id AND
+              siterole.grant_implicitly)
+        LEFT OUTER JOIN access_control_usersiterole AS usersiterole
+          ON (site.id = usersiterole.site_id AND
+              usersiterole.user_id = :user_id)
+       GROUP BY site.id, site.domain_id
+    )
+    -- Return all the sites with the implicit and explicit
+    -- roles for the specified user.
+    -- The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.
+    -- {6,null} or {null,null}
+    SELECT id, domain_id, implicit_roles || explicit_roles AS roles
+        FROM _roles;
+    """
+    )
+    result = db.session.get_bind().execute(sql, **{"user_id": user_id, "site_id": site_id})
+    for row in result:
+        print (row)
     return 'do some magic!'
