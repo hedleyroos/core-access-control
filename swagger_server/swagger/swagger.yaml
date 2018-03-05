@@ -1870,7 +1870,7 @@ definitions:
         maxLength: 30
       client_id:
         type: "string"
-        format: "uuid"
+        maxLength: 255
       domain_id:
         type: "integer"
       description:
@@ -1893,7 +1893,7 @@ definitions:
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
-      client_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      client_id: "client_id"
   site_create:
     type: "object"
     required:
@@ -1905,7 +1905,7 @@ definitions:
         maxLength: 30
       client_id:
         type: "string"
-        format: "uuid"
+        maxLength: 255
       domain_id:
         type: "integer"
       description:
@@ -1917,7 +1917,7 @@ definitions:
     properties:
       client_id:
         type: "string"
-        format: "uuid"
+        maxLength: 255
       domain_id:
         type: "integer"
       name:

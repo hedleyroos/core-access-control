@@ -97,7 +97,7 @@ def upgrade():
     sa.Column('name', sa.VARCHAR(length=30), nullable=True),
     sa.Column('domain_id', sa.Integer(), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('client_id', sa.VARCHAR(length=256), nullable=True),
+    sa.Column('client_id', sa.VARCHAR(length=255), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
