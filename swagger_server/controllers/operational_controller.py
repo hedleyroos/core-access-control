@@ -65,8 +65,10 @@ def get_all_user_roles(user_id):  # noqa: E501
     items = []
     for row in result:
         # (82, 73, [None, None])
-        items.append(AllUserRoles(**{"roles_map": [item for item in row], "user_id": user_id}))
-    return items
+        # TODO Nones need to be stripped.
+        for item in row:
+            items.append(item)
+    return AllUserRoles(**{"roles_map": items, "user_id": user_id})
 
 
 def get_domain_roles(domain_id):  # noqa: E501
@@ -211,12 +213,11 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     items = []
     for row in result:
         # ('<label_string>',)
-        items.append(
-            UserSiteRoleLabelsAggregated(
-                # Each row is a tuple, unpack it into a list.
-                **{"roles": [item for item in row],
-                "user_id": user_id,
-                "site_id": site_id}
-            )
-        )
-    return items
+        for item in row:
+            items.append(item)
+    obj = UserSiteRoleLabelsAggregated(
+        **{"roles": items,
+        "user_id": user_id,
+        "site_id": site_id}
+    )
+    return obj
