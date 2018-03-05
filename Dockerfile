@@ -1,5 +1,7 @@
 FROM praekeltfoundation/python-base:3.6-stretch
 
+RUN apt-get update && apt-get install -y netcat
+
 WORKDIR /app/
 
 COPY requirements.txt /app/requirements/
@@ -10,6 +12,6 @@ COPY . /app/
 
 EXPOSE 8080
 
-ENTRYPOINT ["python3"]
+ENTRYPOINT ["scripts/waitFor.sh"]
 
-CMD ["-m", "swagger_server"]
+CMD ["python3", "-m", "swagger_server"]
