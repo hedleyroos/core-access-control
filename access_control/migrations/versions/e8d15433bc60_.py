@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 49b80a81af08
+Revision ID: e8d15433bc60
 Revises: 
-Create Date: 2018-01-22 10:20:41.514350
+Create Date: 2018-03-05 15:39:06.461420
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '49b80a81af08'
+revision = 'e8d15433bc60'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade():
     )
     op.create_index(op.f('ix_domain_name'), 'domain', ['name'], unique=True)
     op.create_table('invitation',
-    sa.Column('id', postgresql.UUID(), nullable=False),
+    sa.Column('id', access_control.models.GUID(), nullable=False),
     sa.Column('first_name', sa.Text(), nullable=True),
     sa.Column('last_name', sa.Text(), nullable=True),
     sa.Column('email', sa.VARCHAR(length=100), nullable=True),
@@ -96,7 +96,7 @@ def upgrade():
     sa.Column('name', sa.VARCHAR(length=30), nullable=True),
     sa.Column('domain_id', sa.Integer(), nullable=True),
     sa.Column('description', sa.Text(), nullable=True),
-    sa.Column('client_id', sa.Integer(), nullable=True),
+    sa.Column('client_id', sa.VARCHAR(length=256), nullable=True),
     sa.Column('is_active', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
