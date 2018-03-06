@@ -79,6 +79,35 @@ SELECT id, domain_id, implicit_roles || explicit_roles AS roles
   FROM _roles;
 """
 
+SQL_DOMAIN_ROLES = """
+-- Given a domain id (:domain_id), find all roles that can be assigned
+-- in the domain lineage
+
+-- Finding all the roles is simple,
+-- however, we need to return the results in such a way
+-- that the domain hierarchy can be interpreted and roles
+-- pushed down the tree.
+
+WITH RECURSIVE _domain_tree AS (
+  SELECT domain.id, domain.parent_id, 0 AS position
+    FROM domain AS domain
+   WHERE domain.id = :domain_id
+   UNION
+  SELECT domain.id, domain.parent_id,
+         _domain_tree.position - 1 AS position
+    FROM _domain_tree,
+         domain AS domain
+   WHERE _domain_tree.parent_id = domain.id
+)
+SELECT domain.id, domain.parent_id,
+       array_agg(domainrole.role_id) AS roles
+  FROM _domain_tree AS domain
+  LEFT OUTER JOIN domain_role AS domainrole
+    ON (domain.id = domainrole.domain_id)
+ GROUP BY domain.id, domain.parent_id, domain.position
+ ORDER BY domain.position
+"""
+
 SQL_USER_SITE_ROLE_LABELS_AGGREGATED = """
 -- Given a site id (:site_id) and a user id (:user_id), find all roles
 
@@ -150,8 +179,12 @@ def get_all_user_roles(user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    domain_rows = db.session.get_bind().execute(text(SQL_ALL_DOMAIN_ROLES_FOR_USER), **{"user_id": user_id})
-    site_rows = db.session.get_bind().execute(text(SQL_ALL_SITE_ROLES_FOR_USER), **{"user_id": user_id})
+    domain_rows = db.session.get_bind().execute(
+        text(SQL_ALL_DOMAIN_ROLES_FOR_USER), **{"user_id": user_id}
+    )
+    site_rows = db.session.get_bind().execute(
+        text(SQL_ALL_SITE_ROLES_FOR_USER), **{"user_id": user_id}
+    )
     roles = {}
     for row in domain_rows:
         key = "d:%s" % row["id"]
@@ -186,14 +219,21 @@ def get_domain_roles(domain_id):  # noqa: E501
 
     :rtype: DomainRoles
     """
-    sql = text()
-    result = db.session.get_bind().execute(sql)
-    items = []
+    result = db.session.get_bind().execute(
+        text(SQL_DOMAIN_ROLES), **{"domain_id": domain_id}
+    )
+    roles = {}
     for row in result:
-        items.append(
-            DomainRoles(**{})
-        )
-    return 'do some magic!'
+        key = "d:%s" % row["id"]
+        roles[key] = set(filter(None, row["roles"]))
+        if row["parent_id"]:
+            # Child domains inherit the roles of their parent
+            parent_key = "d:{}".format(row["parent_id"])
+            roles[key].update(roles[parent_key])
+    # Convert the sets to lists so that they are JSON serialisable
+    for k, v in roles.items():
+        roles[k] = list(v)
+    return DomainRoles(**{"domain_id": domain_id, "roles_map": roles})
 
 
 def get_site_and_domain_roles(site_id):  # noqa: E501
@@ -207,7 +247,7 @@ def get_site_and_domain_roles(site_id):  # noqa: E501
     :rtype: SiteAndDomainRoles
     """
     sql = text()
-    result = db.session.get_bind().execute(sql)
+    result = db.session.get_bind().execute(text())
     items = []
     for row in result:
         items.append(
@@ -254,10 +294,7 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     """
     sql = text(SQL_USER_SITE_ROLE_LABELS_AGGREGATED)
     result = db.session.get_bind().execute(sql, **{"user_id": user_id, "site_id": site_id})
-    items = []
-    for row in result:
-        # ('<label_string>',)
-        items.append(row["label"])
+    items = [row["label"] for row in result]
     obj = UserSiteRoleLabelsAggregated(
         **{"roles": items,
         "user_id": user_id,
