@@ -12,6 +12,68 @@ from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggr
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server import util
 
+# Used in get_user_site_role_labels_aggregated
+SQL_USER_SITE_ROLE_LABELS_AGGREGATED = """
+-- Given a site id (:site_id) and a user id (:user_id), find all roles
+
+-- The recursive query needs to come first
+-- Get domain lineage ids
+WITH RECURSIVE _domain_lineage AS (
+    SELECT domain.id, domain.parent_id
+      FROM domain, site
+     WHERE domain.id = site.domain_id
+       AND site.id = :site_id
+     UNION DISTINCT
+    SELECT domain.id, domain.parent_id
+      FROM domain, _domain_lineage
+     WHERE domain.id = _domain_lineage.parent_id
+),
+-- Find all implicit roles defined for the domain lineage
+_implicit_domain_role_ids AS (
+    SELECT role_id
+      FROM domain_role, _domain_lineage
+     WHERE domain_role.domain_id = _domain_lineage.id
+       AND domain_role.grant_implicitly
+),
+-- Find all explicit roles defined for the domain lineage
+_explicit_domain_role_ids AS (
+    SELECT role_id
+      FROM user_domain_role, _domain_lineage
+     WHERE user_domain_role.domain_id = _domain_lineage.id
+       AND user_domain_role.user_id = :user_id
+),
+-- Find all implicit roles defined for the site
+_implicit_site_role_ids AS (
+    SELECT role_id
+      FROM site_role
+     WHERE site_role.site_id = :site_id
+       AND site_role.grant_implicitly
+),
+-- Find all explicit roles defined for the site
+_explicit_site_role_ids AS (
+    SELECT role_id
+      FROM user_site_role
+     WHERE user_site_role.site_id = :site_id
+       AND user_site_role.user_id = :user_id
+),
+-- Create a list of role ids, potentially containing duplicates
+_role_ids AS (
+    SELECT * FROM _implicit_domain_role_ids
+     UNION
+    SELECT * FROM _explicit_domain_role_ids
+     UNION
+    SELECT * FROM _implicit_site_role_ids
+     UNION
+    SELECT * FROM _explicit_site_role_ids
+)
+-- Return a set of role labels
+-- The order in which the roles are returned is not guaranteed and
+-- applications should not rely on it.
+SELECT DISTINCT(label)
+  FROM role, _role_ids
+ WHERE role.id = _role_ids.role_id
+    """
+
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
@@ -147,68 +209,7 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
 
     :rtype: UserSiteRoleLabelsAggregated
     """
-    sql = text(
-    """
-    -- Given a site id (:site_id) and a user id (:user_id), find all roles
-
-    -- The recursive query needs to come first
-    -- Get domain lineage ids
-    WITH RECURSIVE _domain_lineage AS (
-        SELECT domain.id, domain.parent_id
-            FROM domain, site
-        WHERE domain.id = site.domain_id
-            AND site.client_id = :site_id
-        UNION DISTINCT
-        SELECT domain.id, domain.parent_id
-            FROM domain, _domain_lineage
-        WHERE domain.id = _domain_lineage.parent_id
-    ),
-    -- Find all implicit roles defined for the domain lineage
-    _implicit_domain_role_ids AS (
-        SELECT role_id
-            FROM domain_role, _domain_lineage
-        WHERE domain_role.domain_id = _domain_lineage.id
-            AND domain_role.grant_implicitly
-    ),
-    -- Find all explicit roles defined for the domain lineage
-    _explicit_domain_role_ids AS (
-        SELECT role_id
-            FROM user_domain_role, _domain_lineage
-        WHERE user_domain_role.domain_id = _domain_lineage.id
-            AND user_domain_role.user_id = :user_id
-    ),
-    -- Find all implicit roles defined for the site
-    _implicit_site_role_ids AS (
-        SELECT role_id
-            FROM site_role
-        WHERE site_role.site_id = :site_id
-            AND site_role.grant_implicitly
-    ),
-    -- Find all explicit roles defined for the site
-    _explicit_site_role_ids AS (
-        SELECT role_id
-            FROM user_site_role
-        WHERE user_site_role.site_id = :site_id
-            AND user_site_role.user_id = :user_id
-    ),
-    -- Create a list of role ids, potentially containing duplicates
-    _role_ids AS (
-        SELECT * FROM _implicit_domain_role_ids
-            UNION
-        SELECT * FROM _explicit_domain_role_ids
-            UNION
-        SELECT * FROM _implicit_site_role_ids
-            UNION
-        SELECT * FROM _explicit_site_role_ids
-    )
-    -- Return a set of role labels
-    -- The order in which the roles are returned is not guaranteed and
-    -- applications should not rely on it.
-    SELECT DISTINCT(label)
-        FROM role, _role_ids
-    WHERE role.id = _role_ids.role_id
-    """
-    )
+    sql = text(SQL_USER_SITE_ROLE_LABELS_AGGREGATED)
     result = db.session.get_bind().execute(sql, **{"user_id": user_id, "site_id": site_id})
     items = []
     for row in result:
