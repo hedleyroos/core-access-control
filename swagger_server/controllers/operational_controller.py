@@ -12,7 +12,73 @@ from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggr
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server import util
 
-# Used in get_user_site_role_labels_aggregated
+
+SQL_ALL_DOMAIN_ROLES_FOR_USER = """
+-- Given a user id (:user_id), find all roles in the organisational domain tree
+
+-- Finding all the implicit and explicit roles is simple,
+-- however, we need to return the results in such a way
+-- that the domain hierarchy can be interpreted and roles
+-- pushed down the tree.
+
+WITH RECURSIVE _domain_tree AS (
+  SELECT domain.id, domain.parent_id, 0 AS position
+    FROM domain AS domain
+   WHERE domain.parent_id IS NULL  -- The root domain
+   UNION
+  SELECT domain.id, domain.parent_id,
+         _domain_tree.position + 1 AS position
+    FROM _domain_tree,
+         domain AS domain
+   WHERE domain.parent_id = _domain_tree.id
+),
+_roles AS (
+  SELECT domain.id, domain.parent_id,
+         -- Domain roles are distinct per definition
+         array_agg(domainrole.role_id) AS implicit_roles,
+         -- User domain roles are distinct per definition
+         array_agg(userdomainrole.role_id) AS explicit_roles
+    FROM _domain_tree AS domain
+    LEFT OUTER JOIN domain_role AS domainrole
+         ON (domain.id = domainrole.domain_id AND
+             domainrole.grant_implicitly)
+    LEFT OUTER JOIN user_domain_role AS userdomainrole
+         ON (domain.id = userdomainrole.domain_id AND
+             userdomainrole.user_id = :user_id)
+   GROUP BY domain.id, domain.parent_id, domain.position
+   ORDER BY domain.position
+)
+-- Return all the nodes of the tree with the roles for the 
+-- specified user. The list of roles needs to be post-processed 
+-- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
+SELECT id, parent_id, implicit_roles || explicit_roles AS roles
+  FROM _roles;
+"""
+
+SQL_ALL_SITE_ROLES_FOR_USER = """
+WITH _roles AS (
+  SELECT site.id, site.domain_id,
+         -- Site roles are distinct per definition
+         array_agg(siterole.role_id) AS implicit_roles,
+         -- User site roles are distinct per definition
+         array_agg(usersiterole.role_id) AS explicit_roles
+    FROM site AS site
+    LEFT OUTER JOIN site_role AS siterole
+      ON (site.id = siterole.site_id AND
+          siterole.grant_implicitly)
+    LEFT OUTER JOIN user_site_role AS usersiterole
+      ON (site.id = usersiterole.site_id AND
+          usersiterole.user_id = :user_id)
+   GROUP BY site.id, site.domain_id
+)
+-- Return all the sites with the implicit and explicit
+-- roles for the specified user.
+-- The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.
+-- {6,null} or {null,null}
+SELECT id, domain_id, implicit_roles || explicit_roles AS roles
+  FROM _roles;
+"""
+
 SQL_USER_SITE_ROLE_LABELS_AGGREGATED = """
 -- Given a site id (:site_id) and a user id (:user_id), find all roles
 
@@ -72,8 +138,7 @@ _role_ids AS (
 SELECT DISTINCT(label)
   FROM role, _role_ids
  WHERE role.id = _role_ids.role_id
-    """
-
+"""
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
@@ -85,52 +150,30 @@ def get_all_user_roles(user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    sql = text(
-    """
-    WITH RECURSIVE _domain_tree AS (
-        SELECT domain.id, domain.parent_id, 0 AS position
-            FROM domain AS domain
-        WHERE domain.parent_id IS NULL  -- The root domain
-        UNION
-        SELECT domain.id, domain.parent_id,
-             _domain_tree.position + 1 AS position
-            FROM _domain_tree,
-                domain AS domain
-        WHERE domain.parent_id = _domain_tree.id
-    ),
-    _roles AS (
-        SELECT domain.id, domain.parent_id,
-             -- Domain roles are distinct per definition
-             array_agg(domainrole.role_id) AS implicit_roles,
-             -- User domain roles are distinct per definition
-             array_agg(userdomainrole.role_id) AS explicit_roles
-        FROM _domain_tree AS domain
-        LEFT OUTER JOIN domain_role AS domainrole
-             ON (domain.id = domainrole.domain_id AND
-                 domainrole.grant_implicitly)
-        LEFT OUTER JOIN user_domain_role AS userdomainrole
-             ON (domain.id = userdomainrole.domain_id AND
-                 userdomainrole.user_id = :user_id)
-       GROUP BY domain.id, domain.parent_id, domain.position
-       ORDER BY domain.position
-    )
-    -- Return all the nodes of the tree with the implicit and explicit
-    -- roles for the specified user. The domains are returned in breadth-first
-    -- order. The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.
-    -- {6,null} or {null,null}
-    SELECT id, parent_id, implicit_roles || explicit_roles AS roles
-        FROM _roles;
-    """
-    )
-    result = db.session.get_bind().execute(sql, **{"user_id": user_id})
-    # {'roles_map': None, 'user_id': None}
-    items = []
-    for row in result:
-        # (82, 73, [None, None])
-        # TODO Nones need to be stripped.
-        for item in row:
-            items.append(item)
-    return AllUserRoles(**{"roles_map": items, "user_id": user_id})
+    domain_rows = db.session.get_bind().execute(text(SQL_ALL_DOMAIN_ROLES_FOR_USER), **{"user_id": user_id})
+    site_rows = db.session.get_bind().execute(text(SQL_ALL_SITE_ROLES_FOR_USER), **{"user_id": user_id})
+    roles = {}
+    for row in domain_rows:
+        key = "d:%s" % row["id"]
+        roles[key] = set(filter(None, row["roles"]))
+        if row["parent_id"]:
+            # Child domains inherit the roles of their parent
+            parent_key = "d:%s" % row["parent_id"]
+            roles[key].update(roles[parent_key])
+
+    for row in site_rows:
+        key = "s:%s" % row["id"]
+        roles[key] = set(filter(None, row["roles"]))
+        if row["domain_id"]:
+            # Sites inherit the roles of their domain
+            parent_key = "d:%s" % row["domain_id"]
+            roles[key].update(roles[parent_key])
+
+    # Convert the sets to lists so that they are JSON serialisable
+    for k, v in roles.items():
+        roles[k] = list(v)
+
+    return AllUserRoles(**{"roles_map": roles, "user_id": user_id})
 
 
 def get_domain_roles(domain_id):  # noqa: E501
@@ -214,8 +257,7 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     items = []
     for row in result:
         # ('<label_string>',)
-        for item in row:
-            items.append(item)
+        items.append(row["label"])
     obj = UserSiteRoleLabelsAggregated(
         **{"roles": items,
         "user_id": user_id,
