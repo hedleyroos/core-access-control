@@ -108,6 +108,48 @@ SELECT domain.id, domain.parent_id,
  ORDER BY domain.position
 """
 
+SQL_SITE_ROLE_LABELS_AGGREGATED = """
+-- Given a site id (:site_id) find all roles that can be assigned to it
+-- directly and via its domain lineage.
+
+-- The recursive query needs to come first
+-- Get domain lineage ids
+WITH RECURSIVE _domain_lineage AS (
+    SELECT domain.id, domain.parent_id
+      FROM domain, site
+     WHERE domain.id = site.domain_id
+       AND site.id = :site_id
+     UNION DISTINCT
+    SELECT domain.id, domain.parent_id
+      FROM domain, _domain_lineage
+     WHERE domain.id = _domain_lineage.parent_id
+),
+-- Find all roles that can be assigned in the domain lineage
+_domain_role_ids AS (
+    SELECT role_id
+      FROM domain_role, _domain_lineage
+     WHERE domain_role.domain_id = _domain_lineage.id
+),
+-- Find all roles that can be assigned for the site
+_site_role_ids AS (
+    SELECT role_id
+      FROM site_role
+     WHERE site_role.site_id = :site_id
+),
+-- Create a list of role ids, potentially containing duplicates
+_role_ids AS (
+    SELECT * FROM _domain_role_ids
+     UNION
+    SELECT * FROM _site_role_ids
+)
+-- Return a set of role labels
+-- The order in which the roles are returned is not guaranteed and
+-- applications should not rely on it.
+SELECT DISTINCT(label)
+  FROM role, _role_ids
+ WHERE role.id = _role_ids.role_id
+"""
+
 SQL_USER_SITE_ROLE_LABELS_AGGREGATED = """
 -- Given a site id (:site_id) and a user id (:user_id), find all roles
 
@@ -266,18 +308,11 @@ def get_site_role_labels_aggregated(site_id):  # noqa: E501
 
     :rtype: SiteRoleLabelsAggregated
     """
-    sql = text()
-    result = db.session.get_bind().execute(sql)
-    items = []
-    for row in result:
-        # ('<label_string>',)
-        items.append(
-            SiteRoleLabelsAggregated(
-                **{"roles": [item for item in row],
-                "site_id": site_id}
-            )
-        )
-    return 'do some magic!'
+    result = db.session.get_bind().execute(text(SQL_SITE_ROLE_LABELS_AGGREGATED), **{"site_id": site_id})
+    return SiteRoleLabelsAggregated(
+        **{"roles": [row["label"] for row in result],
+        "site_id": site_id}
+    )
 
 
 def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
