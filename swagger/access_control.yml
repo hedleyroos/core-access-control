@@ -196,7 +196,7 @@ definitions:
         maxLength: 30
       client_id:
         type: string
-        format: uuid
+        maxLength: 255
       domain_id:
         type: integer
       description:
@@ -227,7 +227,7 @@ definitions:
         maxLength: 30
       client_id:
         type: string
-        format: uuid
+        maxLength: 255
       domain_id:
         type: integer
       description:
@@ -243,7 +243,7 @@ definitions:
     properties:
       client_id:
         type: string
-        format: uuid
+        maxLength: 255
       domain_id:
         type: integer
       name:

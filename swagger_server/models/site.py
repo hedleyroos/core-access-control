@@ -143,6 +143,8 @@ class Site(Model):
         :param client_id: The client_id of this Site.
         :type client_id: str
         """
+        if client_id is not None and len(client_id) > 255:
+            raise ValueError("Invalid value for `client_id`, length must be less than or equal to `255`")  # noqa: E501
 
         self._client_id = client_id
 
