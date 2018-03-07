@@ -1,0 +1,175 @@
+# coding: utf-8
+
+from __future__ import absolute_import
+import random
+import uuid
+from collections import OrderedDict
+
+from access_control import db_actions
+from flask import json
+from six import BytesIO
+
+from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
+from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
+from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
+from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
+from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
+from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
+from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
+from swagger_server.models.site_role import SiteRole  # noqa: E501
+from swagger_server.models.domain import Domain  # noqa: E501
+from swagger_server.models.role import Role  # noqa: E501
+from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.domain_role import DomainRole  # noqa: E501
+from swagger_server.test import BaseTestCase
+
+
+class TestOperationalController(BaseTestCase):
+
+    def setUp(self):
+        # Create top level partent domain.
+        self.domain_data = {
+            "name": ("%s" % uuid.uuid1())[:30],
+            "description": "a super cool test domain",
+        }
+        self.domain_model = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data=self.domain_data,
+            action="create"
+        )
+        role_data = {
+            "label": ("%s" % uuid.uuid1())[:30],
+            "description": "user_site_role to create",
+        }
+        role_model = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data=role_data,
+            action="create"
+        )
+        domain_role_data = {
+            "role_id": role_model.id,
+            "domain_id": self.domain_model.id
+        }
+        db_actions.crud(
+            model="DomainRole",
+            api_model=DomainRole,
+            data=domain_role_data,
+            action="create"
+        )
+
+        # Set a single role on the top level domain.
+        self.data = {
+            "d:%s" % self.domain_model.id: [role_model.id]
+        }
+
+        domain_id = self.domain_model.id
+        for index in range(1, random.randint(5, 20)):
+            # Create a domain tree with roles per domain.
+            domain_data = {
+                "name": ("%s" % uuid.uuid1())[:30],
+                "description": "%s" % uuid.uuid1(),
+                "parent_id": domain_id
+            }
+            domain_model = db_actions.crud(
+                model="Domain",
+                api_model=Domain,
+                data=domain_data,
+                action="create"
+            )
+
+            # Set id for next iteration.
+            domain_id = domain_model.id
+            roles = []
+
+            self.data["d:%s" % domain_model.id] = []
+            for index in range(1, random.randint(5, 20)):
+                role_data = {
+                    "label": ("%s" % uuid.uuid1())[:30],
+                    "description": "user_site_role to create",
+                }
+                role_model = db_actions.crud(
+                    model="Role",
+                    api_model=Role,
+                    data=role_data,
+                    action="create"
+                )
+                roles.append(role_model)
+            for role in roles:
+                domain_role_data = {
+                    "role_id": role.id,
+                    "domain_id": domain_model.id
+                }
+                db_actions.crud(
+                    model="DomainRole",
+                    api_model=DomainRole,
+                    data=domain_role_data,
+                    action="create"
+                )
+                self.data["d:%s" % domain_model.id].append(role.id)
+
+        # Assign the site to the last domain in the tree.
+        site_data = {
+            "name": ("%s" % uuid.uuid1())[:30],
+            "domain_id": domain_id,
+            "description": "a super cool test site",
+            "client_id": "%s" % uuid.uuid1(),
+            "is_active": True,
+        }
+        self.site_model = db_actions.crud(
+            model="Site",
+            api_model=Site,
+            data=site_data,
+            action="create"
+        )
+
+        # create a bunch of roles for a site..
+        self.data["s:%s" % self.site_model.id] = []
+        for index in range(1, random.randint(5, 20)):
+            role_data = {
+                "label": ("%s" % uuid.uuid1())[:30],
+                "description": "user_site_role to create",
+            }
+            role_model = db_actions.crud(
+                model="Role",
+                api_model=Role,
+                data=role_data,
+                action="create"
+            )
+            site_role_data = {
+                "role_id": role_model.id,
+                "site_id": self.site_model.id,
+            }
+            site_role_model = db_actions.crud(
+                model="SiteRole",
+                api_model=SiteRole,
+                data=site_role_data,
+                action="create"
+            )
+            self.data["s:%s" % self.site_model.id].append(role_model.id)
+
+    def test_get_site_and_domain_roles(self):
+        """Test case for get_user_site_role_labels_aggregated
+        """
+        response = self.client.open(
+            '/api/v1/ops/site_and_domain_roles/{site_id}'.format(site_id=self.site_model.id),
+            method='GET')
+
+        # We created the original data sequentially, so sorting it is fine.
+        data = OrderedDict(sorted(self.data.items(), key=lambda i: i[0]))
+        r_data = json.loads(response.data)
+        roles = []
+
+        # Each sub domain and finally the site also has the previous roles in
+        # the tree as well as their own.
+        for key, value in data.items():
+            for id in value:
+                roles.append(id)
+            self.assertListEqual(sorted(r_data["roles_map"][key]), sorted(roles))
+
+
+
+if __name__ == '__main__':
+    import unittest
+    unittest.main()

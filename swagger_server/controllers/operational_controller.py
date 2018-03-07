@@ -323,6 +323,9 @@ def get_site_and_domain_roles(site_id):  # noqa: E501
             parent_key = "d:%s" % site_row["domain_id"]
             roles[key].update(roles[parent_key])
 
+    for k, v in roles.items():
+        roles[k] = list(v)
+
     return SiteAndDomainRoles(**{"roles_map": roles, "site_id": site_id})
 
 
