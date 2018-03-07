@@ -48,8 +48,8 @@ _roles AS (
    GROUP BY domain.id, domain.parent_id, domain.position
    ORDER BY domain.position
 )
--- Return all the nodes of the tree with the roles for the 
--- specified user. The list of roles needs to be post-processed 
+-- Return all the nodes of the tree with the roles for the
+-- specified user. The list of roles needs to be post-processed
 -- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
 SELECT id, parent_id, implicit_roles || explicit_roles AS roles
   FROM _roles;
@@ -106,6 +106,17 @@ SELECT domain.id, domain.parent_id,
     ON (domain.id = domainrole.domain_id)
  GROUP BY domain.id, domain.parent_id, domain.position
  ORDER BY domain.position
+"""
+
+SQL_SITE_ROLES = """
+-- Given a site id (:site_id), find all roles that can be assigned
+-- to it.
+SELECT site.id, site.domain_id, array_agg(siterole.role_id) AS roles
+FROM site AS site
+LEFT OUTER JOIN site_role AS siterole
+  ON (site.id = siterole.site_id)
+WHERE site.id = :site_id
+GROUP BY site.id, site.domain_id
 """
 
 SQL_SITE_ROLE_LABELS_AGGREGATED = """
@@ -288,14 +299,31 @@ def get_site_and_domain_roles(site_id):  # noqa: E501
 
     :rtype: SiteAndDomainRoles
     """
-    sql = text()
-    result = db.session.get_bind().execute(text())
-    items = []
-    for row in result:
-        items.append(
-            SiteAndDomainRoles(**{})
-        )
-    return 'do some magic!'
+    site_rows = db.session.get_bind().execute(
+        text(SQL_SITE_ROLES), **{"site_id": site_id}
+    )
+    roles = {}
+    for site_row in site_rows:
+        if site_row["domain_id"]:
+            domain_rows = db.session.get_bind().execute(
+                text(SQL_DOMAIN_ROLES), **{"domain_id": site_row["domain_id"]}
+            )
+            for row in domain_rows:
+                key = "d:%s" % row["id"]
+                roles[key] = set(filter(None, row["roles"]))
+                if row["parent_id"]:
+                    # Child domains inherit the roles of their parent
+                    parent_key = "d:%s" % row["parent_id"]
+                    roles[key].update(roles[parent_key])
+
+        key = "s:%s" % site_row["id"]
+        roles[key] = set(filter(None, site_row["roles"]))
+        if site_row["domain_id"]:
+            # Sites inherit the roles of their domain
+            parent_key = "d:%s" % site_row["domain_id"]
+            roles[key].update(roles[parent_key])
+
+    return SiteAndDomainRoles(**{"roles_map": roles, "site_id": site_id})
 
 
 def get_site_role_labels_aggregated(site_id):  # noqa: E501
