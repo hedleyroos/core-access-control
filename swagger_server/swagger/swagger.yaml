@@ -2526,10 +2526,6 @@ definitions:
       roles_map:
         type: "object"
         example:
-          s:1:
-          - 1
-          - 2
-          - 3
           d:1:
           - 1
           d:2:
@@ -2547,6 +2543,44 @@ definitions:
     example:
       domain_id: 0
       roles_map:
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
+  site_and_domain_roles:
+    type: "object"
+    required:
+    - "roles_map"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+        description: "The site for which the request was made."
+      roles_map:
+        type: "object"
+        example:
+          s:1:
+          - 1
+          - 2
+          - 3
+          d:1:
+          - 1
+          d:2:
+          - 1
+          - 2
+        description: "A dictionary where the keys are site and domain ids prefixed\
+          \ with `s:` and `d:`, respectively and the values are lists of role ids."
+        additionalProperties:
+          type: "array"
+          description: "The list of role ids for the site or domain"
+          items:
+            type: "integer"
+    description: "An object containing the site- and domain lineage roles defined\
+      \ for a given site."
+    example:
+      site_id: 0
+      roles_map:
         s:1:
         - 1
         - 2
@@ -2556,18 +2590,6 @@ definitions:
         d:2:
         - 1
         - 2
-  site_and_domain_roles:
-    type: "object"
-    required:
-    - "site_id"
-    properties:
-      site_id:
-        type: "integer"
-        description: "The site for which the request was made."
-    description: "An object containing the site- and domain lineage roles defined\
-      \ for a given site."
-    example:
-      site_id: 0
   all_user_roles:
     type: "object"
     required:

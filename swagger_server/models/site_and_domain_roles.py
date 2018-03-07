@@ -15,21 +15,26 @@ class SiteAndDomainRoles(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, site_id: int=None):  # noqa: E501
+    def __init__(self, site_id: int=None, roles_map: Dict[str, List[int]]=None):  # noqa: E501
         """SiteAndDomainRoles - a model defined in Swagger
 
         :param site_id: The site_id of this SiteAndDomainRoles.  # noqa: E501
         :type site_id: int
+        :param roles_map: The roles_map of this SiteAndDomainRoles.  # noqa: E501
+        :type roles_map: Dict[str, List[int]]
         """
         self.swagger_types = {
-            'site_id': int
+            'site_id': int,
+            'roles_map': Dict[str, List[int]]
         }
 
         self.attribute_map = {
-            'site_id': 'site_id'
+            'site_id': 'site_id',
+            'roles_map': 'roles_map'
         }
 
         self._site_id = site_id
+        self._roles_map = roles_map
 
     @classmethod
     def from_dict(cls, dikt) -> 'SiteAndDomainRoles':
@@ -66,3 +71,28 @@ class SiteAndDomainRoles(Model):
             raise ValueError("Invalid value for `site_id`, must not be `None`")  # noqa: E501
 
         self._site_id = site_id
+
+    @property
+    def roles_map(self) -> Dict[str, List[int]]:
+        """Gets the roles_map of this SiteAndDomainRoles.
+
+        A dictionary where the keys are site and domain ids prefixed with `s:` and `d:`, respectively and the values are lists of role ids.  # noqa: E501
+
+        :return: The roles_map of this SiteAndDomainRoles.
+        :rtype: Dict[str, List[int]]
+        """
+        return self._roles_map
+
+    @roles_map.setter
+    def roles_map(self, roles_map: Dict[str, List[int]]):
+        """Sets the roles_map of this SiteAndDomainRoles.
+
+        A dictionary where the keys are site and domain ids prefixed with `s:` and `d:`, respectively and the values are lists of role ids.  # noqa: E501
+
+        :param roles_map: The roles_map of this SiteAndDomainRoles.
+        :type roles_map: Dict[str, List[int]]
+        """
+        if roles_map is None:
+            raise ValueError("Invalid value for `roles_map`, must not be `None`")  # noqa: E501
+
+        self._roles_map = roles_map
