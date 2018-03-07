@@ -812,7 +812,6 @@ definitions:
           items:
             type: integer
         example:
-          "s:1": [1, 2, 3]
           "d:1": [1]
           "d:2": [1, 2]
     required:
@@ -829,6 +828,7 @@ definitions:
       roles_map:
         description: 'A dictionary where the keys are site and domain ids prefixed with `s:` and `d:`, respectively
            and the values are lists of role ids.'
+        type: object
         additionalProperties:
           description: 'The list of role ids for the site or domain'
           type: array
