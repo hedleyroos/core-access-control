@@ -12,6 +12,4 @@ COPY . /app/
 
 EXPOSE 8080
 
-ENTRYPOINT ["scripts/waitFor.sh"]
-
 CMD ["python3", "-m", "swagger_server"]
