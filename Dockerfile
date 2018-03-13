@@ -1,6 +1,6 @@
 FROM praekeltfoundation/python-base:3.6-stretch
 
-RUN apt-get update && apt-get install -y netcat
+RUN apt-get update && apt-get install -y netcat libxml2
 
 WORKDIR /app/
 
@@ -12,4 +12,4 @@ COPY . /app/
 
 EXPOSE 8080
 
-CMD ["python3", "-m", "swagger_server"]
+CMD ["uwsgi", "uwsgi.ini"]

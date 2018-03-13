@@ -1,6 +1,7 @@
 connexion == 1.1.15
 python_dateutil == 2.6.0
 setuptools >= 21.0.0
+uWSGI >= 2.0.17, < 3.0
 
 # DB related
 Flask-SQLAlchemy==2.3.2
