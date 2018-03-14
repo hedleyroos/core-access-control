@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import random
 import uuid
 
+import os
+
 from access_control import db_actions
 from flask import json
 from six import BytesIO
@@ -51,6 +53,11 @@ class TestOperationalController(BaseTestCase):
             action="create"
         )
         self.roles = []
+
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
 
         # create a bunch of roles.
         for index in range(1, random.randint(5, 20)):

@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -29,13 +31,19 @@ class TestExceptions(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_response(self):
         data = Domain(**self.domain_data)
         response = self.client.open(
             '/api/v1/domains',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(response.status_code, 500)
         self.assertEqual(

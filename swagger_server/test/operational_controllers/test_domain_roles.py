@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import random
 import uuid
 
+import os
+
 from access_control import db_actions
 from flask import json
 from six import BytesIO
@@ -37,6 +39,11 @@ class TestOperationalController(BaseTestCase):
             data=self.domain_data,
             action="create"
         )
+
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
 
         self.roles = []
         # create a bunch of roles.
@@ -83,7 +90,7 @@ class TestOperationalController(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/ops/domain_roles/{domain_id}'.format(domain_id=self.domain_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertIn("d:%s" % self.domain_model.id, r_data["roles_map"].keys())
         self.assertEqual(len(r_data["roles_map"]["d:%s" % self.domain_model.id]), len(self.roles))
