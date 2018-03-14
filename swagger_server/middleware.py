@@ -10,8 +10,9 @@ class AuthMiddleware(object):
     def __call__(self, environ, start_response):
         request = Request(environ)
         key = request.headers.get("X-Api-Key", None)
+        keys = set(os.getenv("ALLOWED_API_KEYS").split(","))
         if key:
-            if key in os.environ.get("ALLOWED_API_KEYS"):
+            if key in keys:
                 return self.app(environ, start_response)
             response = Response("Forbidden", status="403")
             return response(environ, start_response)
