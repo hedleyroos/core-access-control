@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -52,6 +54,11 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_domain_role_create(self):
         """Test case for domain_role_create
         """
@@ -85,7 +92,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/domainroles',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -98,7 +106,7 @@ class TestAccessControlRead(BaseTestCase):
                 domain_id=self.domain_role_model.domain_id,
                 role_id=self.domain_role_model.role_id,
             ),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], self.domain_role_model.role_id)
         self.assertEqual(r_data["domain_id"], self.domain_role_model.domain_id)
@@ -142,7 +150,8 @@ class TestAccessControlRead(BaseTestCase):
                 domain_id=model.domain_id,
                 role_id=model.role_id,
             ),
-            method='DELETE')
+            method='DELETE',
+            headers=self.headers)
 
         # Little crude. Raise an error if the object actually still exists else
         # pass after the 404 error.
@@ -199,7 +208,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/domainroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [#('offset', 0),
@@ -209,7 +219,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/domainroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -272,7 +283,8 @@ class TestAccessControlRead(BaseTestCase):
             ),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="DomainRole",

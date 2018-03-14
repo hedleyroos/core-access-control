@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -67,6 +69,11 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_site_role_create(self):
         """Test case for site_role_create
         """
@@ -113,7 +120,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/siteroles',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["site_id"], data.site_id)
@@ -126,7 +134,7 @@ class TestAccessControlRead(BaseTestCase):
                 site_id=self.site_role_model.site_id,
                 role_id=self.site_role_model.role_id,
             ),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], self.site_role_model.role_id)
         self.assertEqual(r_data["site_id"], self.site_role_model.site_id)
@@ -183,7 +191,7 @@ class TestAccessControlRead(BaseTestCase):
                 site_id=model.site_id,
                 role_id=model.role_id,
             ),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         # Little crude. Raise an error if the object actually still exists else
         # pass after the 404 error.
@@ -253,7 +261,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/siteroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [#('offset', 0),
@@ -263,7 +272,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/siteroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -329,7 +339,8 @@ class TestAccessControlRead(BaseTestCase):
             ),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="SiteRole",

@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -64,6 +66,11 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_role_resource_permission_create(self):
         """Test case for role_resource_permission_create
         """
@@ -107,7 +114,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/roleresourcepermissions',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["resource_id"], data.resource_id)
@@ -122,7 +130,8 @@ class TestAccessControlRead(BaseTestCase):
                 resource_id=self.role_resource_permission_model.resource_id,
                 permission_id=self.role_resource_permission_model.permission_id,
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], self.role_resource_permission_model.role_id)
         self.assertEqual(r_data["resource_id"], self.role_resource_permission_model.resource_id)
@@ -179,7 +188,8 @@ class TestAccessControlRead(BaseTestCase):
                 resource_id=model.resource_id,
                 permission_id=model.permission_id,
             ),
-            method='DELETE')
+            method='DELETE',
+            headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -247,7 +257,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roleresourcepermissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [#('offset', 0),
@@ -257,7 +268,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roleresourcepermissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 

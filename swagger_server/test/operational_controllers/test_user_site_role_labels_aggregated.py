@@ -4,6 +4,8 @@ from __future__ import absolute_import
 import random
 import uuid
 
+import os
+
 from access_control import db_actions
 from flask import json
 from six import BytesIO
@@ -89,6 +91,11 @@ class TestOperationalController(BaseTestCase):
                 action="create"
             )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_get_user_site_role_labels_aggregated(self):
         """Test case for get_user_site_role_labels_aggregated
         """
@@ -96,7 +103,7 @@ class TestOperationalController(BaseTestCase):
             "/api/v1/ops/user_site_role_labels_aggregated/{user_id}/{site_id}".format(
                 user_id=self.user_id, site_id=self.site_model.id
         ),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data["roles"]), len(self.roles))
         for role in self.roles:

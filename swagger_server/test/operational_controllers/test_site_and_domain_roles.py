@@ -5,6 +5,8 @@ import random
 import uuid
 from collections import OrderedDict
 
+import os
+
 from access_control import db_actions
 from flask import json
 from six import BytesIO
@@ -149,12 +151,17 @@ class TestOperationalController(BaseTestCase):
             )
             self.data["s:%s" % self.site_model.id].append(role_model.id)
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_get_site_and_domain_roles(self):
         """Test case for get_user_site_role_labels_aggregated
         """
         response = self.client.open(
             '/api/v1/ops/site_and_domain_roles/{site_id}'.format(site_id=self.site_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
 
         # We created the original data sequentially, so sorting it is fine.
         data = OrderedDict(sorted(self.data.items(), key=lambda i: i[0]))

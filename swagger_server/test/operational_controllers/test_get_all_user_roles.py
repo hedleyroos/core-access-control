@@ -155,7 +155,7 @@ class TestOperationalController(BaseTestCase):
         """
         response = self.client.open(
             "/api/v1/ops/all_user_roles/{user_id}".format(user_id=self.user_id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(self.user_id, r_data["user_id"])
         for obj in self.domain_role_objs:

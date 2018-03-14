@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -29,6 +31,11 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_resource_create(self):
         """Test case for resource_create
         """
@@ -40,7 +47,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/resources',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["urn"], data.urn)
         self.assertEqual(r_data["description"], data.description)
@@ -50,7 +58,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/resources/{resource_id}'.format(resource_id=self.resource_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["urn"], self.resource_model.urn)
         self.assertEqual(r_data["description"], self.resource_model.description)
@@ -71,7 +79,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         response = self.client.open(
             '/api/v1/resources/{resource_id}'.format(resource_id=model.id),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -101,7 +109,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/resources',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [('limit', 2),
@@ -109,7 +118,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/resources',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -137,7 +147,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/resources/{resource_id}'.format(resource_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="Resource",

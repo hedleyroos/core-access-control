@@ -1,5 +1,7 @@
 import random
 import uuid
+
+import os
 import werkzeug
 
 from access_control import db_actions
@@ -47,6 +49,11 @@ class UserDomainRoleTestCase(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_userdomainrole_create(self):
         data = UserDomainRoleCreate(**{
             "domain_id": self.domain_model.id,
@@ -57,7 +64,8 @@ class UserDomainRoleTestCase(BaseTestCase):
             '/api/v1/userdomainroles',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -82,7 +90,8 @@ class UserDomainRoleTestCase(BaseTestCase):
                     domain_id=user_domain_role.domain_id,
                     role_id=user_domain_role.role_id,
                 ),
-                method='DELETE')
+                method='DELETE',
+                headers=self.headers)
 
             db_actions.crud(
                 model="UserDomainRole",
@@ -113,7 +122,8 @@ class UserDomainRoleTestCase(BaseTestCase):
                 domain_id=user_domain_role.domain_id,
                 role_id=user_domain_role.role_id,
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], user_domain_role.role_id)
         self.assertEqual(r_data["domain_id"], user_domain_role.domain_id)
@@ -140,7 +150,8 @@ class UserDomainRoleTestCase(BaseTestCase):
         response = self.client.open(
             '/api/v1/userdomainroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
 
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)

@@ -4,6 +4,8 @@ from __future__ import absolute_import
 
 import random
 import uuid
+
+import os
 import werkzeug
 
 from flask import json
@@ -43,6 +45,11 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        # Test env settings
+        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+
+        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+
     def test_site_create(self):
         """Test case for site_create
         """
@@ -57,7 +64,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/sites',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -70,7 +78,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/sites/{site_id}'.format(site_id=self.site_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], self.site_model.name)
         self.assertEqual(r_data["domain_id"], self.site_model.domain_id)
@@ -97,7 +105,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         response = self.client.open(
             '/api/v1/sites/{site_id}'.format(site_id=model.id),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -130,7 +138,7 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/sites',
             method='GET',
-            query_string=query_string)
+            query_string=query_string, headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [('limit', 2),
@@ -138,7 +146,7 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/sites',
             method='GET',
-            query_string=query_string)
+            query_string=query_string, headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -171,7 +179,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/sites/{site_id}'.format(site_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="Site",
