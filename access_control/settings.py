@@ -7,4 +7,4 @@ DB_URI = os.environ.get(
 )
 
 API_KEY_HEADER = "X-API-KEY"
-ALLOWED_API_KEYS = set(os.getenv("ALLOWED_API_KEYS").split(","))
+ALLOWED_API_KEYS = set(os.environ["ALLOWED_API_KEYS"].split(","))

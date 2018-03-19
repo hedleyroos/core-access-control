@@ -1,19 +1,16 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-
 import random
 import uuid
 
 import werkzeug
-
 from flask import json
 
 from access_control.settings import API_KEY_HEADER
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-
 from access_control import db_actions
 
 

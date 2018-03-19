@@ -6,7 +6,6 @@ import random
 import uuid
 
 import werkzeug
-
 from flask import json
 
 from access_control.settings import API_KEY_HEADER
@@ -15,7 +14,6 @@ from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.test import BaseTestCase
-
 from access_control import db_actions
 
 

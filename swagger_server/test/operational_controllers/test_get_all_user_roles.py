@@ -4,7 +4,6 @@ from __future__ import absolute_import
 import random
 import uuid
 
-
 from access_control import db_actions
 from flask import json
 

@@ -11,8 +11,7 @@ class AuthMiddleware(object):
     def __call__(self, environ, start_response):
         request = Request(environ)
         key = request.headers.get(API_KEY_HEADER, None)
-        if key:
-            if key in ALLOWED_API_KEYS:
-                return self.app(environ, start_response)
+        if key and key in ALLOWED_API_KEYS:
+            return self.app(environ, start_response)
         response = Response("Unauthorized", status="401")
         return response(environ, start_response)

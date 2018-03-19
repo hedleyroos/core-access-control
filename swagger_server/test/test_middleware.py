@@ -1,9 +1,7 @@
 import uuid
-
 import os
 
 from unittest.mock import patch
-
 
 from access_control import db_actions
 from access_control.settings import API_KEY_HEADER
