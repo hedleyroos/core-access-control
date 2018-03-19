@@ -8,6 +8,7 @@ from access_control import models
 
 from swagger_server import encoder, exception_handlers, middleware
 
+
 DB = SQLAlchemy()
 
 # We create and set up the app variable in the global context as it is used by uwsgi.

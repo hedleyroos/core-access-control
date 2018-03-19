@@ -91,10 +91,7 @@ class TestOperationalController(BaseTestCase):
                 action="create"
             )
 
-        # Test env settings
-        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
-
-        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+        self.headers = {"X-API-KEY": "test-api-key"}
 
     def test_get_user_site_role_labels_aggregated(self):
         """Test case for get_user_site_role_labels_aggregated

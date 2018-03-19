@@ -1,6 +1,8 @@
 import os
 from werkzeug.wrappers import Request, Response
 
+ALLOWED_API_KEYS = set(os.getenv("ALLOWED_API_KEYS").split(","))
+
 
 class AuthMiddleware(object):
 
@@ -10,11 +12,8 @@ class AuthMiddleware(object):
     def __call__(self, environ, start_response):
         request = Request(environ)
         key = request.headers.get("X-Api-Key", None)
-        keys = set(os.getenv("ALLOWED_API_KEYS").split(","))
         if key:
-            if key in keys:
+            if key in ALLOWED_API_KEYS:
                 return self.app(environ, start_response)
-            response = Response("Forbidden", status="403")
-            return response(environ, start_response)
         response = Response("Unauthorized", status="401")
         return response(environ, start_response)

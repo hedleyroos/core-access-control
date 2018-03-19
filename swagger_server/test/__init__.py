@@ -1,6 +1,12 @@
 import logging
 
 import connexion
+import os
+
+orig_environ = dict(os.environ)
+orig_environ["ALLOWED_API_KEYS"] = "test-api-key"
+os.environ.update(orig_environ)
+
 from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError

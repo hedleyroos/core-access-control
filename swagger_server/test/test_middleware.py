@@ -2,6 +2,13 @@ import uuid
 
 import os
 
+from unittest.mock import patch
+
+# with patch.dict(os.environ, {
+#     "ALLOWED_API_KEYS": "ahjaeK1thee9aixuogho"
+# }):
+#     from swagger_server import middleware
+
 from access_control import db_actions
 from swagger_server.models import Domain
 from swagger_server.test import BaseTestCase
@@ -21,21 +28,21 @@ class AuthenticationTestCase(BaseTestCase):
             action="create"
         )
 
-        # Test env settings
-        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
+        self.headers = {"X-API-KEY": "test-api-key"}
 
-        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
-
+    @patch.dict(os.environ, {
+        "ALLOWED_API_KEYS": "ahjaeK1thee9aixuogho"
+    })
     def test_unauthorized(self):
         response = self.client.open(
             "/api/v1/domains/{domain_id}".format(
-                domain_id= self.domain_model.id
+                domain_id=self.domain_model.id
             ),
             method='GET'
         )
         self.assert401(response)
 
-    def test_forbidden(self):
+    def test_wrong_key(self):
         response = self.client.open(
             "/api/v1/domains/{domain_id}".format(
                 domain_id=self.domain_model.id
@@ -43,7 +50,7 @@ class AuthenticationTestCase(BaseTestCase):
             method='GET',
             headers={"X-API-KEY": "qwerty"}
         )
-        self.assert403(response)
+        self.assert401(response)
 
     def test_authorized(self):
         response = self.client.open(

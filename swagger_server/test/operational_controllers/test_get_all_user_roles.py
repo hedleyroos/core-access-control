@@ -54,10 +54,7 @@ class TestOperationalController(BaseTestCase):
         )
         self.roles = []
 
-        # Test env settings
-        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
-
-        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+        self.headers = {"X-API-KEY": "test-api-key"}
 
         # create a bunch of roles.
         for index in range(1, random.randint(5, 20)):

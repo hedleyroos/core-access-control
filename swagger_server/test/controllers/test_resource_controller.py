@@ -31,10 +31,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
-        # Test env settings
-        os.environ["ALLOWED_API_KEYS"] = "ahjaeK1thee9aixuogho"
-
-        self.headers = {"X-API-KEY": "ahjaeK1thee9aixuogho"}
+        self.headers = {"X-API-KEY": "test-api-key"}
 
     def test_resource_create(self):
         """Test case for resource_create
