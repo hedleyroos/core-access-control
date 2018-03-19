@@ -20,7 +20,7 @@ from swagger_server.test import BaseTestCase
 class TestOperationalController(BaseTestCase):
 
     def setUp(self):
-        # Create top level partent domain.
+        # Create top level parent domain.
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
