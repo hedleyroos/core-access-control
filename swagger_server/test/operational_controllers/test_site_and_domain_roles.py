@@ -53,9 +53,8 @@ class TestOperationalController(BaseTestCase):
         )
 
         # Set a single role on the top level domain.
-        self.data = {
-            "d:%s" % self.domain_model.id: [role_model.id]
-        }
+        self.data = OrderedDict()
+        self.data["d:%s" % self.domain_model.id] = [role_model.id]
 
         domain_id = self.domain_model.id
         for index in range(1, random.randint(5, 20)):
@@ -151,18 +150,15 @@ class TestOperationalController(BaseTestCase):
             '/api/v1/ops/site_and_domain_roles/{site_id}'.format(site_id=self.site_model.id),
             method='GET', headers=self.headers)
 
-        # We created the original data sequentially, so sorting it is fine.
-        data = OrderedDict(sorted(self.data.items(), key=lambda i: i[0]))
         r_data = json.loads(response.data)
         roles = []
 
         # Each sub domain and finally the site also has the previous roles in
         # the tree as well as their own.
-        for key, value in data.items():
-            for id in value:
-                roles.append(id)
-            self.assertListEqual(sorted(r_data["roles_map"][key]), sorted(roles))
+        for key, value in self.data.items():
+            roles.extend(value)
 
+            self.assertListEqual(sorted(r_data["roles_map"][key]), sorted(roles))
 
 
 if __name__ == '__main__':
