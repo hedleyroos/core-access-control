@@ -4,12 +4,9 @@ import os
 
 from unittest.mock import patch
 
-# with patch.dict(os.environ, {
-#     "ALLOWED_API_KEYS": "ahjaeK1thee9aixuogho"
-# }):
-#     from swagger_server import middleware
 
 from access_control import db_actions
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.test import BaseTestCase
 
@@ -28,7 +25,7 @@ class AuthenticationTestCase(BaseTestCase):
             action="create"
         )
 
-        self.headers = {"X-API-KEY": "test-api-key"}
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
     @patch.dict(os.environ, {
         "ALLOWED_API_KEYS": "ahjaeK1thee9aixuogho"
@@ -48,7 +45,7 @@ class AuthenticationTestCase(BaseTestCase):
                 domain_id=self.domain_model.id
             ),
             method='GET',
-            headers={"X-API-KEY": "qwerty"}
+            headers={API_KEY_HEADER: "qwerty"}
         )
         self.assert401(response)
 

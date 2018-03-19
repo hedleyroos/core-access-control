@@ -1,7 +1,6 @@
-import os
 from werkzeug.wrappers import Request, Response
 
-ALLOWED_API_KEYS = set(os.getenv("ALLOWED_API_KEYS").split(","))
+from access_control.settings import ALLOWED_API_KEYS, API_KEY_HEADER
 
 
 class AuthMiddleware(object):
@@ -11,7 +10,7 @@ class AuthMiddleware(object):
 
     def __call__(self, environ, start_response):
         request = Request(environ)
-        key = request.headers.get("X-Api-Key", None)
+        key = request.headers.get(API_KEY_HEADER, None)
         if key:
             if key in ALLOWED_API_KEYS:
                 return self.app(environ, start_response)

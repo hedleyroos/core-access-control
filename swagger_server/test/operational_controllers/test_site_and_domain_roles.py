@@ -5,19 +5,10 @@ import random
 import uuid
 from collections import OrderedDict
 
-import os
-
 from access_control import db_actions
 from flask import json
-from six import BytesIO
 
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
-from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
-from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
-from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
@@ -151,7 +142,7 @@ class TestOperationalController(BaseTestCase):
             )
             self.data["s:%s" % self.site_model.id].append(role_model.id)
 
-        self.headers = {"X-API-KEY": "test-api-key"}
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_get_site_and_domain_roles(self):
         """Test case for get_user_site_role_labels_aggregated

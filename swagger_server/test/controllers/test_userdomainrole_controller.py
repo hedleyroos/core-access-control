@@ -1,10 +1,10 @@
 import random
 import uuid
 
-import os
 import werkzeug
 
 from access_control import db_actions
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
 from swagger_server.models import Role
@@ -49,7 +49,7 @@ class UserDomainRoleTestCase(BaseTestCase):
             action="create"
         )
 
-        self.headers = {"X-API-KEY": "test-api-key"}
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_userdomainrole_create(self):
         data = UserDomainRoleCreate(**{

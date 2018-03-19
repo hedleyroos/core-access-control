@@ -5,11 +5,11 @@ from __future__ import absolute_import
 import random
 import uuid
 
-import os
 import werkzeug
 
 from flask import json
 
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
 from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
@@ -66,7 +66,7 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
-        self.headers = {"X-API-KEY": "test-api-key"}
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_role_resource_permission_create(self):
         """Test case for role_resource_permission_create
