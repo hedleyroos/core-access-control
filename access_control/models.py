@@ -7,10 +7,11 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 from sqlalchemy.types import TypeDecorator
 
+import project.app
 from project import settings
 
-DB = settings.DB
-MIGRATE = Migrate(settings.APP, DB)
+DB = project.app.DB
+MIGRATE = Migrate(project.app.APP, DB)
 
 # func.utc_timestamp() it is only supported by MySQL out of the box.
 # http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function
