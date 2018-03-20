@@ -1,6 +1,6 @@
 from werkzeug.wrappers import Request, Response
 
-from access_control.settings import ALLOWED_API_KEYS, API_KEY_HEADER
+from project.settings import ALLOWED_API_KEYS, API_KEY_HEADER
 
 
 class AuthMiddleware(object):

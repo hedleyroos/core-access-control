@@ -2,6 +2,8 @@ import connexion
 import six
 import connexion
 
+from ge_core_shared import db_actions
+
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
@@ -26,7 +28,6 @@ from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server import util
 
-from access_control import db_actions
 
 def access_control_roleresourcepermission_delete(role_id, resource_id, permission_id):  # noqa: E501
     """access_control_roleresourcepermission_delete

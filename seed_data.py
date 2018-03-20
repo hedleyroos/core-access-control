@@ -1,6 +1,6 @@
 from flask import Flask
 
-from access_control.db_actions import get_or_create
+from ge_core_share.db_actions import get_or_create
 from access_control.fixtures.load_domains import DOMAIN_HIERARCHY
 from access_control.fixtures.load_permissions import PERMISSIONS
 from access_control.fixtures.load_resources import RESOURCES
