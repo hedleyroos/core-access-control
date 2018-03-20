@@ -6,15 +6,9 @@ import uuid
 
 from access_control import db_actions
 from flask import json
-from six import BytesIO
 
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
-from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
-from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
-from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
@@ -51,6 +45,8 @@ class TestOperationalController(BaseTestCase):
             action="create"
         )
         self.roles = []
+
+        self.headers = {API_KEY_HEADER: "test-api-key"}
 
         # create a bunch of roles.
         for index in range(1, random.randint(5, 20)):
@@ -148,7 +144,7 @@ class TestOperationalController(BaseTestCase):
         """
         response = self.client.open(
             "/api/v1/ops/all_user_roles/{user_id}".format(user_id=self.user_id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(self.user_id, r_data["user_id"])
         for obj in self.domain_role_objs:

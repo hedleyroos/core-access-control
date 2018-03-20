@@ -1,20 +1,19 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-
 import random
 import uuid
-import werkzeug
 
+import werkzeug
 from flask import json
 
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
 from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.test import BaseTestCase
-
 from access_control import db_actions
 
 
@@ -64,6 +63,8 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_role_resource_permission_create(self):
         """Test case for role_resource_permission_create
         """
@@ -107,7 +108,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/roleresourcepermissions',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["resource_id"], data.resource_id)
@@ -122,7 +124,8 @@ class TestAccessControlRead(BaseTestCase):
                 resource_id=self.role_resource_permission_model.resource_id,
                 permission_id=self.role_resource_permission_model.permission_id,
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], self.role_resource_permission_model.role_id)
         self.assertEqual(r_data["resource_id"], self.role_resource_permission_model.resource_id)
@@ -179,7 +182,8 @@ class TestAccessControlRead(BaseTestCase):
                 resource_id=model.resource_id,
                 permission_id=model.permission_id,
             ),
-            method='DELETE')
+            method='DELETE',
+            headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -247,7 +251,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roleresourcepermissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [#('offset', 0),
@@ -257,7 +262,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roleresourcepermissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 

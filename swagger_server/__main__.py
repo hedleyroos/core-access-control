@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from access_control import models
 
-from swagger_server import encoder, exception_handlers
+from swagger_server import encoder, exception_handlers, middleware
 
 
 DB = SQLAlchemy()
@@ -18,6 +18,7 @@ app.add_api('swagger.yaml', arguments={'title': 'Access Control API'})
 app.app.config = models.APP.config
 DB.init_app(app.app)
 app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
+app.app.wsgi_app = middleware.AuthMiddleware(app.app.wsgi_app)
 
 if __name__ == '__main__':
     app.run(port=8080)

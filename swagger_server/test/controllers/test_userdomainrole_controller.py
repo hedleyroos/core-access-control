@@ -1,8 +1,10 @@
 import random
 import uuid
+
 import werkzeug
 
 from access_control import db_actions
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
 from swagger_server.models import Role
@@ -47,6 +49,8 @@ class UserDomainRoleTestCase(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_userdomainrole_create(self):
         data = UserDomainRoleCreate(**{
             "domain_id": self.domain_model.id,
@@ -57,7 +61,8 @@ class UserDomainRoleTestCase(BaseTestCase):
             '/api/v1/userdomainroles',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], data.role_id)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -82,7 +87,8 @@ class UserDomainRoleTestCase(BaseTestCase):
                     domain_id=user_domain_role.domain_id,
                     role_id=user_domain_role.role_id,
                 ),
-                method='DELETE')
+                method='DELETE',
+                headers=self.headers)
 
             db_actions.crud(
                 model="UserDomainRole",
@@ -113,7 +119,8 @@ class UserDomainRoleTestCase(BaseTestCase):
                 domain_id=user_domain_role.domain_id,
                 role_id=user_domain_role.role_id,
             ),
-            method='GET')
+            method='GET',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["role_id"], user_domain_role.role_id)
         self.assertEqual(r_data["domain_id"], user_domain_role.domain_id)
@@ -140,7 +147,8 @@ class UserDomainRoleTestCase(BaseTestCase):
         response = self.client.open(
             '/api/v1/userdomainroles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
 
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)

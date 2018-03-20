@@ -1,17 +1,16 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-
 import random
 import uuid
-import werkzeug
 
+import werkzeug
 from flask import json
 
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-
 from access_control import db_actions
 
 
@@ -29,6 +28,8 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_permission_create(self):
         """Test case for permission_create
         """
@@ -40,7 +41,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/permissions',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["description"], data.description)
@@ -50,7 +52,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/permissions/{permission_id}'.format(permission_id=self.permission_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], self.permission_model.name)
         self.assertEqual(r_data["description"], self.permission_model.description)
@@ -71,7 +73,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         response = self.client.open(
             '/api/v1/permissions/{permission_id}'.format(permission_id=model.id),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -101,7 +103,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/permissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [('limit', 2),
@@ -109,7 +112,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/permissions',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -137,7 +141,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/permissions/{permission_id}'.format(permission_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="Permission",

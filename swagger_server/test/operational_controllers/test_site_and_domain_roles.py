@@ -7,15 +7,8 @@ from collections import OrderedDict
 
 from access_control import db_actions
 from flask import json
-from six import BytesIO
 
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
-from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
-from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
-from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
@@ -27,7 +20,7 @@ from swagger_server.test import BaseTestCase
 class TestOperationalController(BaseTestCase):
 
     def setUp(self):
-        # Create top level partent domain.
+        # Create top level parent domain.
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
@@ -60,9 +53,8 @@ class TestOperationalController(BaseTestCase):
         )
 
         # Set a single role on the top level domain.
-        self.data = {
-            "d:%s" % self.domain_model.id: [role_model.id]
-        }
+        self.data = OrderedDict()
+        self.data["d:%s" % self.domain_model.id] = [role_model.id]
 
         domain_id = self.domain_model.id
         for index in range(1, random.randint(5, 20)):
@@ -149,25 +141,24 @@ class TestOperationalController(BaseTestCase):
             )
             self.data["s:%s" % self.site_model.id].append(role_model.id)
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_get_site_and_domain_roles(self):
         """Test case for get_user_site_role_labels_aggregated
         """
         response = self.client.open(
             '/api/v1/ops/site_and_domain_roles/{site_id}'.format(site_id=self.site_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
 
-        # We created the original data sequentially, so sorting it is fine.
-        data = OrderedDict(sorted(self.data.items(), key=lambda i: i[0]))
         r_data = json.loads(response.data)
         roles = []
 
         # Each sub domain and finally the site also has the previous roles in
         # the tree as well as their own.
-        for key, value in data.items():
-            for id in value:
-                roles.append(id)
-            self.assertListEqual(sorted(r_data["roles_map"][key]), sorted(roles))
+        for key, value in self.data.items():
+            roles.extend(value)
 
+            self.assertListEqual(sorted(r_data["roles_map"][key]), sorted(roles))
 
 
 if __name__ == '__main__':

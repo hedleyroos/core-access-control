@@ -4,15 +4,15 @@ from __future__ import absolute_import
 
 import random
 import uuid
-import werkzeug
 
+import werkzeug
 from flask import json
 
+from access_control.settings import API_KEY_HEADER
+from access_control import db_actions
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-
-from access_control import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):
@@ -29,6 +29,8 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_domain_create(self):
         """Test case for domainrole_create
         """
@@ -40,7 +42,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/domains',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["description"], data.description)
@@ -51,7 +54,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/domains/{domain_id}'.format(domain_id=self.domain_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], self.domain_model.name)
         self.assertEqual(r_data["description"], self.domain_model.description)
@@ -72,7 +75,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         response = self.client.open(
             '/api/v1/domains/{domain_id}'.format(domain_id=model.id),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -102,7 +105,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/domains',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [('limit', 2),
@@ -110,7 +114,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/domains',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -138,7 +143,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/domains/{domain_id}'.format(domain_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="Domain",

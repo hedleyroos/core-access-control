@@ -1,17 +1,16 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-
 import random
 import uuid
-import werkzeug
 
+import werkzeug
 from flask import json
 
+from access_control.settings import API_KEY_HEADER
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-
 from access_control import db_actions
 
 
@@ -30,6 +29,8 @@ class TestAccessControlRead(BaseTestCase):
             action="create"
         )
 
+        self.headers = {API_KEY_HEADER: "test-api-key"}
+
     def test_role_create(self):
         """Test case for role_create
         """
@@ -42,7 +43,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/roles',
             method='POST',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["label"], data.label)
         self.assertEqual(r_data["description"], data.description)
@@ -52,7 +54,7 @@ class TestAccessControlRead(BaseTestCase):
         """
         response = self.client.open(
             '/api/v1/roles/{role_id}'.format(role_id=self.role_model.id),
-            method='GET')
+            method='GET', headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["label"], self.role_model.label)
         self.assertEqual(r_data["description"], self.role_model.description)
@@ -74,7 +76,7 @@ class TestAccessControlRead(BaseTestCase):
         )
         response = self.client.open(
             '/api/v1/roles/{role_id}'.format(role_id=model.id),
-            method='DELETE')
+            method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
@@ -105,7 +107,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
         query_string = [('limit', 2),
@@ -113,7 +116,8 @@ class TestAccessControlRead(BaseTestCase):
         response = self.client.open(
             '/api/v1/roles',
             method='GET',
-            query_string=query_string)
+            query_string=query_string,
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
 
@@ -141,7 +145,8 @@ class TestAccessControlRead(BaseTestCase):
             '/api/v1/roles/{role_id}'.format(role_id=model.id),
             method='PUT',
             data=json.dumps(data),
-            content_type='application/json')
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="Role",
