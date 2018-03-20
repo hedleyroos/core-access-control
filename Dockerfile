@@ -1,6 +1,6 @@
 FROM praekeltfoundation/python-base:3.6-stretch
 
-RUN apt-get update && apt-get install -y netcat libxml2
+RUN apt-get update && apt-get install -y netcat libxml2 git
 
 WORKDIR /app/
 
