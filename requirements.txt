@@ -1,3 +1,6 @@
+# GIT requirements
+-e git+https://github.com/girleffect/core-shared@feature/db_actions#egg=core-shared
+
 connexion == 1.1.15
 python_dateutil == 2.6.0
 setuptools >= 21.0.0

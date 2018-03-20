@@ -1,3 +1,6 @@
+# GIT requirements
+-e git+https://github.com/girleffect/core-shared@feature/db_actions#egg=core-shared
+
 flask_testing==0.6.1
 pluggy>=0.3.1
 py>=1.4.31
