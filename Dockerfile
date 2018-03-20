@@ -6,7 +6,7 @@ WORKDIR /app/
 
 COPY requirements.txt /app/requirements/
 
-RUN pip3 install --no-cache-dir -r /app/requirements/requirements.txt
+RUN pip3 install --no-cache-dir -r /app/requirements/requirements.txt --src /usr/local/src
 
 COPY . /app/
 
