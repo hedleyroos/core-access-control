@@ -1,21 +1,14 @@
 import uuid
 
-from flask import Flask
-from flask_migrate import Migrate
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.sql import expression
 from sqlalchemy.types import TypeDecorator
 
-from . import settings
+import project.app
 
-APP = Flask(__name__)
-
-APP.config["SQLALCHEMY_DATABASE_URI"] = settings.DB_URI
-DB = SQLAlchemy(APP)
-MIGRATE = Migrate(APP, DB)
+DB = project.app.DB
 
 
 # func.utc_timestamp() it is only supported by MySQL out of the box.

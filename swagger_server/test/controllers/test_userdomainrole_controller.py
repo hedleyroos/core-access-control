@@ -3,8 +3,8 @@ import uuid
 
 import werkzeug
 
-from access_control import db_actions
-from access_control.settings import API_KEY_HEADER
+from ge_core_shared import db_actions
+from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
 from swagger_server.models import Role

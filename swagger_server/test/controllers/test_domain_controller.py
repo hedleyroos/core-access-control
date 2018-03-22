@@ -8,8 +8,8 @@ import uuid
 import werkzeug
 from flask import json
 
-from access_control.settings import API_KEY_HEADER
-from access_control import db_actions
+from project.settings import API_KEY_HEADER
+from ge_core_shared import db_actions
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase

@@ -6,11 +6,11 @@ import uuid
 
 from flask import json
 
-from access_control.settings import API_KEY_HEADER
+from project.settings import API_KEY_HEADER
 from swagger_server.models.domain import Domain
 from swagger_server.test import BaseTestCase
 
-from access_control import db_actions
+from ge_core_shared import db_actions
 
 
 class TestExceptions(BaseTestCase):

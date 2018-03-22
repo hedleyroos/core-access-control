@@ -1,3 +1,6 @@
+# GIT requirements
+-e git+https://github.com/girleffect/core-shared@0.1.0#egg=core-shared
+
 connexion == 1.1.15
 python_dateutil == 2.6.0
 setuptools >= 21.0.0
@@ -8,3 +11,4 @@ Flask-SQLAlchemy==2.3.2
 SQLAlchemy==1.2.2
 psycopg2==2.7.3.2
 Flask-Migrate==2.1.1
+Flask-Script==2.0.6

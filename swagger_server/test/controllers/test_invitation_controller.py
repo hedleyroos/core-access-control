@@ -2,7 +2,7 @@ import uuid
 
 from datetime import datetime
 
-from access_control import db_actions
+from ge_core_shared import db_actions
 from swagger_server.models import Invitation
 from swagger_server.models import InvitationCreate
 from swagger_server.test import BaseTestCase

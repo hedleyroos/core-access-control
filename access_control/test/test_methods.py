@@ -1,7 +1,8 @@
 from unittest import TestCase
 
+from ge_core_shared.db_actions import get_or_create, delete_entry
+
 from access_control import models
-from access_control.db_actions import get_or_create, delete_entry
 
 URN = "urn:test:me"
 

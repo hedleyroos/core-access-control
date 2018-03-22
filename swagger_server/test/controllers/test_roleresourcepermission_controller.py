@@ -7,14 +7,14 @@ import uuid
 import werkzeug
 from flask import json
 
-from access_control.settings import API_KEY_HEADER
+from project.settings import API_KEY_HEADER
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
 from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.test import BaseTestCase
-from access_control import db_actions
+from ge_core_shared import db_actions
 
 
 class TestAccessControlRead(BaseTestCase):

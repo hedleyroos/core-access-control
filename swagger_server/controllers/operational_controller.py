@@ -1,7 +1,7 @@
 import connexion
 import six
 
-from access_control.models import DB as db
+import project.app
 
 from sqlalchemy import text
 
@@ -12,6 +12,7 @@ from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggr
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server import util
 
+db = project.app.DB
 
 SQL_ALL_DOMAIN_ROLES_FOR_USER = """
 -- Given a user id (:user_id), find all roles in the organisational domain tree
