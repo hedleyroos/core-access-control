@@ -8,8 +8,6 @@ from sqlalchemy.exc import SQLAlchemyError
 import project.app
 from swagger_server import encoder, exception_handlers, middleware
 
-from project import settings
-
 
 DB = SQLAlchemy()
 

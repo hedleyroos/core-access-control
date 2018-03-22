@@ -7,7 +7,6 @@ from sqlalchemy.sql import expression
 from sqlalchemy.types import TypeDecorator
 
 import project.app
-from project import settings
 
 DB = project.app.DB
 

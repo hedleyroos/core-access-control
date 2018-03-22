@@ -2,7 +2,6 @@ import connexion
 import six
 
 import project.app
-from project import settings
 
 from sqlalchemy import text
 

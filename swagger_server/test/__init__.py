@@ -16,7 +16,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from swagger_server import exception_handlers, middleware
 from swagger_server.encoder import JSONEncoder
 
-from project import settings
 
 DB = SQLAlchemy()
 
