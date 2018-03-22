@@ -1,6 +1,5 @@
 import uuid
 
-from flask_migrate import Migrate
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
 from sqlalchemy.ext.compiler import compiles
@@ -11,7 +10,7 @@ import project.app
 from project import settings
 
 DB = project.app.DB
-MIGRATE = Migrate(project.app.APP, DB)
+
 
 # func.utc_timestamp() it is only supported by MySQL out of the box.
 # http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function

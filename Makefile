@@ -107,15 +107,14 @@ test: $(PYTEST)
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
-	make migrate
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrations...$(CLEAR)"
-	FLASK_APP=project/app.py $(FLASK) db migrate -d access_control/migrations
+	$(VENV)/bin/python manage.py db migrate -d access_control/migrations
 
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
-	FLASK_APP=project/app.py $(FLASK) db upgrade -d access_control/migrations
+	$(VENV)/bin/python manage.py db upgrade -d access_control/migrations
 
 load-seed-data:
 	@echo "$(CYAN)Loading seed data to DB...$(CLEAR)"
