@@ -1,5 +1,5 @@
 # GIT requirements
--e git+https://github.com/girleffect/core-shared@0.1.0#egg=core-shared
+-e git+https://github.com/girleffect/core-shared@feature/transformations#egg=core-shared
 
 connexion == 1.1.15
 python_dateutil == 2.6.0
