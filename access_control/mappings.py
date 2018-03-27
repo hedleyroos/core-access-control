@@ -1,6 +1,6 @@
 import datetime
 
-from .transformation import Transformation, Mapping
+from ge_core_shared.transformation import Transformation, Mapping
 
 
 def datetime_to_string(date):

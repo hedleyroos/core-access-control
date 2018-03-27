@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 from unittest import TestCase
-from access_control.transformation import Mapping, Transformation
+from ge_core_shared.transformation import Mapping, Transformation
 
 
 def tomorrow(today: date) -> date:
