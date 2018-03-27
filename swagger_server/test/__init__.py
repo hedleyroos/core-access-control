@@ -12,8 +12,9 @@ os.environ.update(orig_environ)
 from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError
+from ge_core_shared import exception_handlers
 
-from swagger_server import exception_handlers, middleware
+from swagger_server import middleware
 from swagger_server.encoder import JSONEncoder
 
 
