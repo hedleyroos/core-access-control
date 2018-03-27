@@ -4,9 +4,10 @@ import connexion
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
+from ge_core_shared import middleware
 
 import project.app
-from swagger_server import encoder, exception_handlers, middleware
+from swagger_server import encoder, exception_handlers
 
 
 DB = SQLAlchemy()
