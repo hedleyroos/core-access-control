@@ -18,10 +18,17 @@ RESOURCES = [
     "urn:ge:identity_provider:otp:totp:totpdevice",
     "urn:ge:identity_provider:user",
     "urn:ge:identity_provider:two_factor:phonedevice",
+    "urn:ge:identity_provider:country",
 
-    "urn:ge:user_data:country",
     "urn:ge:user_data:sitedataschema",
-    "urn:ge:user_data:extradata",
     "urn:ge:user_data:usersitedata",
     "urn:ge:user_data:adminnote",
+    "urn:ge:user_data:extradata",
+
+    "urn:ge:management_layer:refresh:all",
+    "urn:ge:management_layer:refresh:domains",
+    "urn:ge:management_layer:refresh:permissions",
+    "urn:ge:management_layer:refresh:resources",
+    "urn:ge:management_layer:refresh:roles",
+    "urn:ge:management_layer:refresh:sites"
 ]
