@@ -1,1 +1,0 @@
-Search.setIndex({docnames:["index"],envversion:52,filenames:["index.rst"],objects:{},objnames:{},objtypes:{},terms:{can:0,central:0,index:0,modul:0,page:0,permiss:0,request:0,role:0,search:0,servic:0,set:0,standard:0,where:0},titles:["Girl Effect: Core access control documentation:"],titleterms:{access:0,control:0,core:0,document:0,effect:0,girl:0,indic:0,introduct:0,tabl:0}})
