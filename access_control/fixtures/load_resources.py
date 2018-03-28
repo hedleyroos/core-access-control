@@ -23,11 +23,4 @@ RESOURCES = [
     "urn:ge:user_data:sitedataschema",
     "urn:ge:user_data:usersitedata",
     "urn:ge:user_data:adminnote",
-
-    "urn:ge:management_layer:refresh:all",
-    "urn:ge:management_layer:refresh:domains",
-    "urn:ge:management_layer:refresh:permissions",
-    "urn:ge:management_layer:refresh:resources",
-    "urn:ge:management_layer:refresh:roles",
-    "urn:ge:management_layer:refresh:sites"
 ]
