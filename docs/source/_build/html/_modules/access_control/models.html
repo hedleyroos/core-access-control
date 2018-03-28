@@ -1,0 +1,413 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>access_control.models &#8212; access_control  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for access_control.models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">uuid</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">types</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="k">import</span> <span class="n">UUID</span><span class="p">,</span> <span class="n">CHAR</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.compiler</span> <span class="k">import</span> <span class="n">compiles</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.sql</span> <span class="k">import</span> <span class="n">expression</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.types</span> <span class="k">import</span> <span class="n">TypeDecorator</span>
+
+<span class="kn">import</span> <span class="nn">project.app</span>
+
+<span class="n">DB</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">DB</span>
+
+
+<span class="c1"># func.utc_timestamp() it is only supported by MySQL out of the box.</span>
+<span class="c1"># http://docs.sqlalchemy.org/en/latest/core/compiler.html#utc-timestamp-function</span>
+<div class="viewcode-block" id="utcnow"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.utcnow">[docs]</a><span class="k">class</span> <span class="nc">utcnow</span><span class="p">(</span><span class="n">expression</span><span class="o">.</span><span class="n">FunctionElement</span><span class="p">):</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">DateTime</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="pg_utcnow"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.pg_utcnow">[docs]</a><span class="nd">@compiles</span><span class="p">(</span><span class="n">utcnow</span><span class="p">,</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">pg_utcnow</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">compiler</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">&quot;TIMEZONE(&#39;utc&#39;, CURRENT_TIMESTAMP)&quot;</span></div>
+
+
+<span class="c1"># Copied wholesale from SQLAlchemy docs.</span>
+<span class="c1"># http://docs.sqlalchemy.org/en/latest/core/custom_types.html?highlight=guid#backend-agnostic-guid-type</span>
+<div class="viewcode-block" id="GUID"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.GUID">[docs]</a><span class="k">class</span> <span class="nc">GUID</span><span class="p">(</span><span class="n">TypeDecorator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Platform-independent GUID type.</span>
+
+<span class="sd">    Uses PostgreSQL&#39;s UUID type, otherwise uses</span>
+<span class="sd">    CHAR(32), storing as stringified hex values.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">impl</span> <span class="o">=</span> <span class="n">UUID</span>
+
+<div class="viewcode-block" id="GUID.load_dialect_impl"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.GUID.load_dialect_impl">[docs]</a>    <span class="k">def</span> <span class="nf">load_dialect_impl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;postgresql&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">UUID</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dialect</span><span class="o">.</span><span class="n">type_descriptor</span><span class="p">(</span><span class="n">CHAR</span><span class="p">(</span><span class="mi">32</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GUID.process_bind_param"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.GUID.process_bind_param">[docs]</a>    <span class="k">def</span> <span class="nf">process_bind_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="n">dialect</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;postgresql&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.32x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">int</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># hexstring</span>
+                <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.32x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">value</span><span class="o">.</span><span class="n">int</span></div>
+
+<div class="viewcode-block" id="GUID.process_result_value"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.GUID.process_result_value">[docs]</a>    <span class="k">def</span> <span class="nf">process_result_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dialect</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value</span></div></div>
+
+
+<div class="viewcode-block" id="Domain"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Domain">[docs]</a><span class="k">class</span> <span class="nc">Domain</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">parent_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;domain.id&quot;</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Domain(</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="Role"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Role">[docs]</a><span class="k">class</span> <span class="nc">Role</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">requires_2fa</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Role(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">requires_2fa</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Permission"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Permission">[docs]</a><span class="k">class</span> <span class="nc">Permission</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Permission(</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+
+<div class="viewcode-block" id="Resource"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Resource">[docs]</a><span class="k">class</span> <span class="nc">Resource</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">urn</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Resource(</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">urn</span></div>
+
+
+<div class="viewcode-block" id="RoleResourcePermission"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.RoleResourcePermission">[docs]</a><span class="k">class</span> <span class="nc">RoleResourcePermission</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;role.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">resource_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;resource.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">permission_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;permission.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;RoleResourcePermission(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">resource_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">permission_id</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Site"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Site">[docs]</a><span class="k">class</span> <span class="nc">Site</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">domain_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;domain.id&quot;</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">client_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">is_active</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Site(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_active</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_id</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DomainRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.DomainRole">[docs]</a><span class="k">class</span> <span class="nc">DomainRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">domain_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;domain.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;role.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">grant_implicitly</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;DomainRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grant_implicitly</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SiteRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.SiteRole">[docs]</a><span class="k">class</span> <span class="nc">SiteRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">site_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;site.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;role.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">grant_implicitly</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;SiteRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grant_implicitly</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserSiteRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.UserSiteRole">[docs]</a><span class="k">class</span> <span class="nc">UserSiteRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">site_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKeyConstraint</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">SiteRole</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span> <span class="n">SiteRole</span><span class="o">.</span><span class="n">role_id</span><span class="p">]</span>
+        <span class="p">),</span> <span class="p">{}</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;UserSiteRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserDomainRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.UserDomainRole">[docs]</a><span class="k">class</span> <span class="nc">UserDomainRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">domain_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKeyConstraint</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">DomainRole</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">DomainRole</span><span class="o">.</span><span class="n">role_id</span><span class="p">]</span>
+        <span class="p">),</span> <span class="p">{}</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;UserDomainRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Invitation"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.Invitation">[docs]</a><span class="k">class</span> <span class="nc">Invitation</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">GUID</span><span class="p">(),</span> <span class="n">default</span><span class="o">=</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid1</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">first_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">last_name</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Text</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span> <span class="n">unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">expires_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">)</span>
+    <span class="n">invitor_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">UUID</span><span class="p">)</span>
+    <span class="n">is_system_user</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Boolean</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;Invitation(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InvitationDomainRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.InvitationDomainRole">[docs]</a><span class="k">class</span> <span class="nc">InvitationDomainRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">invitation_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">UUID</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;invitation.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">domain_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKeyConstraint</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">DomainRole</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">DomainRole</span><span class="o">.</span><span class="n">role_id</span><span class="p">]</span>
+        <span class="p">),</span> <span class="p">{}</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;InvitationDomainRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="InvitationSiteRole"><a class="viewcode-back" href="../../access_control.models.html#access_control.models.InvitationSiteRole">[docs]</a><span class="k">class</span> <span class="nc">InvitationSiteRole</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">invitation_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">UUID</span><span class="p">,</span> <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="s2">&quot;invitation.id&quot;</span><span class="p">),</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">site_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">role_id</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">Integer</span><span class="p">,</span> <span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="n">created_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">())</span>
+    <span class="n">updated_at</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">DateTime</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">utcnow</span><span class="p">(),</span>
+        <span class="n">onupdate</span><span class="o">=</span><span class="n">utcnow</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">__table_args__</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">DB</span><span class="o">.</span><span class="n">ForeignKeyConstraint</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">],</span>
+            <span class="p">[</span><span class="n">SiteRole</span><span class="o">.</span><span class="n">site_id</span><span class="p">,</span> <span class="n">SiteRole</span><span class="o">.</span><span class="n">role_id</span><span class="p">]</span>
+        <span class="p">),</span> <span class="p">{}</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;InvitationSiteRole(</span><span class="si">%s</span><span class="s2">-</span><span class="si">%s</span><span class="s2">)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">domain_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">role_id</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
