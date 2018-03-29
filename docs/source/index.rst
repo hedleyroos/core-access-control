@@ -1,19 +1,16 @@
-.. Girl Effect: Core access control documentation master file, created by
-   sphinx-quickstart on Mon Dec  4 12:53:13 2017.
+.. Core Access Control documentation master file, created by
+   sphinx-quickstart on Thu Mar 29 11:26:15 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Girl Effect: Core access control documentation:
+Welcome to Core Access Control's documentation!
 ===============================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
-Introduction:
--------------
-
-Centralized and standardized service where roles and permissions can be set and requested.
+   access_control
 
 Indices and tables
 ==================

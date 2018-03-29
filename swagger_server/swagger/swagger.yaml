@@ -1,0 +1,2727 @@
+---
+swagger: "2.0"
+info:
+  description: "# The Access Control API\n\n## Overview\nThe Access Control API is\
+    \ an API exposed to other core components. It uses an API Key in an HTTP header\
+    \ to\nperform authentication and authorisation.\n\nMost of the API calls facilitates\
+    \ CRUD of the entities defined in the Access Control component. Others calls\n\
+    allows the retrieval of information in a form that is convenient for other components\
+    \ (most notably the\nManagement Layer) to consume.\n"
+  version: ""
+  title: "Access Control API"
+host: "localhost:8080"
+basePath: "/api/v1"
+schemes:
+- "https"
+- "http"
+security:
+- APIKeyHeader: []
+paths:
+  /ops/site_role_labels_aggregated/{site_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of all possible role labels that a user can have from\
+        \ the specified site's perspective."
+      operationId: "get_site_role_labels_aggregated"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site_role_labels_aggregated"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/user_site_role_labels_aggregated/{user_id}/{site_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of all role labels that the specified user has from\
+        \ the specified site's perspective."
+      operationId: "get_user_site_role_labels_aggregated"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_site_role_labels_aggregated"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/domain_roles/{domain_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get the domain and its lineage's roles defined for a domain."
+      operationId: "get_domain_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain_roles"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/site_and_domain_roles/{site_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get the site- and domain lineage roles defined for a given site."
+      operationId: "get_site_and_domain_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site_and_domain_roles"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/all_user_roles/{user_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get the effective roles that a user has at any place in the organisational\
+        \ tree."
+      operationId: "get_all_user_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/all_user_roles"
+        403:
+          description: "Forbidden"
+        404:
+          description: "User not found"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /domains:
+    get:
+      tags:
+      - "access_control"
+      operationId: "domain_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "domain_ids"
+        in: "query"
+        description: "An optional list of domain ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/domain"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "domain_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/domain_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /domains/{domain_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "domain_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "domain_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/domain_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "domain_delete"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /domainroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "domainrole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "domain_id"
+        in: "query"
+        description: "An optional query parameter to filter by domain_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "domainrole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/domain_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /domainroles/{domain_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "domainrole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "domainrole_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/domain_role_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "domainrole_delete"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitations:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitation_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "invitor_id"
+        in: "query"
+        description: "Optional filter based on the invitor (the user who created the\
+          \ invitation)"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "invitation_ids"
+        in: "query"
+        description: "An optional list of invitation ids"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          format: "uuid"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/invitation"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "invitation_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitations/{invitation_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitation_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "invitation_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "invitation_delete"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitations/{invitation_id}/redeem/{user_id}:
+    get:
+      tags:
+      - "access_control"
+      description: "Assign all roles assigned to the invitation to the specified user,\
+        \ removing the invitation and related configuration when done. Note: We may\
+        \ have to change the role assignment to an asynchronous task depending on\
+        \ the complexity of the implementation."
+      operationId: "invitation_redeem"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/all_user_roles"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationdomainroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationdomainrole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "invitation_id"
+        in: "query"
+        description: "An optional query parameter to filter by invitation_id"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "query"
+        description: "An optional query parameter to filter by domain_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/invitation_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "invitationdomainrole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_domain_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationdomainroles/{invitation_id}/{domain_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationdomainrole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "invitationdomainrole_delete"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationsiteroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationsiterole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "invitation_id"
+        in: "query"
+        description: "An optional query parameter to filter by invitation_id"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "query"
+        description: "An optional query parameter to filter by site_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/invitation_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "invitationsiterole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_site_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationsiteroles/{invitation_id}/{site_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationsiterole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "invitationsiterole_delete"
+      parameters:
+      - name: "invitation_id"
+        in: "path"
+        description: "A UUID value identifying the invitation."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /permissions:
+    get:
+      tags:
+      - "access_control"
+      operationId: "permission_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "permission_ids"
+        in: "query"
+        description: "An optional list of permission ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "permission_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/permission_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /permissions/{permission_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "permission_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "permission_id"
+        in: "path"
+        description: "A unique integer value identifying the permission."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "permission_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "permission_id"
+        in: "path"
+        description: "A unique integer value identifying the permission."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/permission_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "permission_delete"
+      parameters:
+      - name: "permission_id"
+        in: "path"
+        description: "A unique integer value identifying the permission."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /resources:
+    get:
+      tags:
+      - "access_control"
+      operationId: "resource_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "prefix"
+        in: "query"
+        description: "An optional URN prefix filter"
+        required: false
+        type: "string"
+      - name: "resource_ids"
+        in: "query"
+        description: "An optional list of resource ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/resource"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "resource_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/resource_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/resource"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /resources/{resource_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "resource_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/resource"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "resource_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/resource_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/resource"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "resource_delete"
+      parameters:
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /roles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "role_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "role_ids"
+        in: "query"
+        description: "An optional list of role ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "role_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /roles/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "role_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "role_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/role_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "role_delete"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /roleresourcepermissions:
+    get:
+      tags:
+      - "access_control"
+      operationId: "roleresourcepermission_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      - name: "resource_id"
+        in: "query"
+        description: "An optional resource filter"
+        required: false
+        type: "integer"
+      - name: "permission_id"
+        in: "query"
+        description: "An optional permission filter"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/role_resource_permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "roleresourcepermission_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/role_resource_permission_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/role_resource_permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /roleresourcepermissions/{role_id}/{resource_id}/{permission_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "roleresourcepermission_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      - name: "permission_id"
+        in: "path"
+        description: "A unique integer value identifying the permission."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/role_resource_permission"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "access_control_roleresourcepermission_delete"
+      parameters:
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      - name: "permission_id"
+        in: "path"
+        description: "A unique integer value identifying the permission."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /sites:
+    get:
+      tags:
+      - "access_control"
+      operationId: "site_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "site_ids"
+        in: "query"
+        description: "An optional list of site ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/site"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "site_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/site_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/site"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /sites/{site_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "site_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "site_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/site_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "site_delete"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /siteroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "siterole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "site_id"
+        in: "query"
+        description: "An optional query parameter to filter by site_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "siterole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/site_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /siteroles/{site_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "siterole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "siterole_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/site_role_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "siterole_delete"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /userdomainroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "userdomainrole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "user_id"
+        in: "query"
+        description: "An optional query parameter to filter by user_id"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "query"
+        description: "An optional query parameter to filter by domain_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "userdomainrole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/user_domain_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /userdomainroles/{user_id}/{domain_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "userdomainrole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_domain_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "userdomainrole_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /usersiteroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "user_id"
+        in: "query"
+        description: "An optional query parameter to filter by user_id"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "query"
+        description: "An optional query parameter to filter by site_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/user_site_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /usersiteroles/{user_id}/{site_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_site_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "usersiterole_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+securityDefinitions:
+  APIKeyHeader:
+    type: "apiKey"
+    name: "X-API-Key"
+    in: "header"
+definitions:
+  domain:
+    type: "object"
+    required:
+    - "created_at"
+    - "id"
+    - "name"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      parent_id:
+        type: "integer"
+      name:
+        type: "string"
+        maxLength: 100
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      parent_id: 6
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+  domain_create:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      parent_id:
+        type: "integer"
+      name:
+        type: "string"
+        maxLength: 100
+      description:
+        type: "string"
+  domain_update:
+    type: "object"
+    properties:
+      parent_id:
+        type: "integer"
+      name:
+        type: "string"
+        maxLength: 100
+      description:
+        type: "string"
+  role_label:
+    type: "string"
+  site:
+    type: "object"
+    required:
+    - "created_at"
+    - "domain_id"
+    - "id"
+    - "is_active"
+    - "name"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      name:
+        type: "string"
+        maxLength: 30
+      client_id:
+        type: "string"
+        maxLength: 255
+      domain_id:
+        type: "integer"
+      description:
+        type: "string"
+      is_active:
+        type: "boolean"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      domain_id: 6
+      is_active: true
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      client_id: "client_id"
+  site_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "name"
+    properties:
+      name:
+        type: "string"
+        maxLength: 30
+      client_id:
+        type: "string"
+        maxLength: 255
+      domain_id:
+        type: "integer"
+      description:
+        type: "string"
+      is_active:
+        type: "boolean"
+  site_update:
+    type: "object"
+    properties:
+      client_id:
+        type: "string"
+        maxLength: 255
+      domain_id:
+        type: "integer"
+      name:
+        type: "string"
+        maxLength: 30
+      description:
+        type: "string"
+      is_active:
+        type: "boolean"
+  role:
+    type: "object"
+    required:
+    - "created_at"
+    - "id"
+    - "label"
+    - "requires_2fa"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      label:
+        $ref: "#/definitions/role_label"
+      requires_2fa:
+        type: "boolean"
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      label: {}
+      requires_2fa: true
+  role_create:
+    type: "object"
+    required:
+    - "label"
+    - "requires_2fa"
+    properties:
+      label:
+        $ref: "#/definitions/role_label"
+      requires_2fa:
+        type: "boolean"
+      description:
+        type: "string"
+  role_update:
+    type: "object"
+    properties:
+      label:
+        type: "string"
+        maxLength: 100
+      requires_2fa:
+        type: "boolean"
+      description:
+        type: "string"
+  site_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "grant_implicitly"
+    - "role_id"
+    - "site_id"
+    - "updated_at"
+    properties:
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      grant_implicitly: true
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  site_role_create:
+    type: "object"
+    required:
+    - "grant_implicitly"
+    - "role_id"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
+  site_role_update:
+    type: "object"
+    properties:
+      grant_implicitly:
+        type: "boolean"
+  domain_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "domain_id"
+    - "grant_implicitly"
+    - "role_id"
+    - "updated_at"
+    properties:
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      domain_id: 0
+      grant_implicitly: true
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "role_id"
+    properties:
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      grant_implicitly:
+        type: "boolean"
+  domain_role_update:
+    type: "object"
+    properties:
+      grant_implicitly:
+        type: "boolean"
+  user_domain_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "domain_id"
+    - "role_id"
+    - "updated_at"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      domain_id: 0
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  user_domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "role_id"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+  user_site_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "role_id"
+    - "site_id"
+    - "updated_at"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  user_site_role_create:
+    type: "object"
+    required:
+    - "role_id"
+    - "site_id"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+  permission:
+    type: "object"
+    required:
+    - "created_at"
+    - "id"
+    - "name"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      name:
+        type: "string"
+        maxLength: 50
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      name: "name"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+  permission_create:
+    type: "object"
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        maxLength: 50
+      description:
+        type: "string"
+  permission_update:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        maxLength: 50
+      description:
+        type: "string"
+  resource:
+    type: "object"
+    required:
+    - "created_at"
+    - "id"
+    - "updated_at"
+    - "urn"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      urn:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      urn: "http://example.com/aeiou"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+  resource_create:
+    type: "object"
+    required:
+    - "urn"
+    properties:
+      urn:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
+  resource_update:
+    type: "object"
+    properties:
+      urn:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
+  role_resource_permission:
+    type: "object"
+    required:
+    - "created_at"
+    - "permission_id"
+    - "resource_id"
+    - "role_id"
+    - "updated_at"
+    properties:
+      role_id:
+        type: "integer"
+      resource_id:
+        type: "integer"
+      permission_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 0
+      resource_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      permission_id: 1
+  role_resource_permission_create:
+    type: "object"
+    required:
+    - "permission_id"
+    - "resource_id"
+    - "role_id"
+    properties:
+      role_id:
+        type: "integer"
+      resource_id:
+        type: "integer"
+      permission_id:
+        type: "integer"
+  invitation:
+    type: "object"
+    required:
+    - "created_at"
+    - "email"
+    - "expires_at"
+    - "first_name"
+    - "id"
+    - "invitor_id"
+    - "last_name"
+    - "updated_at"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        readOnly: true
+      invitor_id:
+        type: "string"
+        format: "uuid"
+        description: "The user that created the invitation"
+      first_name:
+        type: "string"
+        maxLength: 100
+      last_name:
+        type: "string"
+        maxLength: 100
+      email:
+        type: "string"
+        format: "email"
+      expires_at:
+        type: "string"
+        format: "date-time"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      expires_at: "2000-01-23T04:56:07.000+00:00"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      invitor_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      last_name: "last_name"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      first_name: "first_name"
+      email: "email"
+  invitation_create:
+    type: "object"
+    required:
+    - "email"
+    - "first_name"
+    - "invitor_id"
+    - "last_name"
+    properties:
+      invitor_id:
+        type: "string"
+        format: "uuid"
+        description: "The user that created the invitation"
+      first_name:
+        type: "string"
+        maxLength: 100
+      last_name:
+        type: "string"
+        maxLength: 100
+      email:
+        type: "string"
+        format: "email"
+      expires_at:
+        type: "string"
+        format: "date-time"
+  invitation_update:
+    type: "object"
+    properties:
+      first_name:
+        type: "string"
+        maxLength: 100
+      last_name:
+        type: "string"
+        maxLength: 100
+      email:
+        type: "string"
+        format: "email"
+      expires_at:
+        type: "string"
+        format: "date-time"
+  invitation_domain_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "domain_id"
+    - "invitation_id"
+    - "role_id"
+    - "updated_at"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      domain_id: 0
+      invitation_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  invitation_domain_role_create:
+    type: "object"
+    required:
+    - "domain_id"
+    - "invitation_id"
+    - "role_id"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      domain_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+  invitation_site_role:
+    type: "object"
+    required:
+    - "created_at"
+    - "invitation_id"
+    - "role_id"
+    - "site_id"
+    - "updated_at"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      invitation_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      role_id: 6
+      site_id: 0
+      created_at: "2000-01-23T04:56:07.000+00:00"
+  invitation_site_role_create:
+    type: "object"
+    required:
+    - "invitation_id"
+    - "role_id"
+    - "site_id"
+    properties:
+      invitation_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      role_id:
+        type: "integer"
+  site_role_labels_aggregated:
+    type: "object"
+    properties:
+      site_id:
+        type: "integer"
+      roles:
+        type: "array"
+        items:
+          $ref: "#/definitions/role_label"
+    description: "An object containing a site ID and an aggregated list of all the\
+      \ role labels supported by the site and all the domains in its lineage."
+    example:
+      roles:
+      - {}
+      - {}
+      site_id: 0
+  user_site_role_labels_aggregated:
+    type: "object"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      site_id:
+        type: "integer"
+      roles:
+        type: "array"
+        items:
+          $ref: "#/definitions/role_label"
+    description: "An object containing a user ID, site ID and an aggregated list of\
+      \ all the role labels assigned to the user for the site and all the domains\
+      \ in its lineage."
+    example:
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      roles:
+      - {}
+      - {}
+      site_id: 0
+  domain_roles:
+    type: "object"
+    required:
+    - "domain_id"
+    - "roles_map"
+    properties:
+      domain_id:
+        type: "integer"
+        description: "The domain for which the request was made."
+      roles_map:
+        type: "object"
+        example:
+          d:1:
+          - 1
+          d:2:
+          - 1
+          - 2
+        description: "A dictionary where the keys are domain ids prefixed with `d:`\
+          \ and the values are lists of role ids."
+        additionalProperties:
+          type: "array"
+          description: "The list of role ids for the domain"
+          items:
+            type: "integer"
+    description: "An object containing the domain roles defined for a given domain\
+      \ and it's lineage."
+    example:
+      domain_id: 0
+      roles_map:
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
+  site_and_domain_roles:
+    type: "object"
+    required:
+    - "roles_map"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+        description: "The site for which the request was made."
+      roles_map:
+        type: "object"
+        example:
+          s:1:
+          - 1
+          - 2
+          - 3
+          d:1:
+          - 1
+          d:2:
+          - 1
+          - 2
+        description: "A dictionary where the keys are site and domain ids prefixed\
+          \ with `s:` and `d:`, respectively and the values are lists of role ids."
+        additionalProperties:
+          type: "array"
+          description: "The list of role ids for the site or domain"
+          items:
+            type: "integer"
+    description: "An object containing the site- and domain lineage roles defined\
+      \ for a given site."
+    example:
+      site_id: 0
+      roles_map:
+        s:1:
+        - 1
+        - 2
+        - 3
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
+  all_user_roles:
+    type: "object"
+    required:
+    - "roles_map"
+    - "user_id"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      roles_map:
+        type: "object"
+        example:
+          s:1:
+          - 1
+          - 2
+          - 3
+          d:1:
+          - 1
+          d:2:
+          - 1
+          - 2
+        description: "Domain and site roles"
+        additionalProperties:
+          type: "array"
+          items:
+            type: "integer"
+    description: "An object containing the effective roles that a user has in any\
+      \ place in the organisational tree."
+    example:
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      roles_map:
+        s:1:
+        - 1
+        - 2
+        - 3
+        d:1:
+        - 1
+        d:2:
+        - 1
+        - 2
+parameters:
+  optional_limit:
+    name: "limit"
+    in: "query"
+    description: "An optional query parameter to limit the number of results returned."
+    required: false
+    type: "integer"
+    default: 20
+    maximum: 100
+    minimum: 1
+  optional_offset:
+    name: "offset"
+    in: "query"
+    description: "An optional query parameter specifying the offset in the result\
+      \ set to start from."
+    required: false
+    type: "integer"
+    default: 0
+    minimum: 0
+  optional_domain_filter:
+    name: "domain_id"
+    in: "query"
+    description: "An optional query parameter to filter by domain_id"
+    required: false
+    type: "integer"
+  optional_invitation_filter:
+    name: "invitation_id"
+    in: "query"
+    description: "An optional query parameter to filter by invitation_id"
+    required: false
+    type: "string"
+    format: "uuid"
+  optional_role_filter:
+    name: "role_id"
+    in: "query"
+    description: "An optional query parameter to filter by role_id"
+    required: false
+    type: "integer"
+  optional_site_filter:
+    name: "site_id"
+    in: "query"
+    description: "An optional query parameter to filter by site_id"
+    required: false
+    type: "integer"
+  optional_user_filter:
+    name: "user_id"
+    in: "query"
+    description: "An optional query parameter to filter by user_id"
+    required: false
+    type: "string"
+    format: "uuid"
+  domain_id:
+    name: "domain_id"
+    in: "path"
+    description: "A unique integer value identifying the domain."
+    required: true
+    type: "integer"
+  invitation_id:
+    name: "invitation_id"
+    in: "path"
+    description: "A UUID value identifying the invitation."
+    required: true
+    type: "string"
+    format: "uuid"
+  permission_id:
+    name: "permission_id"
+    in: "path"
+    description: "A unique integer value identifying the permission."
+    required: true
+    type: "integer"
+  resource_id:
+    name: "resource_id"
+    in: "path"
+    description: "A unique integer value identifying the resource."
+    required: true
+    type: "integer"
+  role_id:
+    name: "role_id"
+    in: "path"
+    description: "A unique integer value identifying the role."
+    required: true
+    type: "integer"
+  site_id:
+    name: "site_id"
+    in: "path"
+    description: "A unique integer value identifying the site."
+    required: true
+    type: "integer"
+  user_id:
+    name: "user_id"
+    in: "path"
+    description: "A UUID value identifying the user."
+    required: true
+    type: "string"
+    format: "uuid"

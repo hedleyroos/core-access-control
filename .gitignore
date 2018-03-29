@@ -89,6 +89,7 @@ celerybeat-schedule
 .venv
 venv/
 ENV/
+ve/
 
 # Spyder project settings
 .spyderproject
@@ -100,5 +101,11 @@ ENV/
 # mkdocs documentation
 /site
 
+# PyCharm IDE
+.idea/
+
 # mypy
 .mypy_cache/
+
+# Prism mocking tool
+prism

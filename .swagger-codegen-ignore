@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+.gitignore
+setup.py
+tox.ini
+.travis.yml
+requirements.txt
+test-requirements.txt
+swagger_server/controllers/
+swagger_server/test/
+swagger_server/__main__.py

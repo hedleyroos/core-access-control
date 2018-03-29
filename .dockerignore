@@ -1,0 +1,23 @@
+.travis.yml
+.swagger-codegen-ignore
+tox.ini
+test-requirements.txt
+setup.py
+AUTHORS.rst
+CHANGELOG.rst
+README.rst
+MANIFEST.in
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+
+# Distribution / packaging
+.Python
+lib/
+*.egg-info/
+
+# Unit test / coverage reports
+.tox/
+
+# PyCharm
+.idea/
