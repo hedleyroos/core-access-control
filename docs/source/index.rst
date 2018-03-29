@@ -7,10 +7,10 @@ Welcome to Core Access Control's documentation!
 ===============================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
-
+   access_control
 
 Indices and tables
 ==================
