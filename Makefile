@@ -63,12 +63,15 @@ docs-build:  $(VENV)
 	# Remove the tar file.
 	rm backup.tar
 	# Actually make html from index.rst
-	@echo "$(CYAN)Running sphinx command...$(CLEAR)"
-	$(MAKE) -C docs/ clean html SPHINXBUILD=../$(VENV)/bin/sphinx-build
+	@echo "$(CYAN)Generating sphinx sources...$(CLEAR)"
+	$(VENV)/bin/sphinx-apidoc --separate --private --force -o docs/source access_control/ access_control/migrations access_control/test access_control/fixtures
+	@echo "$(GREEN)DONE$(CLEAR)"
+	@echo "$(CYAN)Generating sphinx docs...$(CLEAR)"
+	$(MAKE) -C docs/source clean html SPHINXBUILD=../../$(VENV)/bin/sphinx-build
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Moving build files to docs/ root...$(CLEAR)"
-	cp -r docs/build/html/. docs/
-	rm -rf docs/build/
+	cp -r docs/_build/html/. docs/
+	rm -rf docs/_build/
 	@echo "$(GREEN)DONE$(CLEAR)"
 
 swagger-codegen-cli-$(CODEGEN_VERSION).jar:

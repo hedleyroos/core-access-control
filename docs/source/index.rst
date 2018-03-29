@@ -1,16 +1,15 @@
-.. access_control documentation master file, created by
-   sphinx-quickstart on Wed Mar 28 09:52:06 2018.
+.. Core Access Control documentation master file, created by
+   sphinx-quickstart on Thu Mar 29 11:26:15 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to access_control's documentation!
-==========================================
+Welcome to Core Access Control's documentation!
+===============================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
 
-   access_control
 
 
 Indices and tables
