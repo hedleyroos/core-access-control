@@ -1387,7 +1387,7 @@ def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_
             "offset": offset,
             "limit": limit,
             "ids": {
-                "user_id": site_id,
+                "user_id": user_id,
                 "site_id": site_id,
                 "role_id": role_id
             },
