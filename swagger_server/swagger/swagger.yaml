@@ -183,7 +183,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -307,7 +307,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -454,7 +454,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -617,7 +617,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -746,7 +746,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -867,7 +867,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -996,7 +996,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1120,7 +1120,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1249,7 +1249,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1368,7 +1368,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1492,7 +1492,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1637,7 +1637,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1764,7 +1764,7 @@ paths:
           headers:
             X-Total-Count:
               type: "integer"
-              description: "Total object count."
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
