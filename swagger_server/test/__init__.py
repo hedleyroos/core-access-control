@@ -20,6 +20,10 @@ from swagger_server.encoder import JSONEncoder
 DB = SQLAlchemy()
 
 
+def response_handler(response):
+    response.headers["X-Total-Count"] = 100
+    return response
+
 class BaseTestCase(TestCase):
 
     def create_app(self):
@@ -32,4 +36,5 @@ class BaseTestCase(TestCase):
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
         app.app.wsgi_app = middleware.AuthMiddleware(app.app.wsgi_app)
         app.add_api('swagger.yaml', arguments={'title': 'Test Access Control API'})
+        app.app.after_request(response_handler)
         return app.app
