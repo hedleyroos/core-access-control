@@ -207,6 +207,7 @@ class TestAccessControlRead(BaseTestCase):
             headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
         query_string = [#('offset', 0),
                         ('limit', 2),
                         ('role_id', role_model.id),
@@ -218,6 +219,7 @@ class TestAccessControlRead(BaseTestCase):
             headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_domain_role_update(self):
         """Test case for domain_role_update

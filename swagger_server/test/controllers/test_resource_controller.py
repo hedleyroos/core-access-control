@@ -107,6 +107,7 @@ class TestAccessControlRead(BaseTestCase):
             headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), len(objects))
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
         query_string = [('limit', 2),
                         ('resource_ids', ",".join(map(str, [resource.id for resource in objects])))]
         response = self.client.open(
@@ -116,6 +117,7 @@ class TestAccessControlRead(BaseTestCase):
             headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
     def test_resource_update(self):
         """Test case for resource_update
