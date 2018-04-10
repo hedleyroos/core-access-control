@@ -4,7 +4,7 @@ import connexion
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import exception_handlers, middleware, handlers
+from ge_core_shared import exception_handlers, middleware
 
 import project.app
 from swagger_server import encoder
@@ -20,7 +20,6 @@ app.app.config = project.app.APP.config
 DB.init_app(app.app)
 app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
 app.app.wsgi_app = middleware.AuthMiddleware(app.app.wsgi_app)
-app.app.after_request(handlers.add_total_count)
 
 if __name__ == '__main__':
     app.run(port=8080)

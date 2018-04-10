@@ -2,7 +2,7 @@ import connexion
 import six
 import connexion
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -94,6 +94,7 @@ def domain_delete(domain_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
     """domain_list
 
@@ -202,6 +203,7 @@ def domainrole_delete(domain_id, role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def domainrole_list(offset=None, limit=None, domain_id=None, role_id=None):  # noqa: E501
     """domainrole_list
 
@@ -323,6 +325,7 @@ def invitation_delete(invitation_id):  # noqa: E501
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=None):  # noqa: E501
     """invitation_list
 
@@ -452,6 +455,7 @@ def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E50
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitationdomainrole_list(offset=None, limit=None, invitation_id=None, domain_id=None, role_id=None):  # noqa: E501
     """invitationdomainrole_list
 
@@ -561,6 +565,7 @@ def invitationsiterole_delete(invitation_id, site_id, role_id):  # noqa: E501
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitationsiterole_list(offset=None, limit=None, invitation_id=None, site_id=None, role_id=None):  # noqa: E501
     """invitationsiterole_list
 
@@ -661,6 +666,7 @@ def permission_delete(permission_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def permission_list(offset=None, limit=None, permission_ids=None):  # noqa: E501
     """permission_list
 
@@ -764,6 +770,7 @@ def resource_delete(resource_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # noqa: E501
     """resource_list
 
@@ -869,6 +876,7 @@ def role_delete(role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def role_list(offset=None, limit=None, role_ids=None):  # noqa: E501
     """role_list
 
@@ -954,6 +962,7 @@ def roleresourcepermission_create(data=None):  # noqa: E501
     )
 
 
+@decorators.list_response
 def roleresourcepermission_list(offset=None, limit=None, role_id=None, resource_id=None, permission_id=None):  # noqa: E501
     """roleresourcepermission_list
 
@@ -1049,6 +1058,7 @@ def site_delete(site_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
     """site_list
 
@@ -1157,6 +1167,7 @@ def siterole_delete(site_id, role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def siterole_list(offset=None, limit=None, site_id=None, role_id=None):  # noqa: E501
     """siterole_list
 
@@ -1282,6 +1293,7 @@ def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
         }
     )
 
+@decorators.list_response
 def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, role_id=None):  # noqa: E501
     """userdomainrole_list
 
@@ -1361,6 +1373,7 @@ def usersiterole_create(data=None):  # noqa: E501
     )
 
 
+@decorators.list_response
 def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_id=None):  # noqa: E501
     """usersiterole_list
 
