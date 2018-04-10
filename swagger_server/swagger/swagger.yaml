@@ -180,6 +180,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/domain"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -300,6 +304,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/domain_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -443,6 +451,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/invitation"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -602,6 +614,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/invitation_domain_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -727,6 +743,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/invitation_site_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -844,6 +864,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/permission"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -969,6 +993,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/resource"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1089,6 +1117,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1214,6 +1246,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/role_resource_permission"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1329,6 +1365,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/site"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1449,6 +1489,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/site_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1590,6 +1634,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/user_domain_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:
@@ -1713,6 +1761,10 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/user_site_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     post:
       tags:

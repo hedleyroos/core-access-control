@@ -152,3 +152,4 @@ class UserDomainRoleTestCase(BaseTestCase):
 
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
+        self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
