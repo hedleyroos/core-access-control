@@ -163,6 +163,11 @@ paths:
         default: 20
         maximum: 100
         minimum: 1
+      - name: "parent_id"
+        in: "query"
+        description: "An optional query parameter to filter by parent_id"
+        required: false
+        type: "integer"
       - name: "domain_ids"
         in: "query"
         description: "An optional list of domain ids"
@@ -2714,6 +2719,12 @@ parameters:
     required: false
     type: "string"
     format: "uuid"
+  optional_parent_filter:
+    name: "parent_id"
+    in: "query"
+    description: "An optional query parameter to filter by parent_id"
+    required: false
+    type: "integer"
   optional_role_filter:
     name: "role_id"
     in: "query"
