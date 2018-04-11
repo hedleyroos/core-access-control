@@ -119,7 +119,7 @@ def domain_list(offset=None, limit=None, parent_id=None, domain_ids=None):  # no
             "offset": offset,
             "limit": limit,
             "ids": {
-                "domain_ids": domain_ids,
+                "id": domain_ids,
                 "parent_id": parent_id
             },
             "order_by": ["id"]
