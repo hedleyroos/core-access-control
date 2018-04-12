@@ -1358,6 +1358,11 @@ paths:
         collectionFormat: "multi"
         minItems: 0
         uniqueItems: true
+      - name: "client_id"
+        in: "query"
+        description: "An optional client id to filter on"
+        required: false
+        type: "integer"
       responses:
         200:
           description: ""

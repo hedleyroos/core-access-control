@@ -155,6 +155,15 @@ class TestAccessControlRead(BaseTestCase):
         self.assertEqual(len(r_data), 2)
         self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
+        query_string = [('limit', 10), ('client_id', 1)]
+        response = self.client.open(
+            '/api/v1/sites',
+            method='GET',
+            query_string=query_string, headers=self.headers)
+        r_data = json.loads(response.data)
+        self.assertEqual(len(r_data), 1)
+        self.assertEqual(int(response.headers["X-Total-Count"]), 1)
+
     def test_site_update(self):
         """Test case for site_update
         """
