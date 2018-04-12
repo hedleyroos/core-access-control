@@ -1926,8 +1926,7 @@ definitions:
         type: "string"
         maxLength: 30
       client_id:
-        type: "string"
-        maxLength: 255
+        type: "integer"
       domain_id:
         type: "integer"
       description:
@@ -1943,14 +1942,14 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
-      domain_id: 6
+      domain_id: 1
       is_active: true
       updated_at: "2000-01-23T04:56:07.000+00:00"
       name: "name"
       description: "description"
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
-      client_id: "client_id"
+      client_id: 6
   site_create:
     type: "object"
     required:
@@ -1961,8 +1960,7 @@ definitions:
         type: "string"
         maxLength: 30
       client_id:
-        type: "string"
-        maxLength: 255
+        type: "integer"
       domain_id:
         type: "integer"
       description:
@@ -1973,8 +1971,7 @@ definitions:
     type: "object"
     properties:
       client_id:
-        type: "string"
-        maxLength: 255
+        type: "integer"
       domain_id:
         type: "integer"
       name:
