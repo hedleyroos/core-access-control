@@ -7,6 +7,7 @@ import uuid
 import werkzeug
 from flask import json
 
+from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
@@ -18,6 +19,11 @@ from ge_core_shared import db_actions
 class TestAccessControlRead(BaseTestCase):
 
     def setUp(self):
+        # Clear tables
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
+
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
@@ -32,7 +38,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid1().int>>97,
+            "client_id": 0,
             "is_active": True,
         }
         self.site_model = db_actions.crud(
@@ -51,7 +57,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": "%s" % (uuid.uuid1().int>>97),
+            "client_id": 1,
             "is_active": True,
         })
         response = self.client.open(
@@ -88,7 +94,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid1().int>>97,
+            "client_id": 2,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -112,13 +118,16 @@ class TestAccessControlRead(BaseTestCase):
     def test_site_list(self):
         """Test case for site_list
         """
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
                 "name": ("%s" % uuid.uuid1())[:30],
                 "domain_id": self.domain_model.id,
                 "description": "a super cool test site",
-                "client_id": uuid.uuid1().int>>97,
+                "client_id": index+3,
                 "is_active": True,
             }
             objects.append(db_actions.crud(
@@ -146,14 +155,26 @@ class TestAccessControlRead(BaseTestCase):
         self.assertEqual(len(r_data), 2)
         self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
+        query_string = [('limit', 10), ('client_id', 4)]
+        response = self.client.open(
+            '/api/v1/sites',
+            method='GET',
+            query_string=query_string, headers=self.headers)
+        r_data = json.loads(response.data)
+        self.assertEqual(len(r_data), 1)
+        self.assertEqual(int(response.headers["X-Total-Count"]), 1)
+
     def test_site_update(self):
         """Test case for site_update
         """
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
         data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": uuid.uuid1().int>>97,
+            "client_id": 0,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -165,7 +186,7 @@ class TestAccessControlRead(BaseTestCase):
         data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "site updated",
-            "client_id": "%s" % (uuid.uuid1().int>>97),
+            "client_id": 1,
             "is_active": False,
         }
         data = SiteUpdate(

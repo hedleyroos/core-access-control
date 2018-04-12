@@ -1069,7 +1069,7 @@ def site_delete(site_id):  # noqa: E501
 
 
 @decorators.list_response
-def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
+def site_list(offset=None, limit=None, site_ids=None, client_id=None):  # noqa: E501
     """site_list
 
      # noqa: E501
@@ -1080,6 +1080,8 @@ def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
     :type limit: int
     :param site_ids: An optional list of site ids
     :type site_ids: List[int]
+    :param client_id: An optional client id to filter on
+    :type client_id: int
 
     :rtype: List[Site]
     """
@@ -1087,7 +1089,8 @@ def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
         model="Site",
         api_model=Site,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": site_ids, "order_by": ["id"]}
+        query={"offset": offset, "limit": limit,
+               "ids": {"id": site_ids, "client_id": client_id}, "order_by": ["id"]}
     )
 
 
