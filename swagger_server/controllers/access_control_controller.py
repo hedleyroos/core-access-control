@@ -95,7 +95,7 @@ def domain_delete(domain_id):  # noqa: E501
 
 
 @decorators.list_response
-def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
+def domain_list(offset=None, limit=None, parent_id=None, domain_ids=None):  # noqa: E501
     """domain_list
 
      # noqa: E501
@@ -104,6 +104,8 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
     :type offset: int
     :param limit: An optional query parameter to limit the number of results returned.
     :type limit: int
+    :param parent_id: An Optional query parameter to get all domains with the given parent_id.
+    :type parent_id: int
     :param domain_ids: An optional list of domain ids
     :type domain_ids: List[int]
 
@@ -113,7 +115,15 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
         model="Domain",
         api_model=Domain,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": domain_ids, "order_by": ["id"]}
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": domain_ids,
+                "parent_id": parent_id
+            },
+            "order_by": ["id"]
+        }
     )
 
 
