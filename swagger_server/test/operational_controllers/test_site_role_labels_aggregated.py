@@ -32,7 +32,7 @@ class TestOperationalController(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": "%s" % uuid.uuid1(),
+            "client_id": "%d" % random.randint(0, 100),
             "is_active": True,
         }
         self.site_model = db_actions.crud(
