@@ -38,7 +38,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": random.randint(0, 100),
+            "client_id": 0,
             "is_active": True,
         }
         self.site_model = db_actions.crud(
@@ -57,7 +57,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": random.randint(0, 100),
+            "client_id": 1,
             "is_active": True,
         })
         response = self.client.open(
@@ -94,7 +94,7 @@ class TestAccessControlRead(BaseTestCase):
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": random.randint(0, 100),
+            "client_id": 2,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -127,7 +127,7 @@ class TestAccessControlRead(BaseTestCase):
                 "name": ("%s" % uuid.uuid1())[:30],
                 "domain_id": self.domain_model.id,
                 "description": "a super cool test site",
-                "client_id": index,
+                "client_id": index+3,
                 "is_active": True,
             }
             objects.append(db_actions.crud(
@@ -155,7 +155,7 @@ class TestAccessControlRead(BaseTestCase):
         self.assertEqual(len(r_data), 2)
         self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
 
-        query_string = [('limit', 10), ('client_id', 1)]
+        query_string = [('limit', 10), ('client_id', 4)]
         response = self.client.open(
             '/api/v1/sites',
             method='GET',
@@ -167,11 +167,14 @@ class TestAccessControlRead(BaseTestCase):
     def test_site_update(self):
         """Test case for site_update
         """
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
         data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "domain_id": self.domain_model.id,
             "description": "a super cool test site",
-            "client_id": random.randint(0, 100),
+            "client_id": 0,
             "is_active": True,
         }
         model = db_actions.crud(
@@ -183,7 +186,7 @@ class TestAccessControlRead(BaseTestCase):
         data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "site updated",
-            "client_id": random.randint(0, 100),
+            "client_id": 1,
             "is_active": False,
         }
         data = SiteUpdate(
