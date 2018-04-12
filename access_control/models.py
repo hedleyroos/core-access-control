@@ -148,7 +148,7 @@ class Site(DB.Model):
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
     domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True)
     description = DB.Column(DB.Text)
-    client_id = DB.Column(DB.VARCHAR(255), unique=True, index=True)
+    client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True)
     created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
