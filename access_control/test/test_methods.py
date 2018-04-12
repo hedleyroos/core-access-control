@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from ge_core_shared.db_actions import get_or_create, delete_entry
+from ge_core_shared.db_actions import get_or_create, delete_entry, list_entry
 
 from access_control import models
 
@@ -24,3 +24,42 @@ class GetOrCreateTestCase(TestCase):
         instance, created = get_or_create(models.Resource, id=instance.id, urn=URN)
         self.assertTrue(instance is not None)
         self.assertFalse(created)
+
+
+class ListFiltersTestCase(TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        # Create a few domains.
+        try:
+            delete_entry(models.Domain, query={"name": "Domain 1"})
+        except Exception:
+            pass
+        try:
+            delete_entry(models.Domain, query={"name": "Domain 2"})
+        except Exception:
+            pass
+        cls.domain_1, created = get_or_create(models.Domain, name="Domain 1")
+        cls.domain_2, created = get_or_create(models.Domain, name="Domain 2")
+
+    def test_list_entry(self):
+        entries = list_entry(
+            models.Domain,
+            query={
+                "ids": {
+                    "id": self.domain_1.id
+                },
+                "order_by": ["id"]
+            }
+        )
+        self.assertEquals(len(entries), 1)
+        entries = list_entry(
+            models.Domain,
+            query={
+                "ids": {
+                    "id": [self.domain_1.id, self.domain_2.id]
+                },
+                "order_by": ["id"]
+            }
+        )
+        self.assertEquals(len(entries), 2)
