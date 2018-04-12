@@ -1751,6 +1751,11 @@ paths:
           minItems: 0
           collectionFormat: multi
           uniqueItems: true
+        - name: client_id
+          description: An optional client id to filter on
+          in: query
+          type: integer
+          required: false
       produces:
         - application/json
       responses:
