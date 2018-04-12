@@ -32,17 +32,31 @@ class ListFiltersTestCase(TestCase):
     def setUpClass(cls):
         # Create a few domains.
         try:
-            delete_entry(models.Domain, query={"name": "Domain 1"})
-        except Exception:
-            pass
-        try:
             delete_entry(models.Domain, query={"name": "Domain 2"})
         except Exception:
             pass
-        cls.domain_1, created = get_or_create(models.Domain, name="Domain 1")
-        cls.domain_2, created = get_or_create(models.Domain, name="Domain 2")
+        try:
+            delete_entry(models.Domain, query={"name": "Domain 1"})
+        except Exception:
+            pass
+        cls.domain_1, created = get_or_create(
+            models.Domain, name="Domain 1"
+        )
+        cls.domain_2, created = get_or_create(
+            models.Domain, name="Domain 2", parent_id=cls.domain_1.id
+        )
 
     def test_list_entry(self):
+        # Test get unfiltered list.
+        entries = list_entry(
+            models.Domain,
+            query={
+                "order_by": ["id"]
+            }
+        )
+        # Maybe more than the two created but at least 2.
+        self.assertGreaterEqual(len(entries), 2)
+        # Test get list with single model id.
         entries = list_entry(
             models.Domain,
             query={
@@ -53,13 +67,16 @@ class ListFiltersTestCase(TestCase):
             }
         )
         self.assertEquals(len(entries), 1)
+        # Test get list with model ids and an additional filter.
         entries = list_entry(
             models.Domain,
             query={
                 "ids": {
-                    "id": [self.domain_1.id, self.domain_2.id]
+                    "id": [self.domain_1.id, self.domain_2.id],
+                    "parent_id": self.domain_1.id
                 },
                 "order_by": ["id"]
             }
         )
-        self.assertEquals(len(entries), 2)
+        self.assertEquals(len(entries), 1)
+        self.assertEquals(entries[0][0].id, self.domain_2.id)
