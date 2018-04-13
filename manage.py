@@ -7,6 +7,7 @@ if __name__ == "__main__":
     from flask_migrate import Migrate, MigrateCommand
     from flask_sqlalchemy import SQLAlchemy
     from flask_script import Manager
+    from flask.ext.dbshell import DbShell
 
     import project.app
     from access_control import models
@@ -17,5 +18,11 @@ if __name__ == "__main__":
 
     manager = Manager(APP)
     manager.add_command("db", MigrateCommand)
+
+    def dbshell():
+        shell = DbShell(url=app.config['DATABASE_URI'])
+        shell.run_shell()
+
+    manager.add_command("dbshell", dbshell)
 
     manager.run()
