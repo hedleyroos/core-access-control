@@ -346,7 +346,6 @@ definitions:
     required:
       - site_id
       - role_id
-      - grant_implicitly
 
   site_role_update:
     type: object
