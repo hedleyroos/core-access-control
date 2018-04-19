@@ -16,7 +16,7 @@ class RoleCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, label: RoleLabel=None, requires_2fa: bool=None, description: str=None):  # noqa: E501
+    def __init__(self, label: RoleLabel=None, requires_2fa: bool=True, description: str=None):  # noqa: E501
         """RoleCreate - a model defined in Swagger
 
         :param label: The label of this RoleCreate.  # noqa: E501
@@ -94,8 +94,6 @@ class RoleCreate(Model):
         :param requires_2fa: The requires_2fa of this RoleCreate.
         :type requires_2fa: bool
         """
-        if requires_2fa is None:
-            raise ValueError("Invalid value for `requires_2fa`, must not be `None`")  # noqa: E501
 
         self._requires_2fa = requires_2fa
 

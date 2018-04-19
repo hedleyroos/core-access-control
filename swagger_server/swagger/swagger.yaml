@@ -2023,12 +2023,12 @@ definitions:
     type: "object"
     required:
     - "label"
-    - "requires_2fa"
     properties:
       label:
         $ref: "#/definitions/role_label"
       requires_2fa:
         type: "boolean"
+        default: true
       description:
         type: "string"
   role_update:
