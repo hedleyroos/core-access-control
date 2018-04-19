@@ -292,11 +292,11 @@ definitions:
         $ref: '#/definitions/role_label'
       requires_2fa:
         type: boolean
+        default: true
       description:
         type: string
     required:
       - label
-      - requires_2fa
 
   role_update:
     type: object
