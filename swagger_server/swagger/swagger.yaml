@@ -139,6 +139,60 @@ paths:
         404:
           description: "User not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/user_and_roles_by_domain/{domain_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of Users with their effective roles within the given\
+        \ domain."
+      operationId: "get_domain_users_and_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_and_roles"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Domain not found"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/user_and_roles_by_site/{site_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of Users with their effective roles within the given\
+        \ site."
+      operationId: "get_site_users_and_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_and_roles"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Site not found"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /domains:
     get:
       tags:
@@ -2688,6 +2742,24 @@ definitions:
         d:2:
         - 1
         - 2
+  user_and_roles:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      roles:
+        type: "array"
+        items:
+          type: "string"
+    description: "A user and their roles."
+    example:
+      roles:
+      - "roles"
+      - "roles"
+      name: "name"
+      id: 0
 parameters:
   optional_limit:
     name: "limit"

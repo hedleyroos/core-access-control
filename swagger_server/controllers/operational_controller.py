@@ -223,6 +223,87 @@ SELECT DISTINCT(label)
  WHERE role.id = _role_ids.role_id
 """
 
+SQL_USERS_AND_ROLES_BY_DOMAIN = """
+-- Given the domain_id, find all roles each user has on that domain.
+
+-- We find all the domains above the given domain in the hierarchy
+-- in order to find all explicit and implicit roles the a user can have.
+WITH RECURSIVE _parent_domains AS (
+  SELECT domain.id, domain.parent_id, domain.name
+    FROM domain AS domain
+   WHERE domain.id = :domain_id
+   UNION
+  SELECT domain.id, domain.parent_id, domain.name
+    FROM _parent_domains,
+         domain AS domain
+   WHERE domain.id = _parent_domains.parent_id
+),
+_roles AS (
+  SELECT userdomainrole.user_id,
+         -- Domain roles are distinct per definition
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = domainrole.role_id
+                            )
+         ) AS implicit_roles,
+         -- User domain roles are distinct per definition
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = userdomainrole.role_id
+                            )
+         ) AS explicit_roles
+    FROM _parent_domains AS domain
+    LEFT OUTER JOIN domain_role AS domainrole
+         ON (domain.id = domainrole.domain_id AND
+             domainrole.grant_implicitly)
+    LEFT OUTER JOIN user_domain_role AS userdomainrole
+         ON (domain.id = userdomainrole.domain_id)
+   WHERE userdomainrole.user_id NOTNULL
+   GROUP BY userdomainrole.user_id
+)
+-- Return all the roles per user for the domain. The list of roles needs to be post-processed
+-- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
+SELECT user_id, implicit_roles || explicit_roles AS roles
+  FROM _roles;
+"""
+
+SQL_USERS_AND_ROLES_BY_SITE = """
+-- Given the site_id, find all roles each user has on that site.
+
+-- Simply get all roles on the usersiteroles and group by user_id.
+-- Also all explicit site roles are included.
+WITH _roles AS (
+  SELECT usersiterole.user_id,
+         -- Site roles are distinct per definition
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = siterole.role_id
+                            )
+         ) AS implicit_roles,
+         -- User site roles are distinct per definition
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = usersiterole.role_id
+                            )
+         ) AS explicit_roles
+    FROM user_site_role AS usersiterole
+    LEFT OUTER JOIN site_role AS siterole
+         ON (usersiterole.site_id = siterole.site_id AND
+             siterole.grant_implicitly)
+   WHERE usersiterole.site_id = :site_id AND usersiterole.user_id NOTNULL
+   GROUP BY usersiterole.user_id
+)
+-- Return all roles per user for the site. The list of roles needs to be post-processed
+-- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
+SELECT user_id, implicit_roles || explicit_roles AS roles
+  FROM _roles;
+"""
+
+
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
 
