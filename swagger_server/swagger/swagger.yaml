@@ -2745,18 +2745,18 @@ definitions:
   user_and_roles:
     type: "object"
     properties:
-      id:
-        type: "integer"
+      user_id:
+        type: "string"
       roles:
         type: "array"
         items:
           type: "string"
     description: "A user and their roles."
     example:
+      user_id: "user_id"
       roles:
       - "roles"
       - "roles"
-      id: 0
 parameters:
   optional_limit:
     name: "limit"

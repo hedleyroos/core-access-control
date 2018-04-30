@@ -870,8 +870,8 @@ definitions:
     description: 'A user and their roles.'
     type: object
     properties:
-      id:
-        type: integer
+      user_id:
+        type: string
       roles:
         type: array
         items:

@@ -15,25 +15,25 @@ class UserAndRoles(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, roles: List[str]=None):  # noqa: E501
+    def __init__(self, user_id: str=None, roles: List[str]=None):  # noqa: E501
         """UserAndRoles - a model defined in Swagger
 
-        :param id: The id of this UserAndRoles.  # noqa: E501
-        :type id: int
+        :param user_id: The user_id of this UserAndRoles.  # noqa: E501
+        :type user_id: str
         :param roles: The roles of this UserAndRoles.  # noqa: E501
         :type roles: List[str]
         """
         self.swagger_types = {
-            'id': int,
+            'user_id': str,
             'roles': List[str]
         }
 
         self.attribute_map = {
-            'id': 'id',
+            'user_id': 'user_id',
             'roles': 'roles'
         }
 
-        self._id = id
+        self._user_id = user_id
         self._roles = roles
 
     @classmethod
@@ -48,25 +48,25 @@ class UserAndRoles(Model):
         return util.deserialize_model(dikt, cls)
 
     @property
-    def id(self) -> int:
-        """Gets the id of this UserAndRoles.
+    def user_id(self) -> str:
+        """Gets the user_id of this UserAndRoles.
 
 
-        :return: The id of this UserAndRoles.
-        :rtype: int
+        :return: The user_id of this UserAndRoles.
+        :rtype: str
         """
-        return self._id
+        return self._user_id
 
-    @id.setter
-    def id(self, id: int):
-        """Sets the id of this UserAndRoles.
+    @user_id.setter
+    def user_id(self, user_id: str):
+        """Sets the user_id of this UserAndRoles.
 
 
-        :param id: The id of this UserAndRoles.
-        :type id: int
+        :param user_id: The user_id of this UserAndRoles.
+        :type user_id: str
         """
 
-        self._id = id
+        self._user_id = user_id
 
     @property
     def roles(self) -> List[str]:
