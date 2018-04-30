@@ -872,8 +872,6 @@ definitions:
     properties:
       id:
         type: integer
-      name:
-        type: string
       roles:
         type: array
         items:

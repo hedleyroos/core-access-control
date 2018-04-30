@@ -2747,8 +2747,6 @@ definitions:
     properties:
       id:
         type: "integer"
-      name:
-        type: "string"
       roles:
         type: "array"
         items:
@@ -2758,7 +2756,6 @@ definitions:
       roles:
       - "roles"
       - "roles"
-      name: "name"
       id: 0
 parameters:
   optional_limit:

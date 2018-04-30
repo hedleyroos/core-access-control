@@ -15,30 +15,25 @@ class UserAndRoles(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, name: str=None, roles: List[str]=None):  # noqa: E501
+    def __init__(self, id: int=None, roles: List[str]=None):  # noqa: E501
         """UserAndRoles - a model defined in Swagger
 
         :param id: The id of this UserAndRoles.  # noqa: E501
         :type id: int
-        :param name: The name of this UserAndRoles.  # noqa: E501
-        :type name: str
         :param roles: The roles of this UserAndRoles.  # noqa: E501
         :type roles: List[str]
         """
         self.swagger_types = {
             'id': int,
-            'name': str,
             'roles': List[str]
         }
 
         self.attribute_map = {
             'id': 'id',
-            'name': 'name',
             'roles': 'roles'
         }
 
         self._id = id
-        self._name = name
         self._roles = roles
 
     @classmethod
@@ -72,27 +67,6 @@ class UserAndRoles(Model):
         """
 
         self._id = id
-
-    @property
-    def name(self) -> str:
-        """Gets the name of this UserAndRoles.
-
-
-        :return: The name of this UserAndRoles.
-        :rtype: str
-        """
-        return self._name
-
-    @name.setter
-    def name(self, name: str):
-        """Sets the name of this UserAndRoles.
-
-
-        :param name: The name of this UserAndRoles.
-        :type name: str
-        """
-
-        self._name = name
 
     @property
     def roles(self) -> List[str]:

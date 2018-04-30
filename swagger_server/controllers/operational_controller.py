@@ -223,7 +223,7 @@ SELECT DISTINCT(label)
  WHERE role.id = _role_ids.role_id
 """
 
-SQL_USERS_AND_ROLES_BY_DOMAIN = """
+SQL_DOMAIN_USERS_AND_ROLES = """
 -- Given the domain_id, find all roles each user has on that domain.
 
 -- We find all the domains above the given domain in the hierarchy
@@ -269,7 +269,7 @@ SELECT user_id, implicit_roles || explicit_roles AS roles
   FROM _roles;
 """
 
-SQL_USERS_AND_ROLES_BY_SITE = """
+SQL_SITE_USERS_AND_ROLES = """
 -- Given the site_id, find all roles each user has on that site.
 
 -- Simply get all roles on the usersiteroles and group by user_id.
@@ -289,17 +289,38 @@ WITH _roles AS (
                               FROM role
                               WHERE role.id = usersiterole.role_id
                             )
-         ) AS explicit_roles
+         ) AS explicit_roles,
+         -- Site inherits implicit roles from its domain
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = domainrole.role_id
+                            )
+         ) AS inherited_implicit_roles,
+         -- Site inherits explicit roles from its domain
+         array_agg(DISTINCT (
+                              SELECT role.label
+                              FROM role
+                              WHERE role.id = userdomainrole.role_id
+                            )
+         ) AS inherited_explicit_roles
     FROM user_site_role AS usersiterole
+    LEFT OUTER JOIN site AS site
+         ON (site.id = :site_id)
     LEFT OUTER JOIN site_role AS siterole
          ON (usersiterole.site_id = siterole.site_id AND
              siterole.grant_implicitly)
+    LEFT OUTER JOIN domain_role AS domainrole
+         ON (domainrole.domain_id = site.domain_id AND
+             domainrole.grant_implicitly)
+    LEFT OUTER JOIN user_domain_role AS userdomainrole
+         ON (userdomainrole.domain_id = site.domain_id)
    WHERE usersiterole.site_id = :site_id AND usersiterole.user_id NOTNULL
    GROUP BY usersiterole.user_id
 )
 -- Return all roles per user for the site. The list of roles needs to be post-processed
 -- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
-SELECT user_id, implicit_roles || explicit_roles AS roles
+SELECT user_id, implicit_roles || explicit_roles || inherited_implicit_roles || inherited_explicit_roles AS roles
   FROM _roles;
 """
 
@@ -449,3 +470,20 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
         "site_id": site_id}
     )
     return obj
+
+
+def get_domain_users_and_roles(domain_id): # noqa: E501
+    """get_domain_users_and_roles
+
+    Get a list of all users with their roles on a given domain.
+
+    :param domain_id: An ID of a domain.
+    :type domain_id: int
+
+    :rtype: UsersAndRoles
+    """
+    sql = text(SQL_DOMAIN_USERS_AND_ROLES)
+    result = db.session.get_bind().execute(sql, **{"domain_id": domain_id})
+    import pdb;
+    pdb.set_trace()
+
