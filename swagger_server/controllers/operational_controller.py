@@ -460,10 +460,10 @@ def get_users_with_roles_for_domain(domain_id): # noqa: E501
     sql = text(SQL_USERS_WITH_ROLES_FOR_DOMAIN)
     result = db.session.get_bind().execute(sql, **{"domain_id": domain_id})
     users_with_roles = [
-        UserWithRoles(**{
-            "user_id": row["user_id"],
-            "role_ids": row["role_ids"]
-        }) for row in result
+        UserWithRoles(
+            user_id=row["user_id"],
+            role_ids=row["role_ids"]
+        ) for row in result
     ]
     return users_with_roles
 
@@ -481,9 +481,9 @@ def get_users_with_roles_for_site(site_id): # noqa: E501
     sql = text(SQL_USERS_WITH_ROLES_FOR_SITE)
     result = db.session.get_bind().execute(sql, **{"site_id": site_id})
     users_with_roles = [
-        UserWithRoles(**{
-            "user_id": row["user_id"],
-            "role_ids": row["role_ids"]
-        }) for row in result
+        UserWithRoles(
+            user_id=row["user_id"],
+            role_ids=row["role_ids"]
+        ) for row in result
     ]
     return users_with_roles
