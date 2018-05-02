@@ -139,13 +139,13 @@ paths:
         404:
           description: "User not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/user_and_roles_by_domain/{domain_id}:
+  /ops/users_with_roles_for_domain/{domain_id}:
     get:
       tags:
       - "operational"
       description: "Get a list of Users with their effective roles within the given\
         \ domain."
-      operationId: "get_domain_users_and_roles"
+      operationId: "get_users_with_roles_for_domain"
       produces:
       - "application/json"
       parameters:
@@ -166,13 +166,13 @@ paths:
         404:
           description: "Domain not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
-  /ops/user_and_roles_by_site/{site_id}:
+  /ops/users_with_roles_for_site/{site_id}:
     get:
       tags:
       - "operational"
       description: "Get a list of Users with their effective roles within the given\
         \ site."
-      operationId: "get_site_users_and_roles"
+      operationId: "get_users_with_roles_for_site"
       produces:
       - "application/json"
       parameters:
@@ -2747,16 +2747,16 @@ definitions:
     properties:
       user_id:
         type: "string"
-      roles:
+      role_ids:
         type: "array"
         items:
-          type: "string"
+          type: "integer"
     description: "A user and their roles."
     example:
       user_id: "user_id"
-      roles:
-      - "roles"
-      - "roles"
+      role_ids:
+      - 0
+      - 0
 parameters:
   optional_limit:
     name: "limit"

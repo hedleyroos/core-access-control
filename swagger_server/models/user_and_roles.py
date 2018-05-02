@@ -15,26 +15,26 @@ class UserAndRoles(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, user_id: str=None, roles: List[str]=None):  # noqa: E501
+    def __init__(self, user_id: str=None, role_ids: List[int]=None):  # noqa: E501
         """UserAndRoles - a model defined in Swagger
 
         :param user_id: The user_id of this UserAndRoles.  # noqa: E501
         :type user_id: str
-        :param roles: The roles of this UserAndRoles.  # noqa: E501
-        :type roles: List[str]
+        :param role_ids: The role_ids of this UserAndRoles.  # noqa: E501
+        :type role_ids: List[int]
         """
         self.swagger_types = {
             'user_id': str,
-            'roles': List[str]
+            'role_ids': List[int]
         }
 
         self.attribute_map = {
             'user_id': 'user_id',
-            'roles': 'roles'
+            'role_ids': 'role_ids'
         }
 
         self._user_id = user_id
-        self._roles = roles
+        self._role_ids = role_ids
 
     @classmethod
     def from_dict(cls, dikt) -> 'UserAndRoles':
@@ -69,22 +69,22 @@ class UserAndRoles(Model):
         self._user_id = user_id
 
     @property
-    def roles(self) -> List[str]:
-        """Gets the roles of this UserAndRoles.
+    def role_ids(self) -> List[int]:
+        """Gets the role_ids of this UserAndRoles.
 
 
-        :return: The roles of this UserAndRoles.
-        :rtype: List[str]
+        :return: The role_ids of this UserAndRoles.
+        :rtype: List[int]
         """
-        return self._roles
+        return self._role_ids
 
-    @roles.setter
-    def roles(self, roles: List[str]):
-        """Sets the roles of this UserAndRoles.
+    @role_ids.setter
+    def role_ids(self, role_ids: List[int]):
+        """Sets the role_ids of this UserAndRoles.
 
 
-        :param roles: The roles of this UserAndRoles.
-        :type roles: List[str]
+        :param role_ids: The role_ids of this UserAndRoles.
+        :type role_ids: List[int]
         """
 
-        self._roles = roles
+        self._role_ids = role_ids

@@ -872,10 +872,10 @@ definitions:
     properties:
       user_id:
         type: string
-      roles:
+      role_ids:
         type: array
         items:
-          type: string
+          type: integer
 
 paths:
   /ops/site_role_labels_aggregated/{site_id}:
@@ -971,12 +971,12 @@ paths:
       tags:
         - operational
 
-  /ops/user_and_roles_by_domain/{domain_id}:
+  /ops/users_with_roles_for_domain/{domain_id}:
     parameters:
       - $ref: '#/parameters/domain_id'
     get:
       description: 'Get a list of Users with their effective roles within the given domain.'
-      operationId: get_domain_users_and_roles
+      operationId: get_users_with_roles_for_domain
       produces:
         - application/json
       responses:
@@ -993,12 +993,12 @@ paths:
       tags:
         - operational
 
-  /ops/user_and_roles_by_site/{site_id}:
+  /ops/users_with_roles_for_site/{site_id}:
     parameters:
       - $ref: '#/parameters/site_id'
     get:
       description: 'Get a list of Users with their effective roles within the given site.'
-      operationId: get_site_users_and_roles
+      operationId: get_users_with_roles_for_site
       produces:
         - application/json
       responses:
