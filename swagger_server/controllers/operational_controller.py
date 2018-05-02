@@ -10,7 +10,7 @@ from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_and_roles import UserAndRoles
+from swagger_server.models.user_with_roles import UserWithRoles
 from swagger_server import util
 
 db = project.app.DB
@@ -455,17 +455,17 @@ def get_users_with_roles_for_domain(domain_id): # noqa: E501
     :param domain_id: An ID of a domain.
     :type domain_id: int
 
-    :rtype: UserAndRoles
+    :rtype: List [UserWithRoles]
     """
     sql = text(SQL_USERS_WITH_ROLES_FOR_DOMAIN)
     result = db.session.get_bind().execute(sql, **{"domain_id": domain_id})
-    users_and_roles = [
-        UserAndRoles(**{
-            "user_id": row["user_id"], 
+    users_with_roles = [
+        UserWithRoles(**{
+            "user_id": row["user_id"],
             "role_ids": row["role_ids"]
         }) for row in result
     ]
-    return users_and_roles
+    return users_with_roles
 
 
 def get_users_with_roles_for_site(site_id): # noqa: E501
@@ -476,14 +476,14 @@ def get_users_with_roles_for_site(site_id): # noqa: E501
     :param site_id: An ID of a domain.
     :type site_id: int
 
-    :rtype: UserAndRoles
+    :rtype: List [UserWithRoles]
     """
     sql = text(SQL_USERS_WITH_ROLES_FOR_SITE)
     result = db.session.get_bind().execute(sql, **{"site_id": site_id})
-    users_and_roles = [
-        UserAndRoles(**{
+    users_with_roles = [
+        UserWithRoles(**{
             "user_id": row["user_id"],
             "role_ids": row["role_ids"]
         }) for row in result
     ]
-    return users_and_roles
+    return users_with_roles

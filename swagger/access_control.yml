@@ -866,12 +866,13 @@ definitions:
       - user_id
       - roles_map
 
-  user_and_roles:
-    description: 'A user and their roles.'
+  user_with_roles:
+    description: 'A user with their roles.'
     type: object
     properties:
       user_id:
         type: string
+        format: uuid
       role_ids:
         type: array
         items:
@@ -985,7 +986,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/user_and_roles'
+              $ref: '#/definitions/user_with_roles'
         403:
           description: 'Forbidden'
         404:
@@ -1007,7 +1008,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/user_and_roles'
+              $ref: '#/definitions/user_with_roles'
         403:
           description: 'Forbidden'
         404:

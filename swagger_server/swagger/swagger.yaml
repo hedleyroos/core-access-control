@@ -160,7 +160,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/user_and_roles"
+              $ref: "#/definitions/user_with_roles"
         403:
           description: "Forbidden"
         404:
@@ -187,7 +187,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/user_and_roles"
+              $ref: "#/definitions/user_with_roles"
         403:
           description: "Forbidden"
         404:
@@ -2742,18 +2742,19 @@ definitions:
         d:2:
         - 1
         - 2
-  user_and_roles:
+  user_with_roles:
     type: "object"
     properties:
       user_id:
         type: "string"
+        format: "uuid"
       role_ids:
         type: "array"
         items:
           type: "integer"
-    description: "A user and their roles."
+    description: "A user with their roles."
     example:
-      user_id: "user_id"
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
       role_ids:
       - 0
       - 0
