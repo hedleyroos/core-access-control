@@ -225,78 +225,53 @@ SELECT DISTINCT(label)
 """
 
 SQL_USERS_WITH_ROLES_FOR_DOMAIN = """
--- Given the domain_id, find all roles each user has on that domain.
+-- Given a domain_id, find all users and their roles on that domain.
 
--- We find all the domains above the given domain in the hierarchy
--- in order to find all effective roles the a user has.
-WITH RECURSIVE _parent_domains AS (
-  SELECT domain.id, domain.parent_id, domain.name
-    FROM domain AS domain
+-- We find all the users that has roles in the specified domains lineage
+-- in order to get all effective roles the a users have.
+WITH RECURSIVE _domain_lineage AS (
+  SELECT domain.id, domain.parent_id
+    FROM domain
    WHERE domain.id = :domain_id
    UNION
-  SELECT domain.id, domain.parent_id, domain.name
-    FROM _parent_domains,
-         domain AS domain
-   WHERE domain.id = _parent_domains.parent_id
-),
-_roles AS (
-  SELECT userdomainrole.user_id,
-         -- User domain roles are distinct per definition
-         array_agg(DISTINCT userdomainrole.role_id) AS effective_roles
-    FROM _parent_domains AS domain
-    LEFT OUTER JOIN user_domain_role AS userdomainrole
-         ON (domain.id = userdomainrole.domain_id)
-   WHERE userdomainrole.user_id IS NOT NULL
-   GROUP BY userdomainrole.user_id
+  SELECT domain.id, domain.parent_id
+    FROM _domain_lineage, domain
+   WHERE domain.id = _domain_lineage.parent_id
 )
--- Return all the roles per user for the domain. The list of roles needs to be post-processed
--- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
-SELECT user_id, effective_roles AS role_ids
-  FROM _roles;
+SELECT user_domain_role.user_id,
+       array_agg(DISTINCT user_domain_role.role_id) AS role_ids
+  FROM user_domain_role, _domain_lineage AS domain  
+ WHERE domain.id = user_domain_role.domain_id
+ GROUP BY user_domain_role.user_id;
 """
 
 SQL_USERS_WITH_ROLES_FOR_SITE = """
--- Given the site_id, find all roles each user has on that site.
+-- Given a site id (:site_id) find all users and their roles on that site.
 
--- Simply get all roles on the usersiteroles and group by user_id.
--- Also all explicit site roles are included.
-WITH RECURSIVE _parent_domains AS (
-  SELECT domain.id, domain.parent_id, domain.name
-  FROM domain AS domain,
-       (
-         SELECT site.id, site.domain_id
-          FROM site as site
-         WHERE site.id = :site_id
-         LIMIT 1
-       ) as site
-  WHERE domain.id = site.domain_id
-  UNION
-  SELECT domain.id, domain.parent_id, domain.name
-  FROM _parent_domains,
-       domain AS domain
-  WHERE domain.id = _parent_domains.parent_id
+-- The recursive query needs to come first
+-- Get domain lineage ids
+WITH RECURSIVE _domain_lineage AS (
+    SELECT domain.id, domain.parent_id
+      FROM domain, site
+     WHERE domain.id = site.domain_id
+       AND site.id = :site_id
+     UNION DISTINCT
+    SELECT domain.id, domain.parent_id
+      FROM domain, _domain_lineage
+     WHERE domain.id = _domain_lineage.parent_id
 ),
-_roles AS (
-  SELECT userdomainrole.user_id AS user_id,
-         -- User domain roles are distinct per definition
-         userdomainrole.role_id AS role_id
-    FROM _parent_domains as domain
-   LEFT OUTER JOIN user_domain_role AS userdomainrole
-        ON (userdomainrole.domain_id = domain.id)
-   WHERE userdomainrole.user_id IS NOT NULL
-  UNION ALL
-  SELECT usersiterole.user_id AS user_id,
-         -- User site roles are distinct per definition
-         usersiterole.role_id AS role_id
-    FROM user_site_role AS usersiterole
-   WHERE usersiterole.user_id IS NOT NULL
+_user_roles AS (
+    SELECT user_domain_role.user_id, user_domain_role.role_id 
+      FROM user_domain_role, _domain_lineage AS domain
+     WHERE domain.id = user_domain_role.domain_id
+    UNION
+    SELECT user_id, role_id
+      FROM user_site_role
+     WHERE site_id = :site_id
 )
-
--- Return all roles per user for the site. The list of roles needs to be post-processed
--- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}
-SELECT user_id, array_agg(DISTINCT role_id) as role_ids
-  FROM _roles
-GROUP BY user_id;
+SELECT user_id, array_agg(DISTINCT role_id) AS role_ids
+  FROM _user_roles
+ GROUP BY user_id
 """
 
 
