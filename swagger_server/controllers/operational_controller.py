@@ -25,13 +25,13 @@ SQL_ALL_DOMAIN_ROLES_FOR_USER = """
 
 WITH RECURSIVE _domain_tree AS (
   SELECT domain.id, domain.parent_id, 0 AS position
-    FROM domain AS domain
+    FROM domain
    WHERE domain.parent_id IS NULL  -- The root domain
    UNION
   SELECT domain.id, domain.parent_id,
          _domain_tree.position + 1 AS position
     FROM _domain_tree,
-         domain AS domain
+         domain
    WHERE domain.parent_id = _domain_tree.id
 ),
 _roles AS (
@@ -64,7 +64,7 @@ WITH _roles AS (
          array_agg(siterole.role_id) AS implicit_roles,
          -- User site roles are distinct per definition
          array_agg(usersiterole.role_id) AS explicit_roles
-    FROM site AS site
+    FROM site
     LEFT OUTER JOIN site_role AS siterole
       ON (site.id = siterole.site_id AND
           siterole.grant_implicitly)
@@ -92,13 +92,13 @@ SQL_DOMAIN_ROLES = """
 
 WITH RECURSIVE _domain_tree AS (
   SELECT domain.id, domain.parent_id, 0 AS position
-    FROM domain AS domain
+    FROM domain
    WHERE domain.id = :domain_id
    UNION
   SELECT domain.id, domain.parent_id,
          _domain_tree.position - 1 AS position
     FROM _domain_tree,
-         domain AS domain
+         domain
    WHERE _domain_tree.parent_id = domain.id
 )
 SELECT domain.id, domain.parent_id,
@@ -114,7 +114,7 @@ SQL_SITE_ROLES = """
 -- Given a site id (:site_id), find all roles that can be assigned
 -- to it.
 SELECT site.id, site.domain_id, array_agg(siterole.role_id) AS roles
-FROM site AS site
+FROM site
 LEFT OUTER JOIN site_role AS siterole
   ON (site.id = siterole.site_id)
 WHERE site.id = :site_id
