@@ -139,6 +139,60 @@ paths:
         404:
           description: "User not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/users_with_roles_for_domain/{domain_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of Users with their effective roles within the given\
+        \ domain."
+      operationId: "get_users_with_roles_for_domain"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_with_roles"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Domain not found"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/users_with_roles_for_site/{site_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of Users with their effective roles within the given\
+        \ site."
+      operationId: "get_users_with_roles_for_site"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "site_id"
+        in: "path"
+        description: "A unique integer value identifying the site."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_with_roles"
+        403:
+          description: "Forbidden"
+        404:
+          description: "Site not found"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /domains:
     get:
       tags:
@@ -2688,6 +2742,22 @@ definitions:
         d:2:
         - 1
         - 2
+  user_with_roles:
+    type: "object"
+    properties:
+      user_id:
+        type: "string"
+        format: "uuid"
+      role_ids:
+        type: "array"
+        items:
+          type: "integer"
+    description: "A user with their roles."
+    example:
+      user_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
+      role_ids:
+      - 0
+      - 0
 parameters:
   optional_limit:
     name: "limit"

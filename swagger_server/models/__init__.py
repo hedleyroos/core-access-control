@@ -43,3 +43,4 @@ from swagger_server.models.user_domain_role_create import UserDomainRoleCreate
 from swagger_server.models.user_site_role import UserSiteRole
 from swagger_server.models.user_site_role_create import UserSiteRoleCreate
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated
+from swagger_server.models.user_with_roles import UserWithRoles

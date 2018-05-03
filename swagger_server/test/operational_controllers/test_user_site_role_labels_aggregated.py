@@ -6,17 +6,10 @@ import uuid
 
 from ge_core_shared import db_actions
 from flask import json
-from six import BytesIO
 
 from access_control import models
 from project.settings import API_KEY_HEADER
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
-from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
-from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
-from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501

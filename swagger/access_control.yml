@@ -866,6 +866,18 @@ definitions:
       - user_id
       - roles_map
 
+  user_with_roles:
+    description: 'A user with their roles.'
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      role_ids:
+        type: array
+        items:
+          type: integer
+
 paths:
   /ops/site_role_labels_aggregated/{site_id}:
     parameters:
@@ -957,6 +969,50 @@ paths:
           description: 'Forbidden'
         404:
           description: 'User not found'
+      tags:
+        - operational
+
+  /ops/users_with_roles_for_domain/{domain_id}:
+    parameters:
+      - $ref: '#/parameters/domain_id'
+    get:
+      description: 'Get a list of Users with their effective roles within the given domain.'
+      operationId: get_users_with_roles_for_domain
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_with_roles'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Domain not found'
+      tags:
+        - operational
+
+  /ops/users_with_roles_for_site/{site_id}:
+    parameters:
+      - $ref: '#/parameters/site_id'
+    get:
+      description: 'Get a list of Users with their effective roles within the given site.'
+      operationId: get_users_with_roles_for_site
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_with_roles'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Site not found'
       tags:
         - operational
 
