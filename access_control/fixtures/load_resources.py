@@ -9,6 +9,9 @@ RESOURCES = [
     "urn:ge:access_control:permission",
     "urn:ge:access_control:resource",
     "urn:ge:access_control:roleresourcepermission",
+    "urn:ge:access_control:invitation",
+    "urn:ge:access_control:invitationdomainrole",
+    "urn:ge:access_control:invitationsiterole",
 
     "urn:ge:identity_provider:oidc_provider:client",
     "urn:ge:identity_provider:oidc_provider:code",
@@ -23,4 +26,8 @@ RESOURCES = [
     "urn:ge:user_data:sitedataschema",
     "urn:ge:user_data:usersitedata",
     "urn:ge:user_data:adminnote",
+
+    # For custom GMP functionality we use the form:
+    # "urn:ge:management_portal:<page>:<function>
+    "urn:ge:management_portal:users:export"
 ]
