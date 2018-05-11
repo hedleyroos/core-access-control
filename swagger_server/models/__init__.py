@@ -23,6 +23,7 @@ from swagger_server.models.permission_create import PermissionCreate
 from swagger_server.models.permission_update import PermissionUpdate
 from swagger_server.models.resource import Resource
 from swagger_server.models.resource_create import ResourceCreate
+from swagger_server.models.resource_permission import ResourcePermission
 from swagger_server.models.resource_update import ResourceUpdate
 from swagger_server.models.role import Role
 from swagger_server.models.role_create import RoleCreate

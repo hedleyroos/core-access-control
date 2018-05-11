@@ -7,10 +7,11 @@ from sqlalchemy import text
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
+from swagger_server.models.resource_permission import ResourcePermission  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
-from swagger_server.models.user_with_roles import UserWithRoles
+from swagger_server.models.user_with_roles import UserWithRoles  # noqa: E501
 from swagger_server import util
 
 db = project.app.DB
@@ -274,6 +275,20 @@ SELECT user_id, array_agg(DISTINCT role_id) AS role_ids
  GROUP BY user_id
 """
 
+SQL_TECH_ADMIN_RESOURCE_PERMISSIONS = """
+-- A user with the tech admin role has all permissions on all resources.
+-- This is computed as the cross-product between the resource and permission table.
+SELECT resource.id AS resource_id, permission.id AS permission_id
+  FROM resource, permission
+"""
+
+SQL_RESOURCE_PERMISSIONS_FOR_ROLES = """
+-- Given a list of roles (:role_ids) find all resource permissions linked to them.
+SELECT resource_id, permission_id
+  FROM role_resource_permission
+ WHERE role_resource_permission.role_id = ANY(:role_ids)
+"""
+
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
@@ -342,6 +357,21 @@ def get_domain_roles(domain_id):  # noqa: E501
     return DomainRoles(**{"domain_id": domain_id, "roles_map": roles})
 
 
+def get_resource_permissions_for_roles(role_ids):  # noqa: E501
+    """get_resource_permissions_for_roles
+
+    Get a list of all resource permissions the specified roles have. # noqa: E501
+
+    :param role_ids:
+    :type role_ids: List[int]
+
+    :rtype: List[ResourcePermission]
+    """
+    resource_permissions = db.session.get_bind().execute(text(SQL_RESOURCE_PERMISSIONS_FOR_ROLES),
+                                                         role_ids=role_ids)
+    return [ResourcePermission(**row) for row in resource_permissions]
+
+
 def get_site_and_domain_roles(site_id):  # noqa: E501
     """get_site_and_domain_roles
 
@@ -399,6 +429,18 @@ def get_site_role_labels_aggregated(site_id):  # noqa: E501
     )
 
 
+def get_tech_admin_resource_permissions():  # noqa: E501
+    """get_tech_admin_resource_permissions
+
+    Get a list of all possible permissions any user can have. This is effectively what a tech admin user can do. # noqa: E501
+
+
+    :rtype: List[ResourcePermission]
+    """
+    resource_permissions = db.session.get_bind().execute(text(SQL_TECH_ADMIN_RESOURCE_PERMISSIONS))
+    return [ResourcePermission(**row) for row in resource_permissions]
+
+
 def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     """get_user_site_role_labels_aggregated
 
@@ -422,15 +464,15 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     return obj
 
 
-def get_users_with_roles_for_domain(domain_id): # noqa: E501
+def get_users_with_roles_for_domain(domain_id):  # noqa: E501
     """get_users_with_roles_for_domain
 
-    Get a list of all users with their roles on a given domain.
+    Get a list of Users with their effective roles within the given domain. # noqa: E501
 
-    :param domain_id: An ID of a domain.
+    :param domain_id: A unique integer value identifying the domain.
     :type domain_id: int
 
-    :rtype: List [UserWithRoles]
+    :rtype: List[UserWithRoles]
     """
     sql = text(SQL_USERS_WITH_ROLES_FOR_DOMAIN)
     result = db.session.get_bind().execute(sql, **{"domain_id": domain_id})
@@ -443,12 +485,12 @@ def get_users_with_roles_for_domain(domain_id): # noqa: E501
     return users_with_roles
 
 
-def get_users_with_roles_for_site(site_id): # noqa: E501
+def get_users_with_roles_for_site(site_id):  # noqa: E501
     """get_users_with_roles_for_site
 
-    Get a list of all users with their roles on a given site.
+    Get a list of Users with their effective roles within the given site. # noqa: E501
 
-    :param site_id: An ID of a domain.
+    :param site_id: A unique integer value identifying the site.
     :type site_id: int
 
     :rtype: List [UserWithRoles]

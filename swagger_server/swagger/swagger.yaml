@@ -40,6 +40,54 @@ paths:
         403:
           description: "Forbidden"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/tech_admin_resource_permissions:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of all possible permissions any user can have. This\
+        \ is effectively what a tech admin user can do."
+      operationId: "get_tech_admin_resource_permissions"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/resource_permission"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/resource_permissions_for_roles:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of all resource permissions the specified roles have."
+      operationId: "get_resource_permissions_for_roles"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "role_ids"
+        in: "query"
+        required: true
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+        minItems: 1
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/resource_permission"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /ops/user_site_role_labels_aggregated/{user_id}/{site_id}:
     get:
       tags:
@@ -2758,6 +2806,20 @@ definitions:
       role_ids:
       - 0
       - 0
+  resource_permission:
+    type: "object"
+    required:
+    - "permission_id"
+    - "resource_id"
+    properties:
+      resource_id:
+        type: "integer"
+      permission_id:
+        type: "integer"
+    description: "An object containing (resource, permission) pairs"
+    example:
+      resource_id: 0
+      permission_id: 6
 parameters:
   optional_limit:
     name: "limit"
