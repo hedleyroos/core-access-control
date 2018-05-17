@@ -32,10 +32,14 @@ ROLE_RESOURCE_PERMISSIONS = {
         ("urn:ge:identity_provider:user", "read"),
         ("urn:ge:identity_provider:user", "update"),
         ("urn:ge:identity_provider:user", "delete"),
+        ("urn:ge:access_control:usersiterole", "read"),
+        ("urn:ge:access_control:userdomainrole", "read"),
         ("urn:ge:management_portal:users:export", "create"),
     ],
     "governance_viewer": [
         ("urn:ge:identity_provider:user", "read"),
+        ("urn:ge:access_control:usersiterole", "read"),
+        ("urn:ge:access_control:userdomainrole", "read"),
         ("urn:ge:management_portal:users:export", "create"),
     ],
     "data_admin": [
