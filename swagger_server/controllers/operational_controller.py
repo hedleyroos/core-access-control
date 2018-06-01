@@ -7,9 +7,11 @@ from sqlalchemy import text
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
+from swagger_server.models.resource_permission import ResourcePermission  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
+from swagger_server.models.user_with_roles import UserWithRoles  # noqa: E501
 from swagger_server import util
 
 db = project.app.DB
@@ -24,13 +26,13 @@ SQL_ALL_DOMAIN_ROLES_FOR_USER = """
 
 WITH RECURSIVE _domain_tree AS (
   SELECT domain.id, domain.parent_id, 0 AS position
-    FROM domain AS domain
+    FROM domain
    WHERE domain.parent_id IS NULL  -- The root domain
    UNION
   SELECT domain.id, domain.parent_id,
          _domain_tree.position + 1 AS position
     FROM _domain_tree,
-         domain AS domain
+         domain
    WHERE domain.parent_id = _domain_tree.id
 ),
 _roles AS (
@@ -63,7 +65,7 @@ WITH _roles AS (
          array_agg(siterole.role_id) AS implicit_roles,
          -- User site roles are distinct per definition
          array_agg(usersiterole.role_id) AS explicit_roles
-    FROM site AS site
+    FROM site
     LEFT OUTER JOIN site_role AS siterole
       ON (site.id = siterole.site_id AND
           siterole.grant_implicitly)
@@ -91,13 +93,13 @@ SQL_DOMAIN_ROLES = """
 
 WITH RECURSIVE _domain_tree AS (
   SELECT domain.id, domain.parent_id, 0 AS position
-    FROM domain AS domain
+    FROM domain
    WHERE domain.id = :domain_id
    UNION
   SELECT domain.id, domain.parent_id,
          _domain_tree.position - 1 AS position
     FROM _domain_tree,
-         domain AS domain
+         domain
    WHERE _domain_tree.parent_id = domain.id
 )
 SELECT domain.id, domain.parent_id,
@@ -113,7 +115,7 @@ SQL_SITE_ROLES = """
 -- Given a site id (:site_id), find all roles that can be assigned
 -- to it.
 SELECT site.id, site.domain_id, array_agg(siterole.role_id) AS roles
-FROM site AS site
+FROM site
 LEFT OUTER JOIN site_role AS siterole
   ON (site.id = siterole.site_id)
 WHERE site.id = :site_id
@@ -223,6 +225,71 @@ SELECT DISTINCT(label)
  WHERE role.id = _role_ids.role_id
 """
 
+SQL_USERS_WITH_ROLES_FOR_DOMAIN = """
+-- Given a domain_id, find all users and their roles on that domain.
+
+-- We find all the users that has roles in the specified domains lineage
+-- in order to get all effective roles the a users have.
+WITH RECURSIVE _domain_lineage AS (
+  SELECT domain.id, domain.parent_id
+    FROM domain
+   WHERE domain.id = :domain_id
+   UNION
+  SELECT domain.id, domain.parent_id
+    FROM _domain_lineage, domain
+   WHERE domain.id = _domain_lineage.parent_id
+)
+SELECT user_domain_role.user_id,
+       array_agg(DISTINCT user_domain_role.role_id) AS role_ids
+  FROM user_domain_role, _domain_lineage AS domain  
+ WHERE domain.id = user_domain_role.domain_id
+ GROUP BY user_domain_role.user_id;
+"""
+
+SQL_USERS_WITH_ROLES_FOR_SITE = """
+-- Given a site id (:site_id) find all users and their roles on that site.
+
+-- The recursive query needs to come first
+-- Get domain lineage ids
+WITH RECURSIVE _domain_lineage AS (
+    SELECT domain.id, domain.parent_id
+      FROM domain, site
+     WHERE domain.id = site.domain_id
+       AND site.id = :site_id
+     UNION DISTINCT
+    SELECT domain.id, domain.parent_id
+      FROM domain, _domain_lineage
+     WHERE domain.id = _domain_lineage.parent_id
+),
+_user_roles AS (
+    SELECT user_domain_role.user_id, user_domain_role.role_id 
+      FROM user_domain_role, _domain_lineage AS domain
+     WHERE domain.id = user_domain_role.domain_id
+    UNION
+    SELECT user_id, role_id
+      FROM user_site_role
+     WHERE site_id = :site_id
+)
+SELECT user_id, array_agg(DISTINCT role_id) AS role_ids
+  FROM _user_roles
+ GROUP BY user_id
+"""
+
+SQL_TECH_ADMIN_RESOURCE_PERMISSIONS = """
+-- A user with the tech admin role has all permissions on all resources.
+-- This is computed as the cross-product between the resource and permission table.
+SELECT resource.id AS resource_id, permission.id AS permission_id
+  FROM resource, permission
+"""
+
+SQL_RESOURCE_PERMISSIONS_FOR_ROLES = """
+-- Given a list of roles (:role_ids) find all resource permissions linked to them.
+SELECT resource_id, permission_id
+  FROM role_resource_permission
+ WHERE role_resource_permission.role_id = ANY(:role_ids)
+"""
+
+
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
 
@@ -290,6 +357,21 @@ def get_domain_roles(domain_id):  # noqa: E501
     return DomainRoles(**{"domain_id": domain_id, "roles_map": roles})
 
 
+def get_resource_permissions_for_roles(role_ids):  # noqa: E501
+    """get_resource_permissions_for_roles
+
+    Get a list of all resource permissions the specified roles have. # noqa: E501
+
+    :param role_ids:
+    :type role_ids: List[int]
+
+    :rtype: List[ResourcePermission]
+    """
+    resource_permissions = db.session.get_bind().execute(text(SQL_RESOURCE_PERMISSIONS_FOR_ROLES),
+                                                         role_ids=role_ids)
+    return [ResourcePermission(**row) for row in resource_permissions]
+
+
 def get_site_and_domain_roles(site_id):  # noqa: E501
     """get_site_and_domain_roles
 
@@ -347,6 +429,18 @@ def get_site_role_labels_aggregated(site_id):  # noqa: E501
     )
 
 
+def get_tech_admin_resource_permissions():  # noqa: E501
+    """get_tech_admin_resource_permissions
+
+    Get a list of all possible permissions any user can have. This is effectively what a tech admin user can do. # noqa: E501
+
+
+    :rtype: List[ResourcePermission]
+    """
+    resource_permissions = db.session.get_bind().execute(text(SQL_TECH_ADMIN_RESOURCE_PERMISSIONS))
+    return [ResourcePermission(**row) for row in resource_permissions]
+
+
 def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
     """get_user_site_role_labels_aggregated
 
@@ -368,3 +462,45 @@ def get_user_site_role_labels_aggregated(user_id, site_id):  # noqa: E501
         "site_id": site_id}
     )
     return obj
+
+
+def get_users_with_roles_for_domain(domain_id):  # noqa: E501
+    """get_users_with_roles_for_domain
+
+    Get a list of Users with their effective roles within the given domain. # noqa: E501
+
+    :param domain_id: A unique integer value identifying the domain.
+    :type domain_id: int
+
+    :rtype: List[UserWithRoles]
+    """
+    sql = text(SQL_USERS_WITH_ROLES_FOR_DOMAIN)
+    result = db.session.get_bind().execute(sql, **{"domain_id": domain_id})
+    users_with_roles = [
+        UserWithRoles(
+            user_id=row["user_id"],
+            role_ids=row["role_ids"]
+        ) for row in result
+    ]
+    return users_with_roles
+
+
+def get_users_with_roles_for_site(site_id):  # noqa: E501
+    """get_users_with_roles_for_site
+
+    Get a list of Users with their effective roles within the given site. # noqa: E501
+
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+
+    :rtype: List [UserWithRoles]
+    """
+    sql = text(SQL_USERS_WITH_ROLES_FOR_SITE)
+    result = db.session.get_bind().execute(sql, **{"site_id": site_id})
+    users_with_roles = [
+        UserWithRoles(
+            user_id=row["user_id"],
+            role_ids=row["role_ids"]
+        ) for row in result
+    ]
+    return users_with_roles

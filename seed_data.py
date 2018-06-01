@@ -1,12 +1,13 @@
 from flask import Flask
 
-from ge_core_share.db_actions import get_or_create
+from ge_core_shared.db_actions import get_or_create, read_entry
 from access_control.fixtures.load_domains import DOMAIN_HIERARCHY
 from access_control.fixtures.load_permissions import PERMISSIONS
 from access_control.fixtures.load_resources import RESOURCES
 from access_control.fixtures.load_roles import ROLES
-from access_control.models import DB, Resource, Permission, Role, Domain, \
-    DomainRole
+from access_control.fixtures.load_role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
+from access_control.models import Resource, Permission, Role, Domain, \
+    DomainRole, RoleResourcePermission
 
 app = Flask(__name__)
 
@@ -17,31 +18,37 @@ class SeedDataLoader:
         self.load_resources()
         self.load_permissions()
         self.load_roles()
-        self.load_domain(DOMAIN_HIERARCHY, None)
+        # Role resource permissions can only be loaded after roles,
+        # resources and permissions have been loaded.
+        self.load_role_resource_permissions()
+        self.load_domain(DOMAIN_HIERARCHY)
         print("Done")
 
-    def load_resources(self):
+    @staticmethod
+    def load_resources():
         print("Loading resources...")
         for resource in RESOURCES:
             instance, created = get_or_create(Resource, urn=resource)
             print("Resource %s loaded..." % instance.urn)
         print("Done")
 
-    def load_permissions(self):
+    @staticmethod
+    def load_permissions():
         print("Loading permissions...")
         for permission in PERMISSIONS:
             instance, created = get_or_create(Permission, name=permission)
             print("Permission %s loaded..." % instance.name)
         print("Done")
 
-    def load_roles(self):
+    @staticmethod
+    def load_roles():
         print("Loading roles...")
         for role in ROLES:
             instance, created = get_or_create(Role, label=role)
             print("Role %s loaded..." % instance.label)
         print("Done")
 
-    def load_domain(self, detail: dict, parent: Domain):
+    def load_domain(self, detail: dict, parent: Domain=None):
         for item in detail:
             print("Domain %s as child of %s loaded..." % (
                 item.get("name"),
@@ -62,6 +69,20 @@ class SeedDataLoader:
             subdomains = item.get("subdomains", {})
             if subdomains:
                 self.load_domain(subdomains, domain)
+
+    @staticmethod
+    def load_role_resource_permissions():
+        print("Loading role resource permissions...")
+        for role_label, resource_permissions in ROLE_RESOURCE_PERMISSIONS.items():
+            print(f"Role: {role_label}")
+            role = read_entry(Role, query={"label": role_label})
+            for resource_urn, permission_name in resource_permissions:
+                print(f"* {resource_urn} ({permission_name})")
+                resource = read_entry(Resource, query={"urn": resource_urn})
+                permission = read_entry(Permission, query={"name": permission_name})
+                get_or_create(RoleResourcePermission, role_id=role.id, resource_id=resource.id,
+                              permission_id=permission.id)
+        print("Done.")
 
 
 loader = SeedDataLoader()

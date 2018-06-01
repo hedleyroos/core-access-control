@@ -116,7 +116,5 @@ class SiteRoleCreate(Model):
         :param grant_implicitly: The grant_implicitly of this SiteRoleCreate.
         :type grant_implicitly: bool
         """
-        if grant_implicitly is None:
-            raise ValueError("Invalid value for `grant_implicitly`, must not be `None`")  # noqa: E501
 
         self._grant_implicitly = grant_implicitly

@@ -64,6 +64,12 @@ parameters:
     required: false
     type: string
     format: uuid
+  optional_parent_filter:
+    description: An optional query parameter to filter by parent_id
+    in: query
+    name: parent_id
+    required: false
+    type: integer
   optional_role_filter:
     description: An optional query parameter to filter by role_id
     in: query
@@ -195,8 +201,7 @@ definitions:
         type: string
         maxLength: 30
       client_id:
-        type: string
-        maxLength: 255
+        type: integer
       domain_id:
         type: integer
       description:
@@ -226,8 +231,7 @@ definitions:
         type: string
         maxLength: 30
       client_id:
-        type: string
-        maxLength: 255
+        type: integer
       domain_id:
         type: integer
       description:
@@ -242,8 +246,7 @@ definitions:
     type: object
     properties:
       client_id:
-        type: string
-        maxLength: 255
+        type: integer
       domain_id:
         type: integer
       name:
@@ -289,11 +292,11 @@ definitions:
         $ref: '#/definitions/role_label'
       requires_2fa:
         type: boolean
+        default: true
       description:
         type: string
     required:
       - label
-      - requires_2fa
 
   role_update:
     type: object
@@ -343,7 +346,6 @@ definitions:
     required:
       - site_id
       - role_id
-      - grant_implicitly
 
   site_role_update:
     type: object
@@ -864,6 +866,31 @@ definitions:
       - user_id
       - roles_map
 
+  user_with_roles:
+    description: 'A user with their roles.'
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      role_ids:
+        type: array
+        items:
+          type: integer
+
+  resource_permission:
+    description: 'An object containing (resource, permission) pairs'
+    type: object
+    properties:
+      resource_id:
+        type: integer
+      permission_id:
+        type: integer
+    required:
+      - resource_id
+      - permission_id
+    additionalProperties: false
+
 paths:
   /ops/site_role_labels_aggregated/{site_id}:
     parameters:
@@ -878,6 +905,53 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/site_role_labels_aggregated'
+        403:
+          description: 'Forbidden'
+      tags:
+        - operational
+
+  /ops/tech_admin_resource_permissions:
+    get:
+      description: Get a list of all possible permissions any user can have. This is effectively
+        what a tech admin user can do.
+      operationId: get_tech_admin_resource_permissions
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/resource_permission'
+        403:
+          description: 'Forbidden'
+      tags:
+        - operational
+
+  /ops/resource_permissions_for_roles:
+    parameters:
+      - name: role_ids
+        in: query
+        required: true
+        type: array
+        collectionFormat: csv
+        items:
+          type: integer
+        uniqueItems: true
+        minItems: 1
+    get:
+      description: Get a list of all resource permissions the specified roles have.
+      operationId: get_resource_permissions_for_roles
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/resource_permission'
         403:
           description: 'Forbidden'
       tags:
@@ -958,12 +1032,57 @@ paths:
       tags:
         - operational
 
+  /ops/users_with_roles_for_domain/{domain_id}:
+    parameters:
+      - $ref: '#/parameters/domain_id'
+    get:
+      description: 'Get a list of Users with their effective roles within the given domain.'
+      operationId: get_users_with_roles_for_domain
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_with_roles'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Domain not found'
+      tags:
+        - operational
+
+  /ops/users_with_roles_for_site/{site_id}:
+    parameters:
+      - $ref: '#/parameters/site_id'
+    get:
+      description: 'Get a list of Users with their effective roles within the given site.'
+      operationId: get_users_with_roles_for_site
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_with_roles'
+        403:
+          description: 'Forbidden'
+        404:
+          description: 'Site not found'
+      tags:
+        - operational
+
   /domains:
     get:
       operationId: domain_list
       parameters:
         - $ref: '#/parameters/optional_offset'
         - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_parent_filter'
         - name: domain_ids
           description: An optional list of domain ids
           in: query
@@ -979,6 +1098,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1057,6 +1180,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1151,6 +1278,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1251,6 +1382,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1316,6 +1451,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1386,6 +1525,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1477,6 +1620,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1563,6 +1710,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1650,6 +1801,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1715,11 +1870,20 @@ paths:
           minItems: 0
           collectionFormat: multi
           uniqueItems: true
+        - name: client_id
+          description: An optional client id to filter on
+          in: query
+          type: integer
+          required: false
       produces:
         - application/json
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1798,6 +1962,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1878,6 +2046,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:
@@ -1941,6 +2113,10 @@ paths:
       responses:
         '200':
           description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
           schema:
             type: array
             items:

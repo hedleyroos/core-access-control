@@ -1,31 +1,43 @@
 import connexion
 import six
-import connexion
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
+from swagger_server.models.domain_create import DomainCreate  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
+from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E501
 from swagger_server.models.domain_role_update import DomainRoleUpdate  # noqa: E501
 from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.models.invitation import Invitation  # noqa: E501
+from swagger_server.models.invitation_create import InvitationCreate  # noqa: E501
 from swagger_server.models.invitation_domain_role import InvitationDomainRole  # noqa: E501
+from swagger_server.models.invitation_domain_role_create import InvitationDomainRoleCreate  # noqa: E501
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
+from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
 from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
+from swagger_server.models.permission_create import PermissionCreate  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.models.resource import Resource  # noqa: E501
+from swagger_server.models.resource_create import ResourceCreate  # noqa: E501
 from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
+from swagger_server.models.role_create import RoleCreate  # noqa: E501
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
+from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
 from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
+from swagger_server.models.site_role_create import SiteRoleCreate  # noqa: E501
 from swagger_server.models.site_role_update import SiteRoleUpdate  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
+from swagger_server.models.user_domain_role_create import UserDomainRoleCreate  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
+from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
 from swagger_server import util
 
 
@@ -60,7 +72,7 @@ def domain_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Domain
@@ -94,7 +106,8 @@ def domain_delete(domain_id):  # noqa: E501
     )
 
 
-def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
+@decorators.list_response
+def domain_list(offset=None, limit=None, parent_id=None, domain_ids=None):  # noqa: E501
     """domain_list
 
      # noqa: E501
@@ -103,6 +116,8 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
     :type offset: int
     :param limit: An optional query parameter to limit the number of results returned.
     :type limit: int
+    :param parent_id: An optional query parameter to filter by parent_id
+    :type parent_id: int
     :param domain_ids: An optional list of domain ids
     :type domain_ids: List[int]
 
@@ -112,7 +127,15 @@ def domain_list(offset=None, limit=None, domain_ids=None):  # noqa: E501
         model="Domain",
         api_model=Domain,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": domain_ids, "order_by": ["id"]}
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": domain_ids,
+                "parent_id": parent_id
+            },
+            "order_by": ["id"]
+        }
     )
 
 
@@ -141,7 +164,7 @@ def domain_update(domain_id, data=None):  # noqa: E501
 
     :param domain_id: A unique integer value identifying the domain.
     :type domain_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Domain
@@ -163,7 +186,7 @@ def domainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: DomainRole
@@ -202,6 +225,7 @@ def domainrole_delete(domain_id, role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def domainrole_list(offset=None, limit=None, domain_id=None, role_id=None):  # noqa: E501
     """domainrole_list
 
@@ -262,7 +286,7 @@ def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
     :type domain_id: int
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: DomainRole
@@ -287,7 +311,7 @@ def invitation_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Invitation
@@ -323,6 +347,7 @@ def invitation_delete(invitation_id):  # noqa: E501
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=None):  # noqa: E501
     """invitation_list
 
@@ -396,7 +421,7 @@ def invitation_update(invitation_id, data=None):  # noqa: E501
 
     :param invitation_id: A UUID value identifying the invitation.
     :type invitation_id: dict | bytes
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Invitation
@@ -410,7 +435,7 @@ def invitationdomainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: InvitationDomainRole
@@ -452,6 +477,7 @@ def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E50
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitationdomainrole_list(offset=None, limit=None, invitation_id=None, domain_id=None, role_id=None):  # noqa: E501
     """invitationdomainrole_list
 
@@ -518,7 +544,7 @@ def invitationsiterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: InvitationSiteRole
@@ -561,6 +587,7 @@ def invitationsiterole_delete(invitation_id, site_id, role_id):  # noqa: E501
     # )
     raise NotImplementedError()
 
+@decorators.list_response
 def invitationsiterole_list(offset=None, limit=None, invitation_id=None, site_id=None, role_id=None):  # noqa: E501
     """invitationsiterole_list
 
@@ -627,7 +654,7 @@ def permission_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Permission
@@ -661,6 +688,7 @@ def permission_delete(permission_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def permission_list(offset=None, limit=None, permission_ids=None):  # noqa: E501
     """permission_list
 
@@ -708,7 +736,7 @@ def permission_update(permission_id, data=None):  # noqa: E501
 
     :param permission_id: A unique integer value identifying the permission.
     :type permission_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Permission
@@ -730,7 +758,7 @@ def resource_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Resource
@@ -764,6 +792,7 @@ def resource_delete(resource_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # noqa: E501
     """resource_list
 
@@ -813,7 +842,7 @@ def resource_update(resource_id, data=None):  # noqa: E501
 
     :param resource_id: A unique integer value identifying the resource.
     :type resource_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Resource
@@ -835,7 +864,7 @@ def role_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Role
@@ -869,6 +898,7 @@ def role_delete(role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def role_list(offset=None, limit=None, role_ids=None):  # noqa: E501
     """role_list
 
@@ -916,7 +946,7 @@ def role_update(role_id, data=None):  # noqa: E501
 
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Role
@@ -938,7 +968,7 @@ def roleresourcepermission_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: RoleResourcePermission
@@ -954,6 +984,7 @@ def roleresourcepermission_create(data=None):  # noqa: E501
     )
 
 
+@decorators.list_response
 def roleresourcepermission_list(offset=None, limit=None, role_id=None, resource_id=None, permission_id=None):  # noqa: E501
     """roleresourcepermission_list
 
@@ -1015,7 +1046,7 @@ def site_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Site
@@ -1049,7 +1080,8 @@ def site_delete(site_id):  # noqa: E501
     )
 
 
-def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
+@decorators.list_response
+def site_list(offset=None, limit=None, site_ids=None, client_id=None):  # noqa: E501
     """site_list
 
      # noqa: E501
@@ -1060,6 +1092,8 @@ def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
     :type limit: int
     :param site_ids: An optional list of site ids
     :type site_ids: List[int]
+    :param client_id: An optional client id to filter on
+    :type client_id: int
 
     :rtype: List[Site]
     """
@@ -1067,7 +1101,8 @@ def site_list(offset=None, limit=None, site_ids=None):  # noqa: E501
         model="Site",
         api_model=Site,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": site_ids, "order_by": ["id"]}
+        query={"offset": offset, "limit": limit,
+               "ids": {"id": site_ids, "client_id": client_id}, "order_by": ["id"]}
     )
 
 
@@ -1096,7 +1131,7 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: Site
@@ -1118,7 +1153,7 @@ def siterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: SiteRole
@@ -1157,6 +1192,7 @@ def siterole_delete(site_id, role_id):  # noqa: E501
     )
 
 
+@decorators.list_response
 def siterole_list(offset=None, limit=None, site_id=None, role_id=None):  # noqa: E501
     """siterole_list
 
@@ -1217,7 +1253,7 @@ def siterole_update(site_id, role_id, data=None):  # noqa: E501
     :type site_id: int
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: SiteRole
@@ -1242,7 +1278,7 @@ def userdomainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: UserDomainRole
@@ -1282,6 +1318,7 @@ def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
         }
     )
 
+@decorators.list_response
 def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, role_id=None):  # noqa: E501
     """userdomainrole_list
 
@@ -1345,7 +1382,7 @@ def usersiterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data:
+    :param data: 
     :type data: dict | bytes
 
     :rtype: UserSiteRole
@@ -1361,6 +1398,32 @@ def usersiterole_create(data=None):  # noqa: E501
     )
 
 
+def usersiterole_delete(user_id, site_id, role_id):  # noqa: E501
+    """usersiterole_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+    :param role_id: A unique integer value identifying the role.
+    :type role_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="UserSiteRole",
+        api_model=UserSiteRole,
+        action="delete",
+        query={
+            "user_id": user_id,
+            "site_id": site_id,
+            "role_id": role_id,
+        }
+    )
+
+@decorators.list_response
 def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_id=None):  # noqa: E501
     """usersiterole_list
 
@@ -1387,7 +1450,7 @@ def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_
             "offset": offset,
             "limit": limit,
             "ids": {
-                "user_id": site_id,
+                "user_id": user_id,
                 "site_id": site_id,
                 "role_id": role_id
             },
@@ -1395,7 +1458,20 @@ def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_
     )
 
 
-def usersiterole_read(user_id, site_id, role_id):
+def usersiterole_read(user_id, site_id, role_id):  # noqa: E501
+    """usersiterole_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param site_id: A unique integer value identifying the site.
+    :type site_id: int
+    :param role_id: A unique integer value identifying the role.
+    :type role_id: int
+
+    :rtype: UserSiteRole
+    """
     return db_actions.crud(
         model="UserSiteRole",
         api_model=UserSiteRole,
@@ -1408,14 +1484,4 @@ def usersiterole_read(user_id, site_id, role_id):
     )
 
 
-def usersiterole_delete(user_id, site_id, role_id):
-    return db_actions.crud(
-        model="UserSiteRole",
-        api_model=UserSiteRole,
-        action="delete",
-        query={
-            "user_id": user_id,
-            "site_id": site_id,
-            "role_id": role_id,
-        }
-    )
+

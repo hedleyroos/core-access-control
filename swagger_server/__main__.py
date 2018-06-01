@@ -9,8 +9,8 @@ from ge_core_shared import exception_handlers, middleware
 import project.app
 from swagger_server import encoder
 
-
 DB = SQLAlchemy()
+
 
 # We create and set up the app variable in the global context as it is used by uwsgi.
 app = connexion.App(__name__, specification_dir='./swagger/')

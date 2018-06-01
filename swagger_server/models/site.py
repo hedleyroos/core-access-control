@@ -15,7 +15,7 @@ class Site(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, name: str=None, client_id: str=None, domain_id: int=None, description: str=None, is_active: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: int=None, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """Site - a model defined in Swagger
 
         :param id: The id of this Site.  # noqa: E501
@@ -23,7 +23,7 @@ class Site(Model):
         :param name: The name of this Site.  # noqa: E501
         :type name: str
         :param client_id: The client_id of this Site.  # noqa: E501
-        :type client_id: str
+        :type client_id: int
         :param domain_id: The domain_id of this Site.  # noqa: E501
         :type domain_id: int
         :param description: The description of this Site.  # noqa: E501
@@ -38,7 +38,7 @@ class Site(Model):
         self.swagger_types = {
             'id': int,
             'name': str,
-            'client_id': str,
+            'client_id': int,
             'domain_id': int,
             'description': str,
             'is_active': bool,
@@ -126,25 +126,23 @@ class Site(Model):
         self._name = name
 
     @property
-    def client_id(self) -> str:
+    def client_id(self) -> int:
         """Gets the client_id of this Site.
 
 
         :return: The client_id of this Site.
-        :rtype: str
+        :rtype: int
         """
         return self._client_id
 
     @client_id.setter
-    def client_id(self, client_id: str):
+    def client_id(self, client_id: int):
         """Sets the client_id of this Site.
 
 
         :param client_id: The client_id of this Site.
-        :type client_id: str
+        :type client_id: int
         """
-        if client_id is not None and len(client_id) > 255:
-            raise ValueError("Invalid value for `client_id`, length must be less than or equal to `255`")  # noqa: E501
 
         self._client_id = client_id
 

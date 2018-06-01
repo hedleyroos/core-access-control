@@ -15,13 +15,13 @@ class SiteCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name: str=None, client_id: str=None, domain_id: int=None, description: str=None, is_active: bool=None):  # noqa: E501
+    def __init__(self, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None):  # noqa: E501
         """SiteCreate - a model defined in Swagger
 
         :param name: The name of this SiteCreate.  # noqa: E501
         :type name: str
         :param client_id: The client_id of this SiteCreate.  # noqa: E501
-        :type client_id: str
+        :type client_id: int
         :param domain_id: The domain_id of this SiteCreate.  # noqa: E501
         :type domain_id: int
         :param description: The description of this SiteCreate.  # noqa: E501
@@ -31,7 +31,7 @@ class SiteCreate(Model):
         """
         self.swagger_types = {
             'name': str,
-            'client_id': str,
+            'client_id': int,
             'domain_id': int,
             'description': str,
             'is_active': bool
@@ -88,25 +88,23 @@ class SiteCreate(Model):
         self._name = name
 
     @property
-    def client_id(self) -> str:
+    def client_id(self) -> int:
         """Gets the client_id of this SiteCreate.
 
 
         :return: The client_id of this SiteCreate.
-        :rtype: str
+        :rtype: int
         """
         return self._client_id
 
     @client_id.setter
-    def client_id(self, client_id: str):
+    def client_id(self, client_id: int):
         """Sets the client_id of this SiteCreate.
 
 
         :param client_id: The client_id of this SiteCreate.
-        :type client_id: str
+        :type client_id: int
         """
-        if client_id is not None and len(client_id) > 255:
-            raise ValueError("Invalid value for `client_id`, length must be less than or equal to `255`")  # noqa: E501
 
         self._client_id = client_id
 
