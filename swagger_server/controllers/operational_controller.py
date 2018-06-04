@@ -1,18 +1,19 @@
-import connexion
-import six
+import datetime
+import socket
+
+import pkg_resources
+from sqlalchemy import text
 
 import project.app
 
-from sqlalchemy import text
-
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
+from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.resource_permission import ResourcePermission  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_with_roles import UserWithRoles  # noqa: E501
-from swagger_server import util
 
 db = project.app.DB
 
@@ -504,3 +505,23 @@ def get_users_with_roles_for_site(site_id):  # noqa: E501
         ) for row in result
     ]
     return users_with_roles
+
+
+def healthcheck():  # noqa: E501
+    """healthcheck
+
+    Get the status of the service. # noqa: E501
+
+
+    :rtype: HealthInfo
+    """
+    result = db.engine.execute("SELECT LOCALTIMESTAMP")
+    db_timestamp = result.fetchone()[0]
+
+    result = HealthInfo(
+        host=socket.getfqdn(),
+        server_timestamp=datetime.datetime.now(),
+        version=pkg_resources.require("core-access-control")[0].version,
+        db_timestamp=db_timestamp
+    )
+    return result
