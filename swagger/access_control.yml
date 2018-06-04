@@ -891,7 +891,43 @@ definitions:
       - permission_id
     additionalProperties: false
 
+  health_info:
+    description: 'Health check response'
+    type: object
+    properties:
+      host:
+        type: string
+      server_timestamp:
+        type: string
+        format: 'date-time'
+      version:
+        type: string
+      db_timestamp:
+        type: string
+        format: 'date-time'
+    required:
+    - host
+    - server_timestamp
+    - version
+    - db_timestamp
+
+
 paths:
+  /ops/healthcheck:
+    get:
+      security: [ ]
+      description: 'Get the status of the service.'
+      operationId: healthcheck
+      produces:
+        - application/json
+      responses:
+        200:
+          description: 'The service is operating normally.'
+          schema:
+            $ref: '#/definitions/health_info'
+      tags:
+        - operational
+
   /ops/site_role_labels_aggregated/{site_id}:
     parameters:
       - $ref: '#/parameters/site_id'

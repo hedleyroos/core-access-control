@@ -11,6 +11,7 @@ from swagger_server.models.domain_role_create import DomainRoleCreate
 from swagger_server.models.domain_role_update import DomainRoleUpdate
 from swagger_server.models.domain_roles import DomainRoles
 from swagger_server.models.domain_update import DomainUpdate
+from swagger_server.models.health_info import HealthInfo
 from swagger_server.models.invitation import Invitation
 from swagger_server.models.invitation_create import InvitationCreate
 from swagger_server.models.invitation_domain_role import InvitationDomainRole

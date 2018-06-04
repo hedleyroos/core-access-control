@@ -5,6 +5,9 @@ import os
 DEFAULT_API_LIMIT = os.environ.get("DEFAULT_API_LIMIT", 50)
 API_KEY_HEADER = "X-API-KEY"
 ALLOWED_API_KEYS = set(os.environ["ALLOWED_API_KEYS"].split(","))
+UNPROTECTED_API_ENDPOINTS = {
+    "/api/v1/ops/healthcheck"
+}
 
 # core shared settings
 ACTION_MODELS = "access_control.models"
