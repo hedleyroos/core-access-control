@@ -1,5 +1,6 @@
 # GIT requirements
 -e git+https://github.com/girleffect/core-shared@1.1.0#egg=core-shared
+-e .  # Install app itself. Required in order to use pkg_resources.
 
 connexion == 1.1.15
 python_dateutil == 2.6.0
