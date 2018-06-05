@@ -10,6 +10,8 @@ RUN pip3 install --no-cache-dir -r /app/requirements/requirements.txt --src /usr
 
 COPY . /app/
 
+RUN pip3 install --no-cache-dir /app/
+
 EXPOSE 8080
 
 CMD ["uwsgi", "uwsgi.ini"]
