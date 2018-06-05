@@ -7,7 +7,7 @@ from access_control.fixtures.load_resources import RESOURCES
 from access_control.fixtures.load_roles import ROLES
 from access_control.fixtures.load_role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
 from access_control.models import Resource, Permission, Role, Domain, \
-    DomainRole, RoleResourcePermission
+    DomainRole, RoleResourcePermission, Site, SiteRole
 
 app = Flask(__name__)
 
@@ -69,6 +69,28 @@ class SeedDataLoader:
             subdomains = item.get("subdomains", {})
             if subdomains:
                 self.load_domain(subdomains, domain)
+            sites = item.get("sites", {})
+            if sites:
+                self.load_sites(sites, domain)
+
+    @staticmethod
+    def load_sites(detail: dict, domain: Domain=None):
+        for item in detail:
+            print("Site %s as child of Domain %s loaded..." % (
+                item.get("name"),
+                domain.name if domain else None
+            ))
+            site, created = get_or_create(
+                Site, name=item.get("name"),
+                description=item.get("description"),
+                domain_id=domain.id if domain else None
+            )
+            roles = item.get("roles", [])
+            for label in roles:
+                role = Role.query.filter_by(label=label).first()
+                site_role, created = get_or_create(
+                    SiteRole, site_id=site.id, role_id=role.id
+                )
 
     @staticmethod
     def load_role_resource_permissions():

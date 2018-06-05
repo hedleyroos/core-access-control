@@ -17,6 +17,33 @@ DOMAIN_HIERARCHY = [
         "name": "girl_effect_organisation",
         "description": "The top level of the organisation",
         "roles": ["tech_admin"],
+        "sites": [
+            {
+                "name": "ge_corporate",
+                "description": "GE Corporate Site",
+                "roles": ROLES
+            },
+            {
+                "name": "girl_connect",
+                "description": "Girl Connect",
+                "roles": ROLES
+            },
+            {
+                "name": "gmp",
+                "description": "Global Management Portal",
+                "roles": ROLES
+            },
+            {
+                "name": "impact_dash",
+                "description": "Impact Dashboard",
+                "roles": ROLES
+            },
+            {
+                "name": "event_log",
+                "description": "Event Log",
+                "roles": ROLES
+            }
+        ],
         "subdomains": [
             {
                 "name": "springster",
@@ -27,7 +54,7 @@ DOMAIN_HIERARCHY = [
                         "name": "a_markets",
                         "description": "A Markets",
                         "roles": ROLES,
-                        "subdomains": [
+                        "sites": [
                             {
                                 "name": "philippines",
                                 "description": "Philippines",
@@ -49,7 +76,7 @@ DOMAIN_HIERARCHY = [
                         "name": "c_markets",
                         "description": "C Markets",
                         "roles": ROLES,
-                        "subdomains": [
+                        "sites": [
                             {
                                 "name": "algeria",
                                 "description": "Algeria",
@@ -100,13 +127,9 @@ DOMAIN_HIERARCHY = [
                 ]
             },
             {
-                "name": "ge_corporate",
-                "description": "GE Corporate Site"
-            },
-            {
                 "name": "tega",
                 "description": "TEGA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "tega_nigeria",
                         "Description": "Nigeria"
@@ -134,13 +157,9 @@ DOMAIN_HIERARCHY = [
                 ]
             },
             {
-                "name": "girl_connect",
-                "description": "Girl Connect"
-            },
-            {
                 "name": "yegna",
                 "description": "YEGNA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "yegna_ethiopia",
                         "description": "Ethiopia"
@@ -150,7 +169,7 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "zathu",
                 "description": "ZATHU",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "zathu_malawi",
                         "description": "Malawi"
@@ -160,7 +179,7 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "india",
                 "description": "India (Brand TBC)",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "india_india",
                         "description": "India"
@@ -170,24 +189,12 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "ni_nyampinga",
                 "description": "NI NYAMPINGA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "ni_nyampinga_rwanda",
                         "description": "Rwanda"
                     }
                 ]
-            },
-            {
-                "name": "gmp",
-                "description": "Global Management Portal"
-            },
-            {
-                "name": "impact_dash",
-                "description": "Impact Dashboard"
-            },
-            {
-                "name": "event_log",
-                "description": "Event Log"
             }
         ]
     }
