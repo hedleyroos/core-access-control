@@ -1,10 +1,10 @@
 import datetime
 import socket
 
-import pkg_resources
 from sqlalchemy import text
 
 import project.app
+from access_control import __version__
 
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
@@ -521,7 +521,7 @@ def healthcheck():  # noqa: E501
     result = HealthInfo(
         host=socket.getfqdn(),
         server_timestamp=datetime.datetime.now(),
-        version=pkg_resources.require("core-access-control")[0].version,
+        version=__version__,
         db_timestamp=db_timestamp
     )
     return result
