@@ -1,119 +1,157 @@
 # Domain hierarchy based on:
 # https://praekelt.atlassian.net/wiki/spaces/GEM/pages/215515423/Roles+Permissions+Guidelines?preview=/55574535/118751390/Domain%20Hierarchy%20(5).png
+from access_control.fixtures import ROLES
+
+ROLES_SANS_TECH_ADMIN = [role for role in ROLES if role != "tech_admin"]
+
 DOMAIN_HIERARCHY = [
     {
         "name": "girl_effect_organisation",
         "description": "The top level of the organisation",
-        "roles": {},
+        "roles": ["tech_admin"],
+        "sites": [
+            {
+                "name": "ge_corporate",
+                "description": "GE Corporate Site",
+                "roles": ROLES_SANS_TECH_ADMIN
+            },
+            {
+                "name": "girl_connect",
+                "description": "Girl Connect",
+                "roles": ROLES_SANS_TECH_ADMIN
+            },
+            {
+                "name": "gmp",
+                "description": "Global Management Portal",
+                "roles": ROLES_SANS_TECH_ADMIN
+            },
+            {
+                "name": "impact_dash",
+                "description": "Impact Dashboard",
+                "roles": ROLES_SANS_TECH_ADMIN
+            },
+            {
+                "name": "event_log",
+                "description": "Event Log",
+                "roles": ROLES_SANS_TECH_ADMIN
+            }
+        ],
         "subdomains": [
             {
                 "name": "springster",
                 "description": "springster",
+                "roles": ROLES_SANS_TECH_ADMIN,
                 "subdomains": [
                     {
                         "name": "a_markets",
                         "description": "A Markets",
-                        "subdomains": [
+                        "roles": ROLES_SANS_TECH_ADMIN,
+                        "sites": [
                             {
                                 "name": "philippines",
-                                "description": "Philippines"
+                                "description": "Philippines",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "south_africa",
-                                "description": "South Africa"
+                                "description": "South Africa",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "nigeria",
-                                "description": "Nigeria"
+                                "description": "Nigeria",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             }
                         ]
                     },
                     {
                         "name": "c_markets",
                         "description": "C Markets",
-                        "subdomains": [
+                        "roles": ROLES_SANS_TECH_ADMIN,
+                        "sites": [
                             {
                                 "name": "algeria",
-                                "description": "Algeria"
+                                "description": "Algeria",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "angola",
-                                "description": "Angola"
+                                "description": "Angola",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "benin",
-                                "description": "Benin"
+                                "description": "Benin",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "cape_verde",
-                                "description": "Cape Verde"
+                                "description": "Cape Verde",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "chad",
-                                "description": "Chad"
+                                "description": "Chad",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "congo",
-                                "description": "DRC"
+                                "description": "DRC",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "gabon",
-                                "description": "Gabon"
+                                "description": "Gabon",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "ghana",
-                                "description": "Ghana"
+                                "description": "Ghana",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                             {
                                 "name": "guinea",
-                                "description": "Guinea"
+                                "description": "Guinea",
+                                "roles": ROLES_SANS_TECH_ADMIN
                             },
                         ]
                     }
                 ]
             },
             {
-                "name": "ge_corporate",
-                "description": "GE Corporate Site"
-            },
-            {
                 "name": "tega",
                 "description": "TEGA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "tega_nigeria",
-                        "Description": "Nigeria"
+                        "description": "Nigeria"
                     },
                     {
                         "name": "tega_malawi",
-                        "Description": "Malawi"
+                        "description": "Malawi"
                     },
                     {
                         "name": "tega_rwanda",
-                        "Description": "Rwanda"
+                        "description": "Rwanda"
                     },
                     {
                         "name": "tega_idia",
-                        "Description": "India"
+                        "description": "India"
                     },
                     {
                         "name": "tega_usa",
-                        "Description": "United States of America"
+                        "description": "United States of America"
                     },
                     {
                         "name": "tega_bangladesh",
-                        "Description": "bangladesh"
+                        "description": "bangladesh"
                     },
                 ]
             },
             {
-                "name": "girl_connect",
-                "description": "Girl Connect"
-            },
-            {
                 "name": "yegna",
                 "description": "YEGNA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "yegna_ethiopia",
                         "description": "Ethiopia"
@@ -123,7 +161,7 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "zathu",
                 "description": "ZATHU",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "zathu_malawi",
                         "description": "Malawi"
@@ -133,7 +171,7 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "india",
                 "description": "India (Brand TBC)",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "india_india",
                         "description": "India"
@@ -143,24 +181,12 @@ DOMAIN_HIERARCHY = [
             {
                 "name": "ni_nyampinga",
                 "description": "NI NYAMPINGA",
-                "subdomains": [
+                "sites": [
                     {
                         "name": "ni_nyampinga_rwanda",
                         "description": "Rwanda"
                     }
                 ]
-            },
-            {
-                "name": "gmp",
-                "description": "Global Management Portal",
-            },
-            {
-                "name": "impact_dash",
-                "description": "Impact Dashboard"
-            },
-            {
-                "name": "event_log",
-                "description": "Event Log"
             }
         ]
     }

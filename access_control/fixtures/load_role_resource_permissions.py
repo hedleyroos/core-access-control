@@ -12,7 +12,6 @@ ROLE_RESOURCE_PERMISSIONS = {
         ("urn:ge:access_control:usersiterole", "read"),
         ("urn:ge:access_control:domain", "read"),
         ("urn:ge:access_control:domainrole", "read"),
-        ("urn:ge:access_control:userdomainrole", "read"),
         # Assign/remove roles to/from users
         ("urn:ge:access_control:userdomainrole", "create"),
         ("urn:ge:access_control:userdomainrole", "read"),
