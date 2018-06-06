@@ -74,18 +74,18 @@ class SeedDataLoader:
                 self.load_sites(sites, domain)
 
     @staticmethod
-    def load_sites(detail: dict, domain: Domain=None):
-        for item in detail:
+    def load_sites(sites_to_create: dict, domain: Domain=None):
+        for site_to_create in sites_to_create:
             print("Site %s as child of Domain %s loaded..." % (
-                item.get("name"),
+                site_to_create["name"],
                 domain.name if domain else None
             ))
             site, created = get_or_create(
-                Site, name=item.get("name"),
-                description=item.get("description"),
+                Site, name=site_to_create["name"],
+                description=site_to_create["description"],
                 domain_id=domain.id if domain else None
             )
-            roles = item.get("roles", [])
+            roles = site_to_create.get("roles", [])
             for label in roles:
                 role = Role.query.filter_by(label=label).first()
                 site_role, created = get_or_create(
