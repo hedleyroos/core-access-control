@@ -124,27 +124,27 @@ DOMAIN_HIERARCHY = [
                 "sites": [
                     {
                         "name": "tega_nigeria",
-                        "Description": "Nigeria"
+                        "description": "Nigeria"
                     },
                     {
                         "name": "tega_malawi",
-                        "Description": "Malawi"
+                        "description": "Malawi"
                     },
                     {
                         "name": "tega_rwanda",
-                        "Description": "Rwanda"
+                        "description": "Rwanda"
                     },
                     {
                         "name": "tega_idia",
-                        "Description": "India"
+                        "description": "India"
                     },
                     {
                         "name": "tega_usa",
-                        "Description": "United States of America"
+                        "description": "United States of America"
                     },
                     {
                         "name": "tega_bangladesh",
-                        "Description": "bangladesh"
+                        "description": "bangladesh"
                     },
                 ]
             },
