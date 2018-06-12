@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.0
+-----
+Added `/ops/get_sites_for_domain/{domain_id}` API call.
+
 1.1.2
 -----
 1. Seed data updated.
