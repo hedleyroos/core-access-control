@@ -305,7 +305,7 @@ WITH RECURSIVE _domain_tree AS (
       FROM domain, _domain_tree
      WHERE domain.parent_id = _domain_tree.id
 )
-SELECT *
+SELECT site.*
   FROM site, _domain_tree
  WHERE domain_id = _domain_tree.id
 """
