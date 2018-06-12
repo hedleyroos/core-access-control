@@ -928,6 +928,26 @@ paths:
       tags:
         - operational
 
+  /ops/get_sites_under_domain/{domain_id}:
+    parameters:
+      - $ref: '#/parameters/domain_id'
+    get:
+      description: 'Get a list of all sites linked directly or indirectly to the specified domain.'
+      operationId: get_sites_under_domain
+      produces:
+        - application/json
+      responses:
+        200:
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/site'
+        403:
+          description: 'Forbidden'
+      tags:
+        - operational
+
   /ops/site_role_labels_aggregated/{site_id}:
     parameters:
       - $ref: '#/parameters/site_id'
