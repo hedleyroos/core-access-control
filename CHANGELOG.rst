@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.1
+-----
+Fixed bug in `/ops/get_sites_for_domain/{domain_id}` API call which resulted in the site ID that was returned actually being the domain_id value.
+
 1.2.0
 -----
 Added `/ops/get_sites_for_domain/{domain_id}` API call.
