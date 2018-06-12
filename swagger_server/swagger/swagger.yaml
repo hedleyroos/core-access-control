@@ -33,6 +33,31 @@ paths:
             $ref: "#/definitions/health_info"
       security: []
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/get_sites_under_domain/{domain_id}:
+    get:
+      tags:
+      - "operational"
+      description: "Get a list of all sites linked directly or indirectly to the specified\
+        \ domain."
+      operationId: "get_sites_under_domain"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "domain_id"
+        in: "path"
+        description: "A unique integer value identifying the domain."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/site"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /ops/site_role_labels_aggregated/{site_id}:
     get:
       tags:

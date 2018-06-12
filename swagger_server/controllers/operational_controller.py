@@ -10,6 +10,7 @@ from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
 from swagger_server.models.resource_permission import ResourcePermission  # noqa: E501
+from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
@@ -290,6 +291,25 @@ SELECT resource_id, permission_id
  WHERE role_resource_permission.role_id = ANY(:role_ids)
 """
 
+SQL_SITES_UNDER_DOMAIN = """
+-- Given a domain id (:domain_id) find all sites linked to it or any of its subdomains.
+
+-- The recursive query needs to come first
+-- Get domain ids for the subtree rooted at the domain with id :domain_id
+WITH RECURSIVE _domain_tree AS (
+    SELECT domain.id
+      FROM domain
+     WHERE domain.id = :domain_id
+     UNION DISTINCT
+    SELECT domain.id
+      FROM domain, _domain_tree
+     WHERE domain.parent_id = _domain_tree.id
+)
+SELECT *
+  FROM site, _domain_tree
+ WHERE domain_id = _domain_tree.id
+"""
+
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
@@ -428,6 +448,20 @@ def get_site_role_labels_aggregated(site_id):  # noqa: E501
         **{"roles": [row["label"] for row in result],
         "site_id": site_id}
     )
+
+
+def get_sites_under_domain(domain_id):  # noqa: E501
+    """get_sites_under_domain
+
+    Get a list of all sites linked directly or indirectly to the specified domain. # noqa: E501
+
+    :param domain_id: A unique integer value identifying the domain.
+    :type domain_id: int
+
+    :rtype: List[Site]
+    """
+    result = db.session.get_bind().execute(text(SQL_SITES_UNDER_DOMAIN), **{"domain_id": domain_id})
+    return [Site(**row) for row in result]
 
 
 def get_tech_admin_resource_permissions():  # noqa: E501
