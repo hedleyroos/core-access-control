@@ -108,7 +108,7 @@ class TestGetSitesUnderDomain(BaseTestCase):
         )
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
-    def test_get_users_with_roles_for_site(self):
+    def test_get_sites_under_domain(self):
         """Test case for get_sites_under_domain
         """
         response = self.client.open(
@@ -119,6 +119,9 @@ class TestGetSitesUnderDomain(BaseTestCase):
         r_data = json.loads(response.data)
         site_names = [site["name"] for site in r_data]
         self.assertEqual(sorted(site_names), sorted(["Site 1", "Site 2", "Site 3"]))
+        site_ids = [site["id"] for site in r_data]
+        self.assertEqual(sorted(site_ids),
+                         sorted([self.site_1.id, self.site_2.id, self.site_3.id]))
 
         response = self.client.open(
             "/api/v1/ops/get_sites_under_domain/{domain_id}".format(
@@ -128,6 +131,9 @@ class TestGetSitesUnderDomain(BaseTestCase):
         r_data = json.loads(response.data)
         site_names = [site["name"] for site in r_data]
         self.assertEqual(sorted(site_names), sorted(["Site 1", "Site 2"]))
+        site_ids = [site["id"] for site in r_data]
+        self.assertEqual(sorted(site_ids),
+                         sorted([self.site_1.id, self.site_2.id]))
 
         response = self.client.open(
             "/api/v1/ops/get_sites_under_domain/{domain_id}".format(
@@ -137,6 +143,8 @@ class TestGetSitesUnderDomain(BaseTestCase):
         r_data = json.loads(response.data)
         site_names = [site["name"] for site in r_data]
         self.assertEqual(site_names, ["Site 3"])
+        site_ids = [site["id"] for site in r_data]
+        self.assertEqual(sorted(site_ids), [self.site_3.id])
 
 
 if __name__ == '__main__':
