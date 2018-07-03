@@ -628,6 +628,8 @@ definitions:
       email:
         type: string
         format: email
+      organisation_id:
+        type: integer
       expires_at:
         type: string
         format: 'date-time'
@@ -645,6 +647,7 @@ definitions:
       - first_name
       - last_name
       - email
+      - organisation_id
       - expires_at
       - created_at
       - updated_at
@@ -665,6 +668,8 @@ definitions:
       email:
         type: string
         format: email
+      organisation_id:
+        type: integer
       expires_at:
         type: string
         format: 'date-time'
@@ -673,10 +678,15 @@ definitions:
       - first_name
       - last_name
       - email
+      - organisation_id
 
   invitation_update:
     type: object
     properties:
+      invitor_id:
+        type: string
+        format: uuid
+        description: The user that created the invitation
       first_name:
         type: string
         maxLength: 100
@@ -686,6 +696,8 @@ definitions:
       email:
         type: string
         format: email
+      organisation_id:
+        type: integer
       expires_at:
         type: string
         format: 'date-time'

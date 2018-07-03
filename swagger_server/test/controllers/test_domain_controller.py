@@ -10,12 +10,14 @@ from flask import json
 
 from project.settings import API_KEY_HEADER
 from ge_core_shared import db_actions
+
+from swagger_server.models import DomainCreate
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
-class TestAccessControlRead(BaseTestCase):
+class DomainTestCase(BaseTestCase):
 
     def setUp(self):
         self.domain_data = {
@@ -34,7 +36,7 @@ class TestAccessControlRead(BaseTestCase):
     def test_domain_create(self):
         """Test case for domainrole_create
         """
-        data = Domain(**{
+        data = DomainCreate(**{
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "Domain to create",
         })
@@ -47,7 +49,6 @@ class TestAccessControlRead(BaseTestCase):
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["description"], data.description)
-
 
     def test_domain_read(self):
         """Test case for domain_read

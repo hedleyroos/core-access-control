@@ -72,13 +72,13 @@ def domain_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Domain
     """
     if connexion.request.is_json:
-        data =connexion.request.get_json()
+        data = connexion.request.get_json()
 
     return db_actions.crud(
         model="Domain",
@@ -164,7 +164,7 @@ def domain_update(domain_id, data=None):  # noqa: E501
 
     :param domain_id: A unique integer value identifying the domain.
     :type domain_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Domain
@@ -186,7 +186,7 @@ def domainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DomainRole
@@ -286,7 +286,7 @@ def domainrole_update(domain_id, role_id, data=None):  # noqa: E501
     :type domain_id: int
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DomainRole
@@ -311,7 +311,7 @@ def invitation_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Invitation
@@ -319,13 +319,13 @@ def invitation_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
-    # return db_actions.crud(
-    #     model="Invitation",
-    #     api_model=Invitation,
-    #     action="create",
-    #     data=data,
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="create",
+        data=data,
+    )
+
 
 def invitation_delete(invitation_id):  # noqa: E501
     """invitation_delete
@@ -337,15 +337,15 @@ def invitation_delete(invitation_id):  # noqa: E501
 
     :rtype: None
     """
-    # return db_actions.crud(
-    #     model="Invitation",
-    #     api_model=Invitation,
-    #     action="delete",
-    #     query={
-    #         "invitation_id": invitation_id,
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="delete",
+        query={
+            "id": invitation_id,
+        }
+    )
+
 
 @decorators.list_response
 def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=None):  # noqa: E501
@@ -364,20 +364,20 @@ def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=Non
 
     :rtype: List[Invitation]
     """
-    # return db_actions.crud(
-    #     model="Invitation",
-    #     api_model=Invitation,
-    #     action="list",
-    #     query={
-    #         "offset": offset,
-    #         "limit": limit,
-    #         "ids": {
-    #             "invitor_id": invitor_id,
-    #             "invitation_ids": invitation_ids
-    #         },
-    #         "order_by": ["invitor_id"]}
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "invitor_id": invitor_id,
+                "id": invitation_ids
+            },
+            "order_by": ["invitor_id"]}
+    )
+
 
 def invitation_read(invitation_id):  # noqa: E501
     """invitation_read
@@ -389,15 +389,15 @@ def invitation_read(invitation_id):  # noqa: E501
 
     :rtype: Invitation
     """
-    # return db_actions.crud(
-    #     model="Invitation",
-    #     api_model=Invitation,
-    #     action="read",
-    #     query={
-    #         "invitation_id": invitation_id
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="read",
+        query={
+            "id": invitation_id
+        }
+    )
+
 
 def invitation_redeem(invitation_id, user_id):  # noqa: E501
     """invitation_redeem
@@ -421,13 +421,23 @@ def invitation_update(invitation_id, data=None):  # noqa: E501
 
     :param invitation_id: A UUID value identifying the invitation.
     :type invitation_id: dict | bytes
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Invitation
     """
-    raise NotImplementedError()
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
 
+    return db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="update",
+        data=data,
+        query={
+            "id": invitation_id,
+        },
+    )
 
 
 def invitationdomainrole_create(data=None):  # noqa: E501
@@ -435,7 +445,7 @@ def invitationdomainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: InvitationDomainRole
@@ -443,13 +453,13 @@ def invitationdomainrole_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
-    # return db_actions.crud(
-    #     model="InvitationDomainRole",
-    #     api_model=InvitationDomainRole,
-    #     action="create",
-    #     data=data,
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationDomainRole",
+        api_model=InvitationDomainRole,
+        action="create",
+        data=data,
+    )
+
 
 def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E501
     """invitationdomainrole_delete
@@ -465,17 +475,17 @@ def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E50
 
     :rtype: None
     """
-    # return db_actions.crud(
-    #     model="InvitaionDomainRole",
-    #     api_model=InvitationDomainRole,
-    #     action="delete",
-    #     query={
-    #         "invitaion_id": invitation_id,
-    #         "domain_id": domain_id,
-    #         "role_id": role_id,
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationDomainRole",
+        api_model=InvitationDomainRole,
+        action="delete",
+        query={
+            "invitation_id": invitation_id,
+            "domain_id": domain_id,
+            "role_id": role_id,
+        }
+    )
+
 
 @decorators.list_response
 def invitationdomainrole_list(offset=None, limit=None, invitation_id=None, domain_id=None, role_id=None):  # noqa: E501
@@ -496,21 +506,20 @@ def invitationdomainrole_list(offset=None, limit=None, invitation_id=None, domai
 
     :rtype: List[InvitationDomainRole]
     """
-    # return db_actions.crud(
-    #     model="InvitationDomainRole",
-    #     api_model=InvitationDomainRole,
-    #     action="list",
-    #     query={
-    #         "offset": offset,
-    #         "limit": limit,
-    #         "ids": {
-    #             "invitation_id": invitation_id,
-    #             "domain_id": domain_id,
-    #             "role_id": role_id
-    #         },
-    #         "order_by": ["domain_id"]}
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationDomainRole",
+        api_model=InvitationDomainRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "invitation_id": invitation_id,
+                "domain_id": domain_id,
+                "role_id": role_id
+            },
+            "order_by": ["domain_id"]}
+    )
 
 
 def invitationdomainrole_read(invitation_id, domain_id, role_id):  # noqa: E501
@@ -527,24 +536,24 @@ def invitationdomainrole_read(invitation_id, domain_id, role_id):  # noqa: E501
 
     :rtype: InvitationDomainRole
     """
-    # return db_actions.crud(
-    #     model="InvitationDomainRole",
-    #     api_model=InvitationDomainRole,
-    #     action="read",
-    #     query={
-    #         "invitation_id": invitation_id,
-    #         "domain_id": domain_id,
-    #         "role_id": role_id,
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationDomainRole",
+        api_model=InvitationDomainRole,
+        action="read",
+        query={
+            "invitation_id": invitation_id,
+            "domain_id": domain_id,
+            "role_id": role_id,
+        }
+    )
+
 
 def invitationsiterole_create(data=None):  # noqa: E501
     """invitationsiterole_create
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: InvitationSiteRole
@@ -552,13 +561,12 @@ def invitationsiterole_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
-    # return db_actions.crud(
-    #     model="InvitationSiteRole",
-    #     api_model=InvitationSiteRole,
-    #     action="create",
-    #     data=data,
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationSiteRole",
+        api_model=InvitationSiteRole,
+        action="create",
+        data=data,
+    )
 
 
 def invitationsiterole_delete(invitation_id, site_id, role_id):  # noqa: E501
@@ -575,17 +583,17 @@ def invitationsiterole_delete(invitation_id, site_id, role_id):  # noqa: E501
 
     :rtype: None
     """
-    # return db_actions.crud(
-    #     model="InvitationSiteRole",
-    #     api_model=InvitationSiteRole,
-    #     action="delete",
-    #     query={
-    #         "invitaion_id": invitation_id,
-    #         "site_id": site_id,
-    #         "role_id": role_id,
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationSiteRole",
+        api_model=InvitationSiteRole,
+        action="delete",
+        query={
+            "invitation_id": invitation_id,
+            "site_id": site_id,
+            "role_id": role_id,
+        }
+    )
+
 
 @decorators.list_response
 def invitationsiterole_list(offset=None, limit=None, invitation_id=None, site_id=None, role_id=None):  # noqa: E501
@@ -605,22 +613,22 @@ def invitationsiterole_list(offset=None, limit=None, invitation_id=None, site_id
     :type role_id: int
 
     :rtype: List[InvitationSiteRole]
-    # """
-    # return db_actions.crud(
-    #     model="InvitationSiteRole",
-    #     api_model=InvitationSiteRole,
-    #     action="list",
-    #     query={
-    #         "offset": offset,
-    #         "limit": limit,
-    #         "ids": {
-    #             "invitation_id": invitation_id,
-    #             "site_id": site_id,
-    #             "role_id": role_id
-    #         },
-    #         "order_by": ["site_id"]}
-    # )
-    raise NotImplementedError()
+    """
+    return db_actions.crud(
+        model="InvitationSiteRole",
+        api_model=InvitationSiteRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "invitation_id": invitation_id,
+                "site_id": site_id,
+                "role_id": role_id
+            },
+            "order_by": ["site_id"]
+        }
+    )
 
 
 def invitationsiterole_read(invitation_id, site_id, role_id):  # noqa: E501
@@ -637,24 +645,24 @@ def invitationsiterole_read(invitation_id, site_id, role_id):  # noqa: E501
 
     :rtype: InvitationSiteRole
     """
-    # return db_actions.crud(
-    #     model="InvitationSiteRole",
-    #     api_model=InvitationSiteRole,
-    #     action="read",
-    #     query={
-    #         "invitation_id": invitation_id,
-    #         "site_id": site_id,
-    #         "role_id": role_id,
-    #     }
-    # )
-    raise NotImplementedError()
+    return db_actions.crud(
+        model="InvitationSiteRole",
+        api_model=InvitationSiteRole,
+        action="read",
+        query={
+            "invitation_id": invitation_id,
+            "site_id": site_id,
+            "role_id": role_id,
+        }
+    )
+
 
 def permission_create(data=None):  # noqa: E501
     """permission_create
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Permission
@@ -736,7 +744,7 @@ def permission_update(permission_id, data=None):  # noqa: E501
 
     :param permission_id: A unique integer value identifying the permission.
     :type permission_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Permission
@@ -758,7 +766,7 @@ def resource_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Resource
@@ -842,7 +850,7 @@ def resource_update(resource_id, data=None):  # noqa: E501
 
     :param resource_id: A unique integer value identifying the resource.
     :type resource_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Resource
@@ -864,7 +872,7 @@ def role_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Role
@@ -946,7 +954,7 @@ def role_update(role_id, data=None):  # noqa: E501
 
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Role
@@ -968,7 +976,7 @@ def roleresourcepermission_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: RoleResourcePermission
@@ -1046,7 +1054,7 @@ def site_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Site
@@ -1131,7 +1139,7 @@ def site_update(site_id, data=None):  # noqa: E501
 
     :param site_id: A unique integer value identifying the site.
     :type site_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: Site
@@ -1153,7 +1161,7 @@ def siterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteRole
@@ -1253,7 +1261,7 @@ def siterole_update(site_id, role_id, data=None):  # noqa: E501
     :type site_id: int
     :param role_id: A unique integer value identifying the role.
     :type role_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: SiteRole
@@ -1278,7 +1286,7 @@ def userdomainrole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserDomainRole
@@ -1382,7 +1390,7 @@ def usersiterole_create(data=None):  # noqa: E501
 
      # noqa: E501
 
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: UserSiteRole
