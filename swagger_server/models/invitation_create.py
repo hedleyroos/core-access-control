@@ -15,7 +15,7 @@ class InvitationCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, expires_at: datetime=None):  # noqa: E501
+    def __init__(self, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None):  # noqa: E501
         """InvitationCreate - a model defined in Swagger
 
         :param invitor_id: The invitor_id of this InvitationCreate.  # noqa: E501
@@ -26,6 +26,8 @@ class InvitationCreate(Model):
         :type last_name: str
         :param email: The email of this InvitationCreate.  # noqa: E501
         :type email: str
+        :param organisation_id: The organisation_id of this InvitationCreate.  # noqa: E501
+        :type organisation_id: int
         :param expires_at: The expires_at of this InvitationCreate.  # noqa: E501
         :type expires_at: datetime
         """
@@ -34,6 +36,7 @@ class InvitationCreate(Model):
             'first_name': str,
             'last_name': str,
             'email': str,
+            'organisation_id': int,
             'expires_at': datetime
         }
 
@@ -42,6 +45,7 @@ class InvitationCreate(Model):
             'first_name': 'first_name',
             'last_name': 'last_name',
             'email': 'email',
+            'organisation_id': 'organisation_id',
             'expires_at': 'expires_at'
         }
 
@@ -49,6 +53,7 @@ class InvitationCreate(Model):
         self._first_name = first_name
         self._last_name = last_name
         self._email = email
+        self._organisation_id = organisation_id
         self._expires_at = expires_at
 
     @classmethod
@@ -159,6 +164,29 @@ class InvitationCreate(Model):
             raise ValueError("Invalid value for `email`, must not be `None`")  # noqa: E501
 
         self._email = email
+
+    @property
+    def organisation_id(self) -> int:
+        """Gets the organisation_id of this InvitationCreate.
+
+
+        :return: The organisation_id of this InvitationCreate.
+        :rtype: int
+        """
+        return self._organisation_id
+
+    @organisation_id.setter
+    def organisation_id(self, organisation_id: int):
+        """Sets the organisation_id of this InvitationCreate.
+
+
+        :param organisation_id: The organisation_id of this InvitationCreate.
+        :type organisation_id: int
+        """
+        if organisation_id is None:
+            raise ValueError("Invalid value for `organisation_id`, must not be `None`")  # noqa: E501
+
+        self._organisation_id = organisation_id
 
     @property
     def expires_at(self) -> datetime:

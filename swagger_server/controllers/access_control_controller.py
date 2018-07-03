@@ -342,7 +342,7 @@ def invitation_delete(invitation_id):  # noqa: E501
         api_model=Invitation,
         action="delete",
         query={
-            "invitation_id": invitation_id,
+            "id": invitation_id,
         }
     )
 
@@ -373,7 +373,7 @@ def invitation_list(offset=None, limit=None, invitor_id=None, invitation_ids=Non
             "limit": limit,
             "ids": {
                 "invitor_id": invitor_id,
-                "invitation_ids": invitation_ids
+                "id": invitation_ids
             },
             "order_by": ["invitor_id"]}
     )
@@ -394,7 +394,7 @@ def invitation_read(invitation_id):  # noqa: E501
         api_model=Invitation,
         action="read",
         query={
-            "invitation_id": invitation_id
+            "id": invitation_id
         }
     )
 
@@ -435,7 +435,7 @@ def invitation_update(invitation_id, data=None):  # noqa: E501
         action="update",
         data=data,
         query={
-            "invitation_id": invitation_id,
+            "id": invitation_id,
         },
     )
 

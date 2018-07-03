@@ -2512,6 +2512,7 @@ definitions:
     - "id"
     - "invitor_id"
     - "last_name"
+    - "organisation_id"
     - "updated_at"
     properties:
       id:
@@ -2531,6 +2532,8 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
@@ -2543,6 +2546,7 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
+      organisation_id: 0
       expires_at: "2000-01-23T04:56:07.000+00:00"
       updated_at: "2000-01-23T04:56:07.000+00:00"
       invitor_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
@@ -2558,6 +2562,7 @@ definitions:
     - "first_name"
     - "invitor_id"
     - "last_name"
+    - "organisation_id"
     properties:
       invitor_id:
         type: "string"
@@ -2572,12 +2577,18 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
   invitation_update:
     type: "object"
     properties:
+      invitor_id:
+        type: "string"
+        format: "uuid"
+        description: "The user that created the invitation"
       first_name:
         type: "string"
         maxLength: 100
@@ -2587,6 +2598,8 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
