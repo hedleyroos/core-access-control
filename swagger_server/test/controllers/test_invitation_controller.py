@@ -19,6 +19,8 @@ from flask import json
 class InvitationTestCase(BaseTestCase):
 
     def setUp(self):
+        models.InvitationDomainRole.query.delete()
+        models.InvitationSiteRole.query.delete()
         models.Invitation.query.delete()
         self.invitation_data = {
             "first_name": "first",

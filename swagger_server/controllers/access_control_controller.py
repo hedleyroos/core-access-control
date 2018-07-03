@@ -480,7 +480,7 @@ def invitationdomainrole_delete(invitation_id, domain_id, role_id):  # noqa: E50
         api_model=InvitationDomainRole,
         action="delete",
         query={
-            "invitaion_id": invitation_id,
+            "invitation_id": invitation_id,
             "domain_id": domain_id,
             "role_id": role_id,
         }

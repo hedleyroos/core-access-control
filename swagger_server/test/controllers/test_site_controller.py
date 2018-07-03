@@ -16,10 +16,11 @@ from swagger_server.test import BaseTestCase
 from ge_core_shared import db_actions
 
 
-class TestAccessControlRead(BaseTestCase):
+class SiteTestCase(BaseTestCase):
 
     def setUp(self):
         # Clear tables
+        models.InvitationSiteRole.query.delete()
         models.UserSiteRole.query.delete()
         models.SiteRole.query.delete()
         models.Site.query.delete()

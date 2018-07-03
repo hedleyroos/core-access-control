@@ -17,7 +17,7 @@ from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
 
 
-class TestAccessControlRead(BaseTestCase):
+class DomainTestCase(BaseTestCase):
 
     def setUp(self):
         self.domain_data = {
