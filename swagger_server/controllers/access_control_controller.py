@@ -3,6 +3,7 @@ import six
 
 from ge_core_shared import db_actions, decorators
 
+from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_create import DomainCreate  # noqa: E501
@@ -427,10 +428,9 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
             "user_api_model": UserSiteRole
         }
     ]
-    all_user_roles = {}
     for place in place_list:
         # Get all invitation roles for the given place.
-        roles = db_actions.crud(
+        roles, headers = db_actions.crud(
             model=place["invite_model"],
             api_model=place["invite_api_model"],
             action="list",
@@ -449,23 +449,14 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
                 place["place_id_key"]: role_dict[place["place_id_key"]],
                 "role_id": role_dict["role_id"]
             }
-            user_role = db_actions.crud(
+            # Create User Role.
+            db_actions.crud(
                 model=place["user_model"],
                 api_model=place["user_api_model"],
                 action="create",
                 data=data
             )
-            # Load created user role into object to be returned.
-            user_role_dict = user_role.to_dict()
-            place_role_key = "{place_type}:{place_id}".format(
-                place_type=place["place_id_key"][0],
-                place_id=user_role_dict[place["place_id_key"]]
-            )
-            try:
-                all_user_roles[place_role_key].push(role_dict["role_id"])
-            except KeyError:
-                all_user_roles[place_role_key] = [role_dict["role_id"]]
-            # Delete the invitation role.
+            # Delete Invitation Role.
             db_actions.crud(
                 model=place["invite_model"],
                 api_model=place["invite_api_model"],
@@ -481,9 +472,10 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
         api_model=Invitation,
         action="delete",
         query={
-            "invitation_id": invitation_id
+            "id": invitation_id
         }
     )
+    return get_all_user_roles(user_id=user_id)
 
 
 def invitation_update(invitation_id, data=None):  # noqa: E501
