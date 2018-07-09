@@ -411,7 +411,79 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    raise NotImplementedError()
+    place_list = [
+        {
+            "place_id_key": "domain_id",
+            "invite_model": "InvitationDomainRole",
+            "invite_api_model": InvitationDomainRole,
+            "user_model": "UserDomainRole",
+            "user_api_model": UserDomainRole
+        },
+        {
+            "place_id_key": "site_id",
+            "invite_model": "InvitationSiteRole",
+            "invite_api_model": InvitationSiteRole,
+            "user_model": "UserSiteRole",
+            "user_api_model": UserSiteRole
+        }
+    ]
+    all_user_roles = {}
+    for place in place_list:
+        # Get all invitation roles for the given place.
+        roles = db_actions.crud(
+            model=place["invite_model"],
+            api_model=place["invite_api_model"],
+            action="list",
+            query={
+                "ids": {
+                    "invitation_id": invitation_id
+                },
+                "order_by": ["role_id"]
+            }
+        )
+        # Create a User role for each invitation role.
+        for role in roles:
+            role_dict = role.to_dict()
+            data = {
+                "user_id": user_id,
+                place["place_id_key"]: role_dict[place["place_id_key"]],
+                "role_id": role_dict["role_id"]
+            }
+            user_role = db_actions.crud(
+                model=place["user_model"],
+                api_model=place["user_api_model"],
+                action="create",
+                data=data
+            )
+            # Load created user role into object to be returned.
+            user_role_dict = user_role.to_dict()
+            place_role_key = "{place_type}:{place_id}".format(
+                place_type=place["place_id_key"][0],
+                place_id=user_role_dict[place["place_id_key"]]
+            )
+            try:
+                all_user_roles[place_role_key].push(role_dict["role_id"])
+            except KeyError:
+                all_user_roles[place_role_key] = [role_dict["role_id"]]
+            # Delete the invitation role.
+            db_actions.crud(
+                model=place["invite_model"],
+                api_model=place["invite_api_model"],
+                action="delete",
+                query={
+                    "invitation_id": invitation_id,
+                    place["place_id_key"]: role_dict[place["place_id_key"]],
+                    "role_id": role_dict["role_id"]
+                }
+            )
+    db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="delete",
+        query={
+            "invitation_id": invitation_id
+        }
+    )
 
 
 def invitation_update(invitation_id, data=None):  # noqa: E501
