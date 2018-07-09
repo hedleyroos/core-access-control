@@ -2,7 +2,9 @@ import connexion
 import six
 
 from ge_core_shared import db_actions, decorators
+from sqlalchemy import text
 
+import project.app
 from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -40,6 +42,39 @@ from swagger_server.models.user_domain_role_create import UserDomainRoleCreate  
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
 from swagger_server import util
+
+db = project.app.DB
+
+SQL_REDEEM_INVITATION = """
+-- Given an invitation id (:invitation_id) and user id (:user_id),
+-- create UserDomainRoles and UserSiteRoles for all Invitation Roles found.
+
+-- Once the roles have been created, remove the invitation roles and the
+-- invitation itself.
+
+BEGIN;
+
+INSERT INTO user_domain_role (user_id, domain_id, role_id)
+SELECT :user_id, domain_id, role_id
+  FROM invitation_domain_role
+ WHERE invitation_id = :invitation_id;
+
+DELETE FROM invitation_domain_role
+ WHERE invitation_id = :invitation_id;
+
+INSERT INTO user_site_role (user_id, site_id, role_id)
+SELECT :user_id, site_id, role_id
+  FROM invitation_site_role
+ WHERE invitation_id = :invitation_id;
+
+DELETE FROM invitation_site_role
+ WHERE invitation_id = :invitation_id;
+
+DELETE FROM invitation
+ WHERE id = :invitation_id;
+
+COMMIT;
+"""
 
 
 def access_control_roleresourcepermission_delete(role_id, resource_id, permission_id):  # noqa: E501
@@ -412,68 +447,9 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    place_list = [
-        {
-            "place_id_key": "domain_id",
-            "invite_model": "InvitationDomainRole",
-            "invite_api_model": InvitationDomainRole,
-            "user_model": "UserDomainRole",
-            "user_api_model": UserDomainRole
-        },
-        {
-            "place_id_key": "site_id",
-            "invite_model": "InvitationSiteRole",
-            "invite_api_model": InvitationSiteRole,
-            "user_model": "UserSiteRole",
-            "user_api_model": UserSiteRole
-        }
-    ]
-    for place in place_list:
-        # Get all invitation roles for the given place.
-        roles, headers = db_actions.crud(
-            model=place["invite_model"],
-            api_model=place["invite_api_model"],
-            action="list",
-            query={
-                "ids": {
-                    "invitation_id": invitation_id
-                },
-                "order_by": ["role_id"]
-            }
-        )
-        # Create a User role for each invitation role.
-        for role in roles:
-            role_dict = role.to_dict()
-            data = {
-                "user_id": user_id,
-                place["place_id_key"]: role_dict[place["place_id_key"]],
-                "role_id": role_dict["role_id"]
-            }
-            # Create User Role.
-            db_actions.crud(
-                model=place["user_model"],
-                api_model=place["user_api_model"],
-                action="create",
-                data=data
-            )
-            # Delete Invitation Role.
-            db_actions.crud(
-                model=place["invite_model"],
-                api_model=place["invite_api_model"],
-                action="delete",
-                query={
-                    "invitation_id": invitation_id,
-                    place["place_id_key"]: role_dict[place["place_id_key"]],
-                    "role_id": role_dict["role_id"]
-                }
-            )
-    db_actions.crud(
-        model="Invitation",
-        api_model=Invitation,
-        action="delete",
-        query={
-            "id": invitation_id
-        }
+    db.session.get_bind().execute(
+        text(SQL_REDEEM_INVITATION),
+        **{"invitation_id": invitation_id, "user_id": user_id}
     )
     return get_all_user_roles(user_id=user_id)
 
