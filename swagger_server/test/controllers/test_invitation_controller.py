@@ -1,17 +1,23 @@
 import random
 import uuid
 
-from datetime import datetime
-from time import strptime
+from datetime import datetime, timedelta
 
 import werkzeug
 from ge_core_shared import db_actions
 
 from access_control import models
 from project.settings import API_KEY_HEADER
+from swagger_server.models import Domain
+from swagger_server.models import DomainRole
 from swagger_server.models import Invitation
 from swagger_server.models import InvitationCreate
+from swagger_server.models import InvitationDomainRole
+from swagger_server.models import InvitationSiteRole
 from swagger_server.models import InvitationUpdate
+from swagger_server.models import Role
+from swagger_server.models import Site
+from swagger_server.models import SiteRole
 from swagger_server.test import BaseTestCase
 from flask import json
 
@@ -22,18 +28,146 @@ class InvitationTestCase(BaseTestCase):
         models.InvitationDomainRole.query.delete()
         models.InvitationSiteRole.query.delete()
         models.Invitation.query.delete()
+        role_data = {
+            "label": ("%s" % uuid.uuid4())[:30],
+            "description": "invitation_site_role to create"
+        }
+        self.role_model_1 = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data=role_data,
+            action="create"
+        )
+        role_data = {
+            "label": ("%s" % uuid.uuid4())[:30],
+            "description": "invitation_site_role to create"
+        }
+        self.role_model_2 = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data=role_data,
+            action="create"
+        )
+        domain_data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "a super cool test domain",
+        }
+        self.domain_model = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data=domain_data,
+            action="create"
+        )
+        domain_data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "a super cool test domain 2"
+        }
+        self.domain_model_2 = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data=domain_data,
+            action="create"
+        )
+        domain_role_data = {
+            "role_id": self.role_model_1.id,
+            "domain_id": self.domain_model.id
+        }
+        self.domain_role_model = db_actions.crud(
+            model="DomainRole",
+            api_model=DomainRole,
+            data=domain_role_data,
+            action="create"
+        )
+        site_data = {
+            "name": ("%s" % uuid.uuid4())[:30],
+            "description": "a super cool test site",
+            "domain_id": self.domain_model_2.id
+        }
+        self.site_model = db_actions.crud(
+            model="Site",
+            api_model=Site,
+            data=site_data,
+            action="create"
+        )
+        site_role_data = {
+            "role_id": self.role_model_1.id,
+            "site_id": self.site_model.id
+        }
+        self.site_role_model = db_actions.crud(
+            model="SiteRole",
+            api_model=SiteRole,
+            data=site_role_data,
+            action="create"
+        )
+        site_role_data = {
+            "role_id": self.role_model_2.id,
+            "site_id": self.site_model.id
+        }
+        self.site_role_model = db_actions.crud(
+            model="SiteRole",
+            api_model=SiteRole,
+            data=site_role_data,
+            action="create"
+        )
         self.invitation_data = {
             "first_name": "first",
             "last_name": "last",
             "email": "3firstlast@test.com",
             "organisation_id": 1,
             "invitor_id": "%s" % uuid.uuid1(),
-            "expires_at": datetime.now()
+            "expires_at": datetime.now() + timedelta(days=1)
         }
         self.invitation_model = db_actions.crud(
             model="Invitation",
             api_model=Invitation,
             data=self.invitation_data,
+            action="create"
+        )
+        invitation_domain_role_data = {
+            "invitation_id": self.invitation_model.id,
+            "domain_id": self.domain_model.id,
+            "role_id": self.role_model_1.id
+        }
+        self.invitation_domain_role_model = db_actions.crud(
+            model="InvitationDomainRole",
+            api_model=InvitationDomainRole,
+            data=invitation_domain_role_data,
+            action="create"
+        )
+        invitation_site_role_data = {
+            "invitation_id": self.invitation_model.id,
+            "site_id": self.site_model.id,
+            "role_id": self.role_model_1.id
+        }
+        self.invitation_site_role_model = db_actions.crud(
+            model="InvitationSiteRole",
+            api_model=InvitationSiteRole,
+            data=invitation_site_role_data,
+            action="create"
+        )
+        invitation_site_role_data = {
+            "invitation_id": self.invitation_model.id,
+            "site_id": self.site_model.id,
+            "role_id": self.role_model_2.id
+        }
+        self.invitation_site_role_model = db_actions.crud(
+            model="InvitationSiteRole",
+            api_model=InvitationSiteRole,
+            data=invitation_site_role_data,
+            action="create"
+        )
+        expired_invite_data = self.invitation_data = {
+            "first_name": "first",
+            "last_name": "last",
+            "email": "7firstlast@test.com",
+            "organisation_id": 1,
+            "invitor_id": "%s" % uuid.uuid1(),
+            "expires_at": datetime.now() - timedelta(days=1)
+        }
+        self.expired_invite = db_actions.crud(
+            model="Invitation",
+            api_model=Invitation,
+            data=expired_invite_data,
             action="create"
         )
 
@@ -194,3 +328,32 @@ class InvitationTestCase(BaseTestCase):
         self.assertEqual(r_data["organisation_id"], updated_entry.organisation_id)
         self.assertEqual(r_data["expires_at"], updated_entry.expires_at.isoformat())
 
+    def test_invitation_redeem(self):
+        """Test Case for Redeeming of an Invitation
+        """
+        response = self.client.open(
+            "/api/v1/invitations/{invitation_id}/redeem/{user_id}".format(
+                invitation_id=self.invitation_model.id, user_id="%s" % uuid.uuid1()
+            ),
+            method="GET",
+            headers=self.headers
+        )
+        domain_key = "d:{}".format(self.domain_model.id)
+        site_key = "s:{}".format(self.site_model.id)
+        r_data = json.loads(response.data)
+        self.assertEquals(r_data["roles_map"][domain_key], [self.role_model_1.id])
+        self.assertEquals(
+            r_data["roles_map"][site_key], [self.role_model_1.id, self.role_model_2.id]
+        )
+
+    def test_invitation_redeem_expired(self):
+        """Test Case for when an invitation to be redeemed has expired.
+        """
+        response = self.client.open(
+            "/api/v1/invitations/{invitation_id}/redeem/{user_id}".format(
+                invitation_id=self.expired_invite.id, user_id="%s" % uuid.uuid1()
+            ),
+            method="GET",
+            headers=self.headers
+        )
+        self.assertStatus(response, 410)
