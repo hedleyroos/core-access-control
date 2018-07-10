@@ -95,7 +95,7 @@ parameters:
     name: cutoff_date
     required: false
     type: string
-    format: date
+    format: datetime
   domain_id:
     description: A unique integer value identifying the domain.
     in: path
@@ -1161,7 +1161,7 @@ paths:
     get:
       operationId: purge_expired_invitations
       parameters:
-        - $ref: '#/definitions/optional_cutoff_date'
+        - $ref: '#/parameters/optional_cutoff_date'
       produces:
         - application/json
       responses:

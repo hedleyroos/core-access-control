@@ -22,6 +22,7 @@ from swagger_server.models.invitation_update import InvitationUpdate
 from swagger_server.models.permission import Permission
 from swagger_server.models.permission_create import PermissionCreate
 from swagger_server.models.permission_update import PermissionUpdate
+from swagger_server.models.purged_invitations import PurgedInvitations
 from swagger_server.models.resource import Resource
 from swagger_server.models.resource_create import ResourceCreate
 from swagger_server.models.resource_permission import ResourcePermission

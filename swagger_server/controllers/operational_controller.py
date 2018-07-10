@@ -9,6 +9,7 @@ from access_control import __version__
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain_roles import DomainRoles  # noqa: E501
 from swagger_server.models.health_info import HealthInfo  # noqa: E501
+from swagger_server.models.purged_invitations import PurgedInvitations  # noqa: E501
 from swagger_server.models.resource_permission import ResourcePermission  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
@@ -310,6 +311,44 @@ SELECT site.*
  WHERE domain_id = _domain_tree.id
 """
 
+SQL_PURGE_EXPIRED_INVITATIONS = """
+-- Given a cutoff date (:cutoff_date), find all invitations with an
+-- expired_date beyond the cutoff_date and purge them.
+
+-- The InvitationDomainRoles and InvitationSiteRoles must be purged prior to
+-- purging the Invitation itself, to avoid errors.
+WITH invitations_to_delete AS (
+    SELECT id
+      FROM invitation
+     WHERE expires_at <= :cutoff_date
+),
+deleted_invitation_domain_roles AS (
+    DELETE FROM invitation_domain_role
+     WHERE invitation_id IN (
+        SELECT id
+          FROM invitations_to_delete
+    )
+),
+deleted_invitation_site_roles AS (
+    DELETE FROM invitation_site_role
+     WHERE invitation_id IN (
+        SELECT id
+          FROM invitations_to_delete
+    )
+),
+deleted_invitations AS (
+    DELETE FROM invitation
+     WHERE id IN (
+        SELECT id
+          FROM invitations_to_delete
+    )
+    RETURNING *
+)
+
+SELECT COUNT(*) AS amount
+  FROM deleted_invitations;
+"""
+
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
@@ -539,6 +578,26 @@ def get_users_with_roles_for_site(site_id):  # noqa: E501
         ) for row in result
     ]
     return users_with_roles
+
+
+def purge_expired_invitations(cutoff_date=None):  # noqa: E501
+    """purge_expired_invitations
+
+    Purge all the expired invitations past a cutoff_date (defaults to today).
+
+    :param cutoff_date: An optional cutoff_date to purge invitations expired past this date.
+    :type cutoff_date: datetime
+
+    :rtype: Object [PurgedInvitations]
+    """
+    if not cutoff_date:
+        cutoff_date = datetime.datetime.now().isoformat()
+    result = db.session.get_bind().execute(
+        text(SQL_PURGE_EXPIRED_INVITATIONS), **{"cutoff_date": cutoff_date}
+    )
+    # ResultProxy object does not support indexing so iteration is used.
+    amount = [row["amount"] for row in result]
+    return PurgedInvitations(amount=amount[0])
 
 
 def healthcheck():  # noqa: E501
