@@ -1,6 +1,8 @@
 import connexion
 import six
 
+from datetime import datetime
+from flask import abort
 from ge_core_shared import db_actions, decorators
 from sqlalchemy import text
 
@@ -47,7 +49,8 @@ db = project.app.DB
 
 SQL_REDEEM_INVITATION = """
 -- Given an invitation id (:invitation_id) and user id (:user_id),
--- create UserDomainRoles and UserSiteRoles for all Invitation Roles found.
+-- create UserDomainRoles and UserSiteRoles for all InvitationDomainRoles
+-- and InvitationSiteRoles found, respectively.
 
 -- Once the roles have been created, remove the invitation roles and the
 -- invitation itself.
@@ -447,11 +450,23 @@ def invitation_redeem(invitation_id, user_id):  # noqa: E501
 
     :rtype: AllUserRoles
     """
-    db.session.get_bind().execute(
-        text(SQL_REDEEM_INVITATION),
-        **{"invitation_id": invitation_id, "user_id": user_id}
+    invitation = db_actions.crud(
+        model="Invitation",
+        api_model=Invitation,
+        action="read",
+        query={
+            "id": invitation_id
+        }
     )
-    return get_all_user_roles(user_id=user_id)
+    expired = datetime.now() >= invitation.expires_at.replace(tzinfo=None)
+    if not expired:
+        db.session.get_bind().execute(
+            text(SQL_REDEEM_INVITATION),
+            **{"invitation_id": invitation_id, "user_id": user_id}
+        )
+        return get_all_user_roles(user_id=user_id)
+    else:
+        raise abort(410)
 
 
 def invitation_update(invitation_id, data=None):  # noqa: E501

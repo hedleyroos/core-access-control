@@ -1,7 +1,7 @@
 import random
 import uuid
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import werkzeug
 from ge_core_shared import db_actions
@@ -115,7 +115,7 @@ class InvitationTestCase(BaseTestCase):
             "email": "3firstlast@test.com",
             "organisation_id": 1,
             "invitor_id": "%s" % uuid.uuid1(),
-            "expires_at": datetime.now()
+            "expires_at": datetime.now() + timedelta(days=1)
         }
         self.invitation_model = db_actions.crud(
             model="Invitation",
@@ -154,6 +154,20 @@ class InvitationTestCase(BaseTestCase):
             model="InvitationSiteRole",
             api_model=InvitationSiteRole,
             data=invitation_site_role_data,
+            action="create"
+        )
+        expired_invite_data = self.invitation_data = {
+            "first_name": "first",
+            "last_name": "last",
+            "email": "7firstlast@test.com",
+            "organisation_id": 1,
+            "invitor_id": "%s" % uuid.uuid1(),
+            "expires_at": datetime.now() - timedelta(days=1)
+        }
+        self.expired_invite = db_actions.crud(
+            model="Invitation",
+            api_model=Invitation,
+            data=expired_invite_data,
             action="create"
         )
 
@@ -331,3 +345,15 @@ class InvitationTestCase(BaseTestCase):
         self.assertEquals(
             r_data["roles_map"][site_key], [self.role_model_1.id, self.role_model_2.id]
         )
+
+    def test_invitation_redeem_expired(self):
+        """Test Case for when an invitation to be redeemed has expired.
+        """
+        response = self.client.open(
+            "/api/v1/invitations/{invitation_id}/redeem/{user_id}".format(
+                invitation_id=self.expired_invite.id, user_id="%s" % uuid.uuid1()
+            ),
+            method="GET",
+            headers=self.headers
+        )
+        self.assertStatus(response, 410)
