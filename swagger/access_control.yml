@@ -1433,6 +1433,8 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/all_user_roles'
+        '410':
+          description: 'Gone: Resource has expired or no longer exists'
       tags:
         - access_control
 
