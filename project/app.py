@@ -3,8 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from raven.contrib.flask import Sentry
 
 from project import settings
+from project.errors import errors
 
 APP = Flask(__name__)
+APP.register_blueprint(errors)
 SENTRY = Sentry(dsn=settings.SENTRY_DSN)
 
 APP.config["SQLALCHEMY_DATABASE_URI"] = settings.SQLALCHEMY_DATABASE_URI
