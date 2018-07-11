@@ -1,6 +1,7 @@
 import json
 import uuid
 
+import werkzeug
 from datetime import datetime, timedelta
 from ge_core_shared import db_actions
 
@@ -24,6 +25,12 @@ class InvitationTestCase(BaseTestCase):
         models.InvitationDomainRole.query.delete()
         models.InvitationSiteRole.query.delete()
         models.Invitation.query.delete()
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
+        models.UserDomainRole.query.delete()
+        models.DomainRole.query.delete()
+        models.Domain.query.delete()
 
         role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
@@ -112,7 +119,7 @@ class InvitationTestCase(BaseTestCase):
             "email": "3firstlast@test.com",
             "organisation_id": 1,
             "invitor_id": "%s" % uuid.uuid1(),
-            "expires_at": datetime.now() + timedelta(days=1)
+            "expires_at": datetime.now() - timedelta(days=1)
         }
         self.expired_invitation_model = db_actions.crud(
             model="Invitation",
@@ -153,22 +160,26 @@ class InvitationTestCase(BaseTestCase):
             data=invitation_site_role_data,
             action="create"
         )
-        expired_invite_data = {
+        invite_data = {
             "first_name": "first",
             "last_name": "last",
             "email": "7firstlast@test.com",
             "organisation_id": 1,
             "invitor_id": "%s" % uuid.uuid1(),
-            "expires_at": datetime.now() - timedelta(days=1)
+            "expires_at": datetime.now() + timedelta(days=1)
         }
-        self.expired_invite = db_actions.crud(
+        self.invitation_model = db_actions.crud(
             model="Invitation",
             api_model=Invitation,
-            data=expired_invite_data,
+            data=invite_data,
             action="create"
         )
 
         self.headers = {API_KEY_HEADER: "test-api-key"}
+
+    def tearDown(self):
+        models.InvitationDomainRole.query.delete()
+        models.InvitationSiteRole.query.delete()
 
     def test_purge_invitations_today(self):
         response = self.client.open(
@@ -177,6 +188,13 @@ class InvitationTestCase(BaseTestCase):
         )
         r_data = json.loads(response.data)
         self.assertEqual(r_data["amount"], 1)
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="Invitation",
+                api_model=Invitation,
+                action="read",
+                query={"id": self.expired_invitation_model.id}
+            )
 
     def test_purge_invitations_cutoff_date(self):
         response = self.client.open(
@@ -189,3 +207,17 @@ class InvitationTestCase(BaseTestCase):
         )
         r_data = json.loads(response.data)
         self.assertEqual(r_data["amount"], 2)
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="Invitation",
+                api_model=Invitation,
+                action="read",
+                query={"id": self.expired_invitation_model.id}
+            )
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="Invitation",
+                api_model=Invitation,
+                action="read",
+                query={"id": self.invitation_model.id}
+            )
