@@ -334,13 +334,10 @@ deleted_invitation_site_roles AS (
 ),
 deleted_invitations AS (
     DELETE FROM invitation
-     WHERE id IN (
-        SELECT id
-          FROM invitations_to_delete
-    )
-    RETURNING *
+     USING invitations_to_delete
+     WHERE invitation.id = invitations_to_delete.id
+    RETURNING * 
 )
-
 SELECT COUNT(*) AS amount
   FROM deleted_invitations;
 """
@@ -582,18 +579,22 @@ def purge_expired_invitations(cutoff_date=None):  # noqa: E501
     Purge all the expired invitations past a cutoff_date (defaults to today).
 
     :param cutoff_date: An optional cutoff_date to purge invitations expired past this date.
-    :type cutoff_date: datetime
+    :type cutoff_date: date
 
-    :rtype: Object [PurgedInvitations]
+    :rtype: PurgedInvitations
     """
-    if not cutoff_date:
-        cutoff_date = datetime.datetime.now().isoformat()
-    result = db.session.get_bind().execute(
-        text(SQL_PURGE_EXPIRED_INVITATIONS), **{"cutoff_date": cutoff_date}
-    )
-    # ResultProxy object does not support indexing so iteration is used.
-    amount = [row["amount"] for row in result]
-    return PurgedInvitations(amount=amount[0])
+    if cutoff_date is None:
+        cutoff_date = str(datetime.datetime.now().date())
+
+    # For some reason we have to do this SQL query in a transaction.
+    # Ref: http://docs.sqlalchemy.org/en/latest/core/connections.html#using-transactions
+    with db.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_PURGE_EXPIRED_INVITATIONS), **{"cutoff_date": cutoff_date}
+        )
+
+    amount = result.fetchone()["amount"]
+    return PurgedInvitations(amount=amount)
 
 
 def healthcheck():  # noqa: E501
