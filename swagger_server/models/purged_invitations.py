@@ -60,5 +60,7 @@ class PurgedInvitations(Model):
         :param amount: The amount of this PurgedInvitations.
         :type amount: int
         """
+        if amount is None:
+            raise ValueError("Invalid value for `amount`, must not be `None`")  # noqa: E501
 
         self._amount = amount

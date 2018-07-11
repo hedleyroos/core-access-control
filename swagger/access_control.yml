@@ -95,7 +95,7 @@ parameters:
     name: cutoff_date
     required: false
     type: string
-    format: datetime
+    format: date
   domain_id:
     description: A unique integer value identifying the domain.
     in: path
@@ -935,6 +935,8 @@ definitions:
     properties:
       amount:
         type: integer
+    required:
+      - amount
 
 
 paths:
