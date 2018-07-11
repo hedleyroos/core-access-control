@@ -106,7 +106,7 @@ $(PYTEST): $(VENV)
 	$(PIP) install pytest pytest-cov
 
 test: $(PYTEST)
-	$(PYTEST) --cov=access_control --cov=swagger_server/controllers/ access_control/ swagger_server/test/
+	$(PYTEST) --fulltrace --verbose --cov=access_control --cov=swagger_server/controllers/ access_control/ swagger_server/test/
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
