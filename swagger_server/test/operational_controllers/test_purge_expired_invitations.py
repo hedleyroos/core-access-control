@@ -166,7 +166,7 @@ class InvitationTestCase(BaseTestCase):
             "email": "7firstlast@test.com",
             "organisation_id": 1,
             "invitor_id": "%s" % uuid.uuid1(),
-            "expires_at": datetime.now() + timedelta(days=1)
+            "expires_at": datetime.now()
         }
         self.invitation_model = db_actions.crud(
             model="Invitation",
@@ -180,6 +180,7 @@ class InvitationTestCase(BaseTestCase):
     def tearDown(self):
         models.InvitationDomainRole.query.delete()
         models.InvitationSiteRole.query.delete()
+        models.Invitation.query.delete()
 
     def test_purge_invitations_today(self):
         response = self.client.open(
@@ -201,7 +202,7 @@ class InvitationTestCase(BaseTestCase):
             "/api/v1/ops/purge_expired_invitations",
             method='GET',
             query_string=[
-                ("cutoff_date", (datetime.now() + timedelta(days=1)).isoformat())
+                ("cutoff_date", (datetime.now() + timedelta(days=1)).date())
             ],
             headers=self.headers
         )
