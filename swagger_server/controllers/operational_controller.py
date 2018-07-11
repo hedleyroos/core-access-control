@@ -320,21 +320,17 @@ SQL_PURGE_EXPIRED_INVITATIONS = """
 WITH invitations_to_delete AS (
     SELECT id
       FROM invitation
-     WHERE expires_at <= :cutoff_date
+     WHERE expires_at < :cutoff_date
 ),
 deleted_invitation_domain_roles AS (
     DELETE FROM invitation_domain_role
-     WHERE invitation_id IN (
-        SELECT id
-          FROM invitations_to_delete
-    )
+     USING invitations_to_delete
+     WHERE invitation_id = invitations_to_delete.id
 ),
 deleted_invitation_site_roles AS (
     DELETE FROM invitation_site_role
-     WHERE invitation_id IN (
-        SELECT id
-          FROM invitations_to_delete
-    )
+     USING invitations_to_delete
+     WHERE invitation_id = invitations_to_delete.id
 ),
 deleted_invitations AS (
     DELETE FROM invitation
