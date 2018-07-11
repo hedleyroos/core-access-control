@@ -109,7 +109,7 @@ class InvitationTestCase(BaseTestCase):
             data=site_role_data,
             action="create"
         )
-        self.invitation_data = {
+        invitation_data = {
             "first_name": "first",
             "last_name": "last",
             "email": "3firstlast@test.com",
@@ -120,7 +120,7 @@ class InvitationTestCase(BaseTestCase):
         self.invitation_model = db_actions.crud(
             model="Invitation",
             api_model=Invitation,
-            data=self.invitation_data,
+            data=invitation_data,
             action="create"
         )
         invitation_domain_role_data = {
@@ -156,7 +156,7 @@ class InvitationTestCase(BaseTestCase):
             data=invitation_site_role_data,
             action="create"
         )
-        expired_invite_data = self.invitation_data = {
+        expired_invite_data = {
             "first_name": "first",
             "last_name": "last",
             "email": "7firstlast@test.com",
@@ -341,9 +341,10 @@ class InvitationTestCase(BaseTestCase):
         domain_key = "d:{}".format(self.domain_model.id)
         site_key = "s:{}".format(self.site_model.id)
         r_data = json.loads(response.data)
-        self.assertEquals(r_data["roles_map"][domain_key], [self.role_model_1.id])
-        self.assertEquals(
-            r_data["roles_map"][site_key], [self.role_model_1.id, self.role_model_2.id]
+        self.assertEquals(sorted(r_data["roles_map"][domain_key]),
+                          sorted([self.role_model_1.id]))
+        self.assertEquals(sorted(r_data["roles_map"][site_key]),
+                          sorted([self.role_model_1.id, self.role_model_2.id])
         )
 
     def test_invitation_redeem_expired(self):

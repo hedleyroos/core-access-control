@@ -333,4 +333,4 @@ class InvitationSiteRole(DB.Model):
     )
 
     def __repr__(self):
-        return "<InvitationSiteRole(%s-%s)>" % (self.domain_id, self.role_id)
+        return "<InvitationSiteRole(%s-%s)>" % (self.site_id, self.role_id)
