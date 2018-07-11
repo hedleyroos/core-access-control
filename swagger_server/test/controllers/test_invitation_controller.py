@@ -341,9 +341,10 @@ class InvitationTestCase(BaseTestCase):
         domain_key = "d:{}".format(self.domain_model.id)
         site_key = "s:{}".format(self.site_model.id)
         r_data = json.loads(response.data)
-        self.assertEquals(r_data["roles_map"][domain_key], [self.role_model_1.id])
-        self.assertEquals(
-            r_data["roles_map"][site_key], [self.role_model_1.id, self.role_model_2.id]
+        self.assertEquals(sorted(r_data["roles_map"][domain_key]),
+                          sorted([self.role_model_1.id]))
+        self.assertEquals(sorted(r_data["roles_map"][site_key]),
+                          sorted([self.role_model_1.id, self.role_model_2.id])
         )
 
     def test_invitation_redeem_expired(self):
