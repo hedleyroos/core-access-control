@@ -22,6 +22,7 @@ RESOURCES = [
     "urn:ge:identity_provider:user",
     "urn:ge:identity_provider:two_factor:phonedevice",
     "urn:ge:identity_provider:country",
+    "urn:ge:identity_provider:organisation"
 
     "urn:ge:user_data:sitedataschema",
     "urn:ge:user_data:usersitedata",
