@@ -1,11 +1,11 @@
 from flask import Flask
 
 from ge_core_shared.db_actions import get_or_create, read_entry
-from access_control.fixtures.load_domains import DOMAIN_HIERARCHY
-from access_control.fixtures.load_permissions import PERMISSIONS
-from access_control.fixtures.load_resources import RESOURCES
-from access_control.fixtures.load_roles import ROLES
-from access_control.fixtures.load_role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
+from access_control.fixtures.domains import DOMAIN_HIERARCHY
+from access_control.fixtures.permissions import PERMISSIONS
+from access_control.fixtures.resources import RESOURCES
+from access_control.fixtures.roles import ROLES
+from access_control.fixtures.role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
 from access_control.models import Resource, Permission, Role, Domain, \
     DomainRole, RoleResourcePermission, Site, SiteRole
 
