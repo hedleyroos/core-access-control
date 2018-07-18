@@ -266,7 +266,7 @@ class Invitation(DB.Model):
     first_name = DB.Column(DB.Text)
     last_name = DB.Column(DB.Text)
     email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
-    expires_at = DB.Column(DB.DateTime)
+    expires_at = DB.Column(DB.DateTime, nullable=False)
     invitor_id = DB.Column(UUID)
     organisation_id = DB.Column(DB.Integer)
     created_at = DB.Column(DB.DateTime, default=utcnow())
