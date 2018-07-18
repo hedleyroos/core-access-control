@@ -188,7 +188,28 @@ class InvitationTestCase(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json',
             headers=self.headers)
-        print(response)
+        r_data = json.loads(response.data)
+        self.assertEqual(r_data["first_name"], data.first_name)
+        self.assertEqual(r_data["last_name"], data.last_name)
+        self.assertEqual(r_data["email"], data.email)
+        self.assertEqual(r_data["organisation_id"], data.organisation_id)
+        self.assertEqual(r_data["invitor_id"], data.invitor_id)
+
+    def test_invitation_create_without_expiry(self):
+        data = InvitationCreate(**{
+            "first_name": "first",
+            "last_name": "last",
+            "email": "1firstlast@test.com",
+            "organisation_id": 1,
+            "invitor_id": "%s" % uuid.uuid1(),
+            # No "expires_at" provided
+        })
+        response = self.client.open(
+            '/api/v1/invitations',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["first_name"], data.first_name)
         self.assertEqual(r_data["last_name"], data.last_name)
@@ -202,7 +223,6 @@ class InvitationTestCase(BaseTestCase):
         response = self.client.open(
             '/api/v1/invitations/{invitation_id}'.format(invitation_id=self.invitation_model.id),
             method='GET', headers=self.headers)
-        print(response)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["id"], self.invitation_model.id)
         self.assertEqual(r_data["first_name"], self.invitation_model.first_name)

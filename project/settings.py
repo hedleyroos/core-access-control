@@ -2,6 +2,7 @@ import logging
 import os
 
 
+INVITATION_EXPIRY_DAYS = int(os.environ.get("INVITATION_EXPIRY_DAYS", 5))
 DEFAULT_API_LIMIT = os.environ.get("DEFAULT_API_LIMIT", 50)
 API_KEY_HEADER = "X-API-KEY"
 ALLOWED_API_KEYS = set(os.environ["ALLOWED_API_KEYS"].split(","))
