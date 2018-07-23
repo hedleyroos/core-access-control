@@ -881,7 +881,10 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
             "limit": limit,
             "ids": resource_ids,
             "filters": {
-                "urn": prefix
+                "urn": {
+                    "value": prefix,
+                    "type": "startswith"
+                }
             },
             "order_by": ["id"]
         }
