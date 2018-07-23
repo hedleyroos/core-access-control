@@ -883,16 +883,7 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
     # Mimicking db_actions.list_entry() with additional filter of prefix.
     query = db.session.query(models.Resource, func.count().over().label("x_total_count"))
     if resource_ids:
-        if isinstance(resource_ids, dict):
-            for key, _id in resource_ids.items():
-                if _id is not None:
-                    query = query.filter(
-                        getattr(models.Resource, key).in_(
-                            _id if isinstance(_id, list) else [_id]
-                        )
-                    )
-        else:
-            query = query.filter(models.Resource.id.in_(resource_ids))
+        query = query.filter(models.Resource.id.in_(resource_ids))
 
     # Additional prefix filter startswith.
     if prefix:
@@ -900,12 +891,14 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
 
     query = query.order_by(models.Resource.id)
 
+    query = query.offset(
+        offset or 0
+    ).limit(
+        limit or settings.DEFAULT_API_LIMIT
+    ).all(),
+
     return db_actions.transform(
-        query.offset(
-            offset or 0
-        ).limit(
-            limit or settings.DEFAULT_API_LIMIT
-        ).all(),
+        instance=query,
         api_model=Resource
     )
 
