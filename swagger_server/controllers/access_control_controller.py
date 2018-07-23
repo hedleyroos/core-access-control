@@ -2,12 +2,15 @@ import connexion
 import six
 
 from datetime import datetime
+
+from dateutil.relativedelta import relativedelta
 from flask import abort
 from ge_core_shared import db_actions, decorators
+
+from project import settings
 from sqlalchemy import func, text
 
 import project.app
-from project import settings
 from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
@@ -359,6 +362,10 @@ def invitation_create(data=None):  # noqa: E501
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
+
+    # If not expiry was provided, compute one.
+    if "expires_at" not in data or data["expires_at"] is None:
+        data["expires_at"] = datetime.utcnow() + relativedelta(days=settings.INVITATION_EXPIRY_DAYS)
 
     return db_actions.crud(
         model="Invitation",
