@@ -34,6 +34,7 @@ ROLE_RESOURCE_PERMISSIONS = {
         ("urn:ge:access_control:invitationsiterole", "read"),
         ("urn:ge:access_control:invitationsiterole", "update"),
         ("urn:ge:access_control:invitationsiterole", "delete"),
+        ("urn:ge:identity_provider:organisation", "read")
     ],
     "governance_admin": [
         ("urn:ge:identity_provider:user", "read"),

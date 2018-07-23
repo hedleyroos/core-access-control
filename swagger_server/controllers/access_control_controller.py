@@ -7,9 +7,10 @@ from dateutil.relativedelta import relativedelta
 from flask import abort
 from ge_core_shared import db_actions, decorators
 from project import settings
-from sqlalchemy import text
+from sqlalchemy import func, text
 
 import project.app
+from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -879,11 +880,26 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
 
     :rtype: List[Resource]
     """
-    return db_actions.crud(
-        model="Resource",
-        api_model=Resource,
-        action="list",
-        query={"offset": offset, "limit": limit, "ids": resource_ids, "order_by": ["id"]}
+    # Mimicking db_actions.list_entry() with additional filter of prefix.
+    query = db.session.query(models.Resource, func.count().over().label("x_total_count"))
+    if resource_ids:
+        query = query.filter(models.Resource.id.in_(resource_ids))
+
+    # Additional prefix filter startswith.
+    if prefix:
+        query = query.filter(models.Resource.urn.startswith(prefix))
+
+    query = query.order_by(models.Resource.id)
+
+    query = query.offset(
+        offset or 0
+    ).limit(
+        limit or settings.DEFAULT_API_LIMIT
+    ).all()
+
+    return db_actions.transform(
+        instance=query,
+        api_model=Resource
     )
 
 
