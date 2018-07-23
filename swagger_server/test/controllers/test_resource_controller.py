@@ -7,6 +7,7 @@ import uuid
 import werkzeug
 from flask import json
 
+from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
@@ -29,6 +30,10 @@ class ResourceTestCase(BaseTestCase):
         )
 
         self.headers = {API_KEY_HEADER: "test-api-key"}
+
+    def tearDown(self):
+        models.RoleResourcePermission.query.delete()
+        models.Resource.query.delete()
 
     def test_resource_create(self):
         """Test case for resource_create
@@ -118,6 +123,26 @@ class ResourceTestCase(BaseTestCase):
         r_data = json.loads(response.data)
         self.assertEqual(len(r_data), 2)
         self.assertEqual(int(response.headers["X-Total-Count"]), len(objects))
+        # Test Prefix filter
+        data = {
+            "urn": ("custom:%s" % uuid.uuid1())[:24],
+            "description": "custom resource",
+        }
+        db_actions.crud(
+            model="Resource",
+            api_model=Resource,
+            data=data,
+            action="create"
+        )
+        query_string = [('prefix', "custom:")]
+        response = self.client.open(
+            '/api/v1/resources',
+            method='GET',
+            query_string=query_string,
+            headers=self.headers)
+        r_data = json.loads(response.data)
+        self.assertEqual(len(r_data), 1)
+        self.assertEqual(int(response.headers["X-Total-Count"]), 1)
 
     def test_resource_update(self):
         """Test case for resource_update
