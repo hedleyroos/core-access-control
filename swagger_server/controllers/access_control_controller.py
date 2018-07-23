@@ -895,7 +895,7 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
         offset or 0
     ).limit(
         limit or settings.DEFAULT_API_LIMIT
-    ).all(),
+    ).all()
 
     return db_actions.transform(
         instance=query,
