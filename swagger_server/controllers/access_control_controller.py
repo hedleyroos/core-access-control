@@ -6,7 +6,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from flask import abort
 from ge_core_shared import db_actions, decorators
-
 from project import settings
 from sqlalchemy import func, text
 
