@@ -876,7 +876,15 @@ def resource_list(offset=None, limit=None, prefix=None, resource_ids=None):  # n
         model="Resource",
         api_model=Resource,
         action="list",
-        query={"offset": offset, "limit": limit, "ids": resource_ids, "order_by": ["id"]}
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": resource_ids,
+            "filters": {
+                "urn": prefix
+            },
+            "order_by": ["id"]
+        }
     )
 
 
