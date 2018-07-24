@@ -61,16 +61,16 @@ SQL_REDEEM_INVITATION = """
 
 BEGIN;
 
-INSERT INTO user_domain_role (user_id, domain_id, role_id)
-SELECT :user_id, domain_id, role_id
+INSERT INTO user_domain_role (user_id, domain_id, role_id, created_at, updated_at)
+SELECT :user_id, domain_id, role_id, NOW(), NOW()
   FROM invitation_domain_role
  WHERE invitation_id = :invitation_id;
 
 DELETE FROM invitation_domain_role
  WHERE invitation_id = :invitation_id;
 
-INSERT INTO user_site_role (user_id, site_id, role_id)
-SELECT :user_id, site_id, role_id
+INSERT INTO user_site_role (user_id, site_id, role_id, created_at, updated_at)
+SELECT :user_id, site_id, role_id, NOW(), NOW()
   FROM invitation_site_role
  WHERE invitation_id = :invitation_id;
 
