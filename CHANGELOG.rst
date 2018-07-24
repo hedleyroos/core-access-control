@@ -17,7 +17,6 @@ next
     - access_control/fixtures/load_roles.py → access_control/fixtures/roles.py
 #. Update Sentry config
 
-
 1.2.1
 -----
 - Fixed bug in `/ops/get_sites_for_domain/{domain_id}` API call which resulted in the site ID that was returned actually being the domain_id value.
