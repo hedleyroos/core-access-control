@@ -17,7 +17,7 @@ from swagger_server.test import BaseTestCase
 from ge_core_shared import db_actions
 
 
-class TestAccessControlRead(BaseTestCase):
+class DomainRoleTestCase(BaseTestCase):
 
     def setUp(self):
         self.role_data = {

@@ -266,9 +266,9 @@ class Invitation(DB.Model):
     first_name = DB.Column(DB.Text)
     last_name = DB.Column(DB.Text)
     email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
-    expires_at = DB.Column(DB.DateTime)
+    expires_at = DB.Column(DB.DateTime, nullable=False)
     invitor_id = DB.Column(UUID)
-    is_system_user = DB.Column(DB.Boolean, default=False)
+    organisation_id = DB.Column(DB.Integer)
     created_at = DB.Column(DB.DateTime, default=utcnow())
     updated_at = DB.Column(
         DB.DateTime,
@@ -333,4 +333,4 @@ class InvitationSiteRole(DB.Model):
     )
 
     def __repr__(self):
-        return "<InvitationSiteRole(%s-%s)>" % (self.domain_id, self.role_id)
+        return "<InvitationSiteRole(%s-%s)>" % (self.site_id, self.role_id)

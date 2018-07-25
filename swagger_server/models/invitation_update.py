@@ -15,35 +15,45 @@ class InvitationUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, first_name: str=None, last_name: str=None, email: str=None, expires_at: datetime=None):  # noqa: E501
+    def __init__(self, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None):  # noqa: E501
         """InvitationUpdate - a model defined in Swagger
 
+        :param invitor_id: The invitor_id of this InvitationUpdate.  # noqa: E501
+        :type invitor_id: str
         :param first_name: The first_name of this InvitationUpdate.  # noqa: E501
         :type first_name: str
         :param last_name: The last_name of this InvitationUpdate.  # noqa: E501
         :type last_name: str
         :param email: The email of this InvitationUpdate.  # noqa: E501
         :type email: str
+        :param organisation_id: The organisation_id of this InvitationUpdate.  # noqa: E501
+        :type organisation_id: int
         :param expires_at: The expires_at of this InvitationUpdate.  # noqa: E501
         :type expires_at: datetime
         """
         self.swagger_types = {
+            'invitor_id': str,
             'first_name': str,
             'last_name': str,
             'email': str,
+            'organisation_id': int,
             'expires_at': datetime
         }
 
         self.attribute_map = {
+            'invitor_id': 'invitor_id',
             'first_name': 'first_name',
             'last_name': 'last_name',
             'email': 'email',
+            'organisation_id': 'organisation_id',
             'expires_at': 'expires_at'
         }
 
+        self._invitor_id = invitor_id
         self._first_name = first_name
         self._last_name = last_name
         self._email = email
+        self._organisation_id = organisation_id
         self._expires_at = expires_at
 
     @classmethod
@@ -56,6 +66,29 @@ class InvitationUpdate(Model):
         :rtype: InvitationUpdate
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def invitor_id(self) -> str:
+        """Gets the invitor_id of this InvitationUpdate.
+
+        The user that created the invitation  # noqa: E501
+
+        :return: The invitor_id of this InvitationUpdate.
+        :rtype: str
+        """
+        return self._invitor_id
+
+    @invitor_id.setter
+    def invitor_id(self, invitor_id: str):
+        """Sets the invitor_id of this InvitationUpdate.
+
+        The user that created the invitation  # noqa: E501
+
+        :param invitor_id: The invitor_id of this InvitationUpdate.
+        :type invitor_id: str
+        """
+
+        self._invitor_id = invitor_id
 
     @property
     def first_name(self) -> str:
@@ -123,6 +156,27 @@ class InvitationUpdate(Model):
         """
 
         self._email = email
+
+    @property
+    def organisation_id(self) -> int:
+        """Gets the organisation_id of this InvitationUpdate.
+
+
+        :return: The organisation_id of this InvitationUpdate.
+        :rtype: int
+        """
+        return self._organisation_id
+
+    @organisation_id.setter
+    def organisation_id(self, organisation_id: int):
+        """Sets the organisation_id of this InvitationUpdate.
+
+
+        :param organisation_id: The organisation_id of this InvitationUpdate.
+        :type organisation_id: int
+        """
+
+        self._organisation_id = organisation_id
 
     @property
     def expires_at(self) -> datetime:

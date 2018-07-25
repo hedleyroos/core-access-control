@@ -1,27 +1,44 @@
 Changelog
 =========
 
+1.2.2
+-----
+#. Update models to use organisation instead of is_system_user flag
+#. Created invite related tables.
+#. Added API CRUD endpoints and functionality for invites.
+#. Added invite redeem endpoint and functionality.
+#. Added expired invite purge endpoint and functionality.
+#. Resource list updates to include `urn:ge:identity_provider:organisation`
+#. Files renamed
+    - access_control/fixtures/load_domains.py → access_control/fixtures/domains.py
+    - access_control/fixtures/load_permissions.py → access_control/fixtures/permissions.py
+    - access_control/fixtures/load_resources.py → access_control/fixtures/resources.py
+    - access_control/fixtures/load_role_resource_permissions.py → access_control/fixtures/role_resource_permissions.py
+    - access_control/fixtures/load_roles.py → access_control/fixtures/roles.py
+#. Update Sentry config
+
 1.2.1
 -----
-Fixed bug in `/ops/get_sites_for_domain/{domain_id}` API call which resulted in the site ID that was returned actually being the domain_id value.
+- Fixed bug in `/ops/get_sites_for_domain/{domain_id}` API call which resulted in the site ID that was returned actually being the domain_id value.
 
 1.2.0
 -----
-Added `/ops/get_sites_for_domain/{domain_id}` API call.
+- Added `/ops/get_sites_for_domain/{domain_id}` API call.
 
 1.1.2
 -----
-1. Seed data updated.
-2. Added helper scripts to bootstrap the Management Portal and a user with the `tech_admin` role.
+#. Seed data updated.
+#. Added helper scripts to bootstrap the Management Portal and a user with the `tech_admin` role.
 
 1.1.1
 -----
-Reworked healthcheck end-point to not use pkg_resources.
+- Reworked healthcheck end-point to not use pkg_resources.
 
 1.1.0
 -----
-Added healthcheck end-point
+- Added healthcheck end-point
 
 1.0.0
 -----
-Initial release
+- Initial release
+

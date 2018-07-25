@@ -282,6 +282,28 @@ paths:
         404:
           description: "Site not found"
       x-swagger-router-controller: "swagger_server.controllers.operational_controller"
+  /ops/purge_expired_invitations:
+    get:
+      tags:
+      - "operational"
+      operationId: "purge_expired_invitations"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "cutoff_date"
+        in: "query"
+        description: "An optional cutoff date to purge invites before this date"
+        required: false
+        type: "string"
+        format: "date"
+      responses:
+        200:
+          description: "Expired Invitations Purged"
+          schema:
+            $ref: "#/definitions/purged_invitations"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /domains:
     get:
       tags:
@@ -714,6 +736,8 @@ paths:
           description: ""
           schema:
             $ref: "#/definitions/all_user_roles"
+        410:
+          description: "Gone: Resource has expired or no longer exists"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
   /invitationdomainroles:
     get:
@@ -2512,6 +2536,7 @@ definitions:
     - "id"
     - "invitor_id"
     - "last_name"
+    - "organisation_id"
     - "updated_at"
     properties:
       id:
@@ -2531,6 +2556,8 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
@@ -2543,6 +2570,7 @@ definitions:
         format: "date-time"
         readOnly: true
     example:
+      organisation_id: 0
       expires_at: "2000-01-23T04:56:07.000+00:00"
       updated_at: "2000-01-23T04:56:07.000+00:00"
       invitor_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
@@ -2558,6 +2586,7 @@ definitions:
     - "first_name"
     - "invitor_id"
     - "last_name"
+    - "organisation_id"
     properties:
       invitor_id:
         type: "string"
@@ -2572,12 +2601,18 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
   invitation_update:
     type: "object"
     properties:
+      invitor_id:
+        type: "string"
+        format: "uuid"
+        description: "The user that created the invitation"
       first_name:
         type: "string"
         maxLength: 100
@@ -2587,6 +2622,8 @@ definitions:
       email:
         type: "string"
         format: "email"
+      organisation_id:
+        type: "integer"
       expires_at:
         type: "string"
         format: "date-time"
@@ -2885,6 +2922,15 @@ definitions:
       host: "host"
       version: "version"
       db_timestamp: "2000-01-23T04:56:07.000+00:00"
+  purged_invitations:
+    type: "object"
+    required:
+    - "amount"
+    properties:
+      amount:
+        type: "integer"
+    example:
+      amount: 0
 parameters:
   optional_limit:
     name: "limit"
@@ -2942,6 +2988,13 @@ parameters:
     required: false
     type: "string"
     format: "uuid"
+  optional_cutoff_date:
+    name: "cutoff_date"
+    in: "query"
+    description: "An optional cutoff date to purge invites before this date"
+    required: false
+    type: "string"
+    format: "date"
   domain_id:
     name: "domain_id"
     in: "path"

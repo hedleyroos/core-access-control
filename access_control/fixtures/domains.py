@@ -1,6 +1,6 @@
 # Domain hierarchy based on:
 # https://praekelt.atlassian.net/wiki/spaces/GEM/pages/215515423/Roles+Permissions+Guidelines?preview=/55574535/118751390/Domain%20Hierarchy%20(5).png
-from access_control.fixtures import ROLES
+from access_control.fixtures.roles import ROLES
 
 ROLES_SANS_TECH_ADMIN = [role for role in ROLES if role != "tech_admin"]
 
