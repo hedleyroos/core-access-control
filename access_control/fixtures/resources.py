@@ -27,6 +27,8 @@ RESOURCES = [
     "urn:ge:user_data:sitedataschema",
     "urn:ge:user_data:usersitedata",
     "urn:ge:user_data:adminnote",
+    "urn:ge:user_data:deleteduser",
+    "urn:ge:user_data:deletedusersite",
 
     # For custom GMP functionality we use the form:
     # "urn:ge:management_portal:<page>:<function>
