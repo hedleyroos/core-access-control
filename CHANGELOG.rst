@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.2.2
+-----
 #. Update models to use organisation instead of is_system_user flag
 #. Created invite related tables.
 #. Added API CRUD endpoints and functionality for invites.
