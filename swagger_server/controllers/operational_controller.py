@@ -344,6 +344,30 @@ SELECT COUNT(*) AS amount
   FROM deleted_invitations;
 """
 
+SQL_DELETE_USER_DATA = """
+-- Given a user id (:user_id),
+-- delete UserDomainRoles and UserSiteRoles tied to user id
+
+WITH deleted_site_roles AS (
+    DELETE FROM usersiterole
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_domain_roles AS (
+    DELETE FROM userdomainrole
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_rows AS (
+   SELECT * FROM deleted_site_roles
+   UNION ALL  -- ALL is required so that duplicates are not dropped
+   SELECT * FROM deleted_domain_roles
+)
+
+SELECT COUNT(*) AS amount
+  FROM deleted_rows;
+"""
+
 def delete_user_data(user_id):  # noqa: E501
     """delete_user_data
 
@@ -354,9 +378,14 @@ def delete_user_data(user_id):  # noqa: E501
 
     :rtype: UserDeletionData
     """
-    if connexion.request.is_json:
-        user_id = UserDeletionData.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    with db.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_DELETE_USER_DATA),
+            **{"user_id": user_id}
+        )
+
+    amount = result.fetchone()["amount"]
+    return UserDeletionData(amount=amount)
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
