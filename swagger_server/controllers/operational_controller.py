@@ -1,3 +1,4 @@
+import connexion
 import datetime
 import socket
 
@@ -14,6 +15,7 @@ from swagger_server.models.resource_permission import ResourcePermission  # noqa
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_with_roles import UserWithRoles  # noqa: E501
 
@@ -342,6 +344,19 @@ SELECT COUNT(*) AS amount
   FROM deleted_invitations;
 """
 
+def delete_user_data(user_id):  # noqa: E501
+    """delete_user_data
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: UserDeletionData
+    """
+    if connexion.request.is_json:
+        user_id = UserDeletionData.from_dict(connexion.request.get_json())  # noqa: E501
+    return 'do some magic!'
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles
