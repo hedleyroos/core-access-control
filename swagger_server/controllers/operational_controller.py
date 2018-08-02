@@ -349,12 +349,12 @@ SQL_DELETE_USER_DATA = """
 -- delete UserDomainRoles and UserSiteRoles tied to user id
 
 WITH deleted_site_roles AS (
-    DELETE FROM usersiterole
+    DELETE FROM user_site_role
         WHERE user_id = :user_id
     RETURNING user_id
 ),
 deleted_domain_roles AS (
-    DELETE FROM userdomainrole
+    DELETE FROM user_domain_role
         WHERE user_id = :user_id
     RETURNING user_id
 ),

@@ -1,0 +1,102 @@
+import random
+import uuid
+
+import werkzeug
+
+from flask import json
+from ge_core_shared import db_actions
+from project.settings import API_KEY_HEADER
+
+from swagger_server.models import Domain
+from swagger_server.models import DomainRole
+from swagger_server.models import Role
+from swagger_server.models import UserDomainRole
+from swagger_server.models import UserDomainRoleCreate
+from swagger_server.models.domain import Domain  # noqa: E501
+from swagger_server.models.role import Role  # noqa: E501
+from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_role import SiteRole  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData
+from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
+from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
+from swagger_server.test import BaseTestCase
+
+
+class DeleteUserDataTestCase(BaseTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.headers = {API_KEY_HEADER: "test-api-key"}
+
+    def test_delete_user_data_usersiterole(self):
+        user_id = "%s" % uuid.uuid1()
+        role_model = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data={
+                "label": ("%s" % uuid.uuid1())[:30],
+                "description": "user_site_role to create",
+            },
+            action="create"
+        )
+        domain_model = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data={
+                "name": ("%s" % uuid.uuid1())[:30],
+                "description": "user_site_role to create",
+            },
+            action="create"
+        )
+        for index in range(1, 30):
+            site_data = {
+                "name": ("%s" % uuid.uuid1())[:30],
+                "domain_id": domain_model.id,
+                "description": "a super cool test site",
+                "client_id": uuid.uuid1().int>>97,
+                "is_active": True,
+            }
+            site_model = db_actions.crud(
+                model="Site",
+                api_model=Site,
+                data=site_data,
+                action="create"
+            )
+            db_actions.crud(
+                model="SiteRole",
+                api_model=SiteRole,
+                data={
+                    "role_id": role_model.id,
+                    "site_id": site_model.id,
+                },
+                action="create"
+            )
+            db_actions.crud(
+                model="UserSiteRole",
+                api_model=UserSiteRole,
+                data={
+                    "role_id": role_model.id,
+                    "site_id": site_model.id,
+                    "user_id": user_id,
+                },
+                action="create"
+            )
+
+        response = self.client.open(
+            '/api/v1/ops/users/{user_id}/delete'.format(
+                user_id=user_id,
+            ), method='GET',
+            headers=self.headers)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["amount"], 29)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="UserSiteRole",
+                api_model=UserSiteRole,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
