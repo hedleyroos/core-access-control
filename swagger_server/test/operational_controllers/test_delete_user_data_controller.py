@@ -160,3 +160,114 @@ class DeleteUserDataTestCase(BaseTestCase):
                     "user_id": user_id,
                 }
             )
+
+    def test_delete_user_data_combined(self):
+        user_id = "%s" % uuid.uuid1()
+        role_model = db_actions.crud(
+            model="Role",
+            api_model=Role,
+            data={
+                "label": ("%s" % uuid.uuid1())[:30],
+                "description": "user_site_role to create",
+            },
+            action="create"
+        )
+        domain_model = db_actions.crud(
+            model="Domain",
+            api_model=Domain,
+            data={
+                "name": ("%s" % uuid.uuid1())[:30],
+                "description": "user_site_role to create",
+            },
+            action="create"
+        )
+        for index in range(1, 30):
+            site_data = {
+                "name": ("%s" % uuid.uuid1())[:30],
+                "domain_id": domain_model.id,
+                "description": "a super cool test site",
+                "client_id": uuid.uuid1().int>>97,
+                "is_active": True,
+            }
+            site_model = db_actions.crud(
+                model="Site",
+                api_model=Site,
+                data=site_data,
+                action="create"
+            )
+            db_actions.crud(
+                model="SiteRole",
+                api_model=SiteRole,
+                data={
+                    "role_id": role_model.id,
+                    "site_id": site_model.id,
+                },
+                action="create"
+            )
+            db_actions.crud(
+                model="UserSiteRole",
+                api_model=UserSiteRole,
+                data={
+                    "role_id": role_model.id,
+                    "site_id": site_model.id,
+                    "user_id": user_id,
+                },
+                action="create"
+            )
+        for index in range(1, 35):
+            domain_model = db_actions.crud(
+                model="Domain",
+                api_model=Domain,
+                data={
+                    "name": ("%s" % uuid.uuid1())[:30],
+                    "description": "user_site_role to create",
+                },
+                action="create"
+            )
+            db_actions.crud(
+                model="DomainRole",
+                api_model=DomainRole,
+                data={
+                    "role_id": role_model.id,
+                    "domain_id": domain_model.id
+                },
+                action="create"
+            )
+            db_actions.crud(
+                model="UserDomainRole",
+                api_model=UserDomainRole,
+                data={
+                    "role_id": role_model.id,
+                    "domain_id": domain_model.id,
+                    "user_id": user_id
+                },
+                action="create"
+            )
+
+        response = self.client.open(
+            '/api/v1/ops/users/{user_id}/delete'.format(
+                user_id=user_id,
+            ), method='GET',
+            headers=self.headers)
+        response_data = json.loads(response.data)
+        self.assertEqual(response_data["amount"], 63)
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="UserSiteRole",
+                api_model=UserSiteRole,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
+
+        with self.assertRaises(werkzeug.exceptions.NotFound):
+            db_actions.crud(
+                model="UserDomainRole",
+                api_model=UserDomainRole,
+                action="read",
+                query={
+                    "user_id": user_id,
+                }
+            )
