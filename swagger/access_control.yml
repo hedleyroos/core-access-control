@@ -948,7 +948,7 @@ definitions:
 
 
 paths:
-  /ops/user/{user_id}/delete:
+  /ops/users/{user_id}/delete:
     parameters:
       - $ref: '#/parameters/user_id'
     get:

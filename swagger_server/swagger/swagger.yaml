@@ -17,7 +17,7 @@ schemes:
 security:
 - APIKeyHeader: []
 paths:
-  /ops/user/{user_id}/delete:
+  /ops/users/{user_id}/delete:
     get:
       tags:
       - "operational"
