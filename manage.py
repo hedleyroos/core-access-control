@@ -4,18 +4,16 @@ if __name__ == "__main__":
     import os
     import logging
 
-    from raven.contrib.flask import Sentry
     from flask_migrate import Migrate, MigrateCommand
     from flask_script import Manager
 
     import project.app
-    # Do not import settings, as it requires the API config which we do not
-    # want to specify when running migrations.
+    # We _have_ to import models here. If not, the migrations will
+    # think that all tables have been dropped.
+    import access_control.models  # Do not remove
 
     APP = project.app.APP
     MIGRATE = Migrate(project.app.APP, project.app.DB)
-    SENTRY = Sentry(dsn=os.environ.get("SENTRY_DSN"))
-    SENTRY.init_app(APP, level=os.environ.get("SENTRY_LOG_LEVEL", logging.ERROR))
 
     manager = Manager(APP)
     manager.add_command("db", MigrateCommand)
