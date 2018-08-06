@@ -113,12 +113,12 @@ database:
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrations...$(CLEAR)"
-	$(VENV)/bin/python manage.py db migrate -d access_control/migrations
+	ALLOWED_API_KEYS="unused" $(VENV)/bin/python manage.py db migrate -d access_control/migrations
 
 migrate: $(VENV)
 	@echo "$(CYAN)Applying migrations to DB...$(CLEAR)"
-	$(VENV)/bin/python manage.py db upgrade -d access_control/migrations
+	ALLOWED_API_KEYS="unused" $(VENV)/bin/python manage.py db upgrade -d access_control/migrations
 
 load-seed-data:
 	@echo "$(CYAN)Loading seed data to DB...$(CLEAR)"
-	$(PYTHON) seed_data.py
+	ALLOWED_API_KEYS="unused" $(PYTHON) seed_data.py
