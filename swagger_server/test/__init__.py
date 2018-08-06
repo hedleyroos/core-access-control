@@ -1,5 +1,3 @@
-import logging
-
 import connexion
 import os
 
@@ -23,7 +21,6 @@ DB = SQLAlchemy()
 class BaseTestCase(TestCase):
 
     def create_app(self):
-        #logging.getLogger('connexion.operation').setLevel('ERROR')
         app = connexion.App(__name__, specification_dir='../swagger/')
         flask_app = app.app
         flask_app.json_encoder = JSONEncoder
@@ -42,6 +39,9 @@ class BaseTestCase(TestCase):
 
         # By reversing the tables, children should get deleted before parents.
         for table in reversed(meta.sorted_tables):
+            if table.name == "alembic_version":  # Do not delete migration data
+                continue
+
             DB.session.execute(table.delete())
         DB.session.commit()
 
