@@ -1,9 +1,6 @@
 # All the imports and setup for migrations. flask_script allows for other
 # management commands to be run or integrated.
 if __name__ == "__main__":
-    import os
-    import logging
-
     from flask_migrate import Migrate, MigrateCommand
     from flask_script import Manager
 
