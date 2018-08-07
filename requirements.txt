@@ -13,3 +13,9 @@ psycopg2==2.7.3.2
 Flask-Migrate==2.1.1
 Flask-Script==2.0.6
 raven[flask]==6.6.0
+
+# The following requirements are required by jsonschema
+# in order to do proper validateion of certain formats.
+rfc3987
+strict-rfc3339
+
