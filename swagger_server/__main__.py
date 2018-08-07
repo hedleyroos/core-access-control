@@ -37,7 +37,7 @@ CLIENT = Client(
         "app": app.app,
     }
 )
-SENTRY = Sentry(dsn=settings.SENTRY_DSN, client=CLIENT)
+SENTRY = Sentry(client=CLIENT)
 SENTRY.init_app(app.app, level=settings.SENTRY_LOG_LEVEL)
 
 

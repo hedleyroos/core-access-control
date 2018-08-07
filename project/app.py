@@ -21,7 +21,7 @@ CLIENT = Client(
         "app": APP,
     }
 )
-SENTRY = Sentry(dsn=settings.SENTRY_DSN, client=CLIENT)
+SENTRY = Sentry(client=CLIENT)
 
 APP.config["SQLALCHEMY_DATABASE_URI"] = settings.SQLALCHEMY_DATABASE_URI
 APP.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
