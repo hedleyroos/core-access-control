@@ -40,10 +40,10 @@ class ListFiltersTestCase(TestCase):
         except Exception:
             pass
         cls.domain_1, created = get_or_create(
-            models.Domain, name="Domain 1"
+            models.Domain, name="Domain 1", description="Test Domain"
         )
         cls.domain_2, created = get_or_create(
-            models.Domain, name="Domain 2", parent_id=cls.domain_1.id
+            models.Domain, name="Domain 2", description="Test Domain", parent_id=cls.domain_1.id
         )
 
     def test_list_entry(self):

@@ -27,6 +27,12 @@ class InvitationTestCase(BaseTestCase):
     def setUp(self):
         models.InvitationDomainRole.query.delete()
         models.InvitationSiteRole.query.delete()
+        models.UserSiteRole.query.delete()
+        models.SiteRole.query.delete()
+        models.Site.query.delete()
+        models.UserDomainRole.query.delete()
+        models.DomainRole.query.delete()
+        models.Domain.query.delete()
         models.Invitation.query.delete()
         role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
