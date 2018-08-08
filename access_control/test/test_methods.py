@@ -16,7 +16,7 @@ class GetOrCreateTestCase(TestCase):
             pass
 
         # Successfully create a new object
-        instance, created = get_or_create(models.Resource, urn=URN)
+        instance, created = get_or_create(models.Resource, urn=URN, description="Test")
         self.assertTrue(instance is not None)
         self.assertTrue(created)
 
