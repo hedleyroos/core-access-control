@@ -63,13 +63,14 @@ class GUID(TypeDecorator):
 class Domain(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     parent_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), nullable=True)
-    name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
-    description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -78,14 +79,15 @@ class Domain(DB.Model):
 
 class Role(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
-    label = DB.Column(DB.VARCHAR(30), unique=True, index=True)
-    description = DB.Column(DB.Text)
-    requires_2fa = DB.Column(DB.Boolean, default=True)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    label = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    requires_2fa = DB.Column(DB.Boolean, default=True, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -94,13 +96,14 @@ class Role(DB.Model):
 
 class Permission(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
-    description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -109,13 +112,14 @@ class Permission(DB.Model):
 
 class Resource(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
-    urn = DB.Column(DB.VARCHAR(100), unique=True, index=True)
-    description = DB.Column(DB.Text)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    urn = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -130,11 +134,12 @@ class RoleResourcePermission(DB.Model):
     permission_id = DB.Column(
         DB.Integer, DB.ForeignKey("permission.id"), primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -145,16 +150,17 @@ class RoleResourcePermission(DB.Model):
 
 class Site(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
-    name = DB.Column(DB.VARCHAR(30), unique=True, index=True)
-    domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True)
-    description = DB.Column(DB.Text)
+    name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
+    domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
-    is_active = DB.Column(DB.Boolean, default=True)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    is_active = DB.Column(DB.Boolean, default=True, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -170,12 +176,13 @@ class DomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
-    grant_implicitly = DB.Column(DB.Boolean, default=False)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    grant_implicitly = DB.Column(DB.Boolean, default=False, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -191,12 +198,13 @@ class SiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, DB.ForeignKey("role.id"), primary_key=True
     )
-    grant_implicitly = DB.Column(DB.Boolean, default=False)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    grant_implicitly = DB.Column(DB.Boolean, default=False, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -213,11 +221,12 @@ class UserSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     __table_args__ = (
@@ -241,11 +250,12 @@ class UserDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     __table_args__ = (
@@ -263,17 +273,18 @@ class UserDomainRole(DB.Model):
 
 class Invitation(DB.Model):
     id = DB.Column(GUID(), default=uuid.uuid1, primary_key=True)
-    first_name = DB.Column(DB.Text)
-    last_name = DB.Column(DB.Text)
-    email = DB.Column(DB.VARCHAR(100), unique=True, index=True)
+    first_name = DB.Column(DB.Text, nullable=False)
+    last_name = DB.Column(DB.Text, nullable=False)
+    email = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
     expires_at = DB.Column(DB.DateTime, nullable=False)
-    invitor_id = DB.Column(UUID)
-    organisation_id = DB.Column(DB.Integer)
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    invitor_id = DB.Column(UUID, nullable=False)
+    organisation_id = DB.Column(DB.Integer, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     def __repr__(self):
@@ -290,11 +301,12 @@ class InvitationDomainRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     __table_args__ = (
@@ -318,11 +330,12 @@ class InvitationSiteRole(DB.Model):
     role_id = DB.Column(
         DB.Integer, primary_key=True
     )
-    created_at = DB.Column(DB.DateTime, default=utcnow())
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
         default=utcnow(),
-        onupdate=utcnow()
+        onupdate=utcnow(),
+        nullable=False
     )
 
     __table_args__ = (
