@@ -17,6 +17,7 @@ from ge_core_shared import db_actions
 class PermissionTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.permission_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test permission",

@@ -7,7 +7,6 @@ import uuid
 import werkzeug
 from flask import json
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
@@ -19,12 +18,7 @@ from ge_core_shared import db_actions
 class SiteTestCase(BaseTestCase):
 
     def setUp(self):
-        # Clear tables
-        models.InvitationSiteRole.query.delete()
-        models.UserSiteRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Site.query.delete()
-
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
@@ -91,21 +85,8 @@ class SiteTestCase(BaseTestCase):
     def test_site_delete(self):
         """Test case for site_delete
         """
-        data = {
-            "name": ("%s" % uuid.uuid1())[:30],
-            "domain_id": self.domain_model.id,
-            "description": "a super cool test site",
-            "client_id": 2,
-            "is_active": True,
-        }
-        model = db_actions.crud(
-            model="Site",
-            api_model=Site,
-            data=data,
-            action="create"
-        )
         response = self.client.open(
-            '/api/v1/sites/{site_id}'.format(site_id=model.id),
+            '/api/v1/sites/{site_id}'.format(site_id=self.site_model.id),
             method='DELETE', headers=self.headers)
 
         with self.assertRaises(werkzeug.exceptions.NotFound):
@@ -113,15 +94,12 @@ class SiteTestCase(BaseTestCase):
                 model="Site",
                 api_model=Site,
                 action="read",
-                query={"id": model.id}
+                query={"id": self.site_model.id}
             )
 
     def test_site_list(self):
         """Test case for site_list
         """
-        models.UserSiteRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Site.query.delete()
         objects = []
         for index in range(1, random.randint(5, 20)):
             data = {
@@ -168,22 +146,6 @@ class SiteTestCase(BaseTestCase):
     def test_site_update(self):
         """Test case for site_update
         """
-        models.UserSiteRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Site.query.delete()
-        data = {
-            "name": ("%s" % uuid.uuid1())[:30],
-            "domain_id": self.domain_model.id,
-            "description": "a super cool test site",
-            "client_id": 0,
-            "is_active": True,
-        }
-        model = db_actions.crud(
-            model="Site",
-            api_model=Site,
-            data=data,
-            action="create"
-        )
         data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "site updated",
@@ -194,7 +156,7 @@ class SiteTestCase(BaseTestCase):
             **data
         )
         response = self.client.open(
-            '/api/v1/sites/{site_id}'.format(site_id=model.id),
+            '/api/v1/sites/{site_id}'.format(site_id=self.site_model.id),
             method='PUT',
             data=json.dumps(data),
             content_type='application/json',
@@ -204,7 +166,7 @@ class SiteTestCase(BaseTestCase):
             model="Site",
             api_model=Site,
             action="read",
-            query={"id": model.id}
+            query={"id": self.site_model.id}
         )
         self.assertEqual(r_data["name"], updated_entry.name)
         self.assertEqual(r_data["description"], updated_entry.description)

@@ -21,6 +21,7 @@ from ge_core_shared import db_actions
 class SiteRoleTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.role_data = {
             "label": ("%s" % uuid.uuid1())[:30],
             "description": "site_role to create",

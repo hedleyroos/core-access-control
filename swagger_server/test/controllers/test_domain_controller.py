@@ -20,6 +20,7 @@ from swagger_server.test import BaseTestCase
 class DomainTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",

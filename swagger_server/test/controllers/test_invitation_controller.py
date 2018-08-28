@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import werkzeug
 from ge_core_shared import db_actions
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
@@ -25,15 +24,7 @@ from flask import json
 class InvitationTestCase(BaseTestCase):
 
     def setUp(self):
-        models.InvitationDomainRole.query.delete()
-        models.InvitationSiteRole.query.delete()
-        models.UserSiteRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Site.query.delete()
-        models.UserDomainRole.query.delete()
-        models.DomainRole.query.delete()
-        models.Domain.query.delete()
-        models.Invitation.query.delete()
+        super().setUp()
         role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "invitation_site_role to create"

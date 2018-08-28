@@ -17,6 +17,7 @@ from ge_core_shared import db_actions
 class RoleTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.role_data = {
             "label": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test role",

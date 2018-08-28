@@ -7,7 +7,6 @@ import uuid
 import werkzeug
 from flask import json
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
@@ -18,6 +17,7 @@ from ge_core_shared import db_actions
 class ResourceTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.resource_data = {
             "urn": ("urn:%s" % uuid.uuid1())[:30],
             "description": "a super cool test resource",
@@ -30,10 +30,6 @@ class ResourceTestCase(BaseTestCase):
         )
 
         self.headers = {API_KEY_HEADER: "test-api-key"}
-
-    def tearDown(self):
-        models.RoleResourcePermission.query.delete()
-        models.Resource.query.delete()
 
     def test_resource_create(self):
         """Test case for resource_create

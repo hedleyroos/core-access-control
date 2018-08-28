@@ -6,7 +6,6 @@ import werkzeug
 
 from ge_core_shared import db_actions
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Site, Domain
 from swagger_server.models import SiteRole
@@ -21,9 +20,7 @@ from flask import json
 class InvitationSiteRoleTestCase(BaseTestCase):
 
     def setUp(self):
-        models.InvitationSiteRole.query.delete()
-        models.InvitationDomainRole.query.delete()
-        models.Invitation.query.delete()
+        super().setUp()
         self.role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "invitation_site_role to create",

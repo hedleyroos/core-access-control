@@ -17,6 +17,7 @@ from flask import json
 class UserDomainRoleTestCase(BaseTestCase):
 
     def setUp(self):
+        super().setUp()
         self.role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "user_site_role to create",
