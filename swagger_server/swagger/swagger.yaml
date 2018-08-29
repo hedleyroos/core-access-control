@@ -17,6 +17,28 @@ schemes:
 security:
 - APIKeyHeader: []
 paths:
+  /ops/users/{user_id}/delete:
+    get:
+      tags:
+      - "operational"
+      operationId: "delete_user_data"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      responses:
+        200:
+          description: "Delete all user data on UDS"
+          schema:
+            $ref: "#/definitions/user_deletion_data"
+        403:
+          description: "Forbidden"
+      x-swagger-router-controller: "swagger_server.controllers.operational_controller"
   /ops/healthcheck:
     get:
       tags:
@@ -2923,6 +2945,15 @@ definitions:
       version: "version"
       db_timestamp: "2000-01-23T04:56:07.000+00:00"
   purged_invitations:
+    type: "object"
+    required:
+    - "amount"
+    properties:
+      amount:
+        type: "integer"
+    example:
+      amount: 0
+  user_deletion_data:
     type: "object"
     required:
     - "amount"

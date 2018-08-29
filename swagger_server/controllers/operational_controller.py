@@ -1,3 +1,4 @@
+import connexion
 import datetime
 import socket
 
@@ -14,6 +15,7 @@ from swagger_server.models.resource_permission import ResourcePermission  # noqa
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_and_domain_roles import SiteAndDomainRoles  # noqa: E501
 from swagger_server.models.site_role_labels_aggregated import SiteRoleLabelsAggregated  # noqa: E501
+from swagger_server.models.user_deletion_data import UserDeletionData  # noqa: E501
 from swagger_server.models.user_site_role_labels_aggregated import UserSiteRoleLabelsAggregated  # noqa: E501
 from swagger_server.models.user_with_roles import UserWithRoles  # noqa: E501
 
@@ -342,6 +344,48 @@ SELECT COUNT(*) AS amount
   FROM deleted_invitations;
 """
 
+SQL_DELETE_USER_DATA = """
+-- Given a user id (:user_id),
+-- delete UserDomainRoles and UserSiteRoles tied to user id
+
+WITH deleted_site_roles AS (
+    DELETE FROM user_site_role
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_domain_roles AS (
+    DELETE FROM user_domain_role
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+deleted_rows AS (
+   SELECT * FROM deleted_site_roles
+   UNION ALL  -- ALL is required so that duplicates are not dropped
+   SELECT * FROM deleted_domain_roles
+)
+
+SELECT COUNT(*) AS amount
+  FROM deleted_rows;
+"""
+
+def delete_user_data(user_id):  # noqa: E501
+    """delete_user_data
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+
+    :rtype: UserDeletionData
+    """
+    with db.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_DELETE_USER_DATA),
+            **{"user_id": user_id}
+        )
+
+    amount = result.fetchone()["amount"]
+    return UserDeletionData(amount=amount)
 
 def get_all_user_roles(user_id):  # noqa: E501
     """get_all_user_roles

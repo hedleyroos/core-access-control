@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.2.4
+-----
+- Exception handler status code and message updates.
+
+1.2.3
+-----
+- Added metrics endpoint along with middleware and controller decorators.
+- Process number set to 1, thread number set to 4.
+
 1.2.2
 -----
 #. Update models to use organisation instead of is_system_user flag

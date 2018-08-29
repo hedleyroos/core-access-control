@@ -27,8 +27,6 @@ if __name__ == "__main__":
 
     role, created = get_or_create(
         Role, label="tech_admin",
-        description="The tech admin role",
-        requires_2fa=True
     )
 
     domainrole, created = get_or_create(
