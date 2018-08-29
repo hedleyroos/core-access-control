@@ -32,6 +32,7 @@ class BaseTestCase(TestCase):
         app.add_api('swagger.yaml', arguments={'title': 'Test Access Control API'})
         return flask_app
 
+    @decorators._db_exception
     def setUp(self):
         meta = DB.metadata
         meta.reflect(DB.engine)
