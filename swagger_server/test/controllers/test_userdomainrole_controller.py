@@ -3,7 +3,7 @@ import uuid
 
 import werkzeug
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
@@ -16,6 +16,7 @@ from flask import json
 
 class UserDomainRoleTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         self.role_data = {

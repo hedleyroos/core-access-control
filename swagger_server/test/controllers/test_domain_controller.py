@@ -9,7 +9,7 @@ import werkzeug
 from flask import json
 
 from project.settings import API_KEY_HEADER
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from swagger_server.models import DomainCreate
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -19,6 +19,7 @@ from swagger_server.test import BaseTestCase
 
 class DomainTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         self.domain_data = {

@@ -3,7 +3,7 @@ import os
 
 from unittest.mock import patch
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.test import BaseTestCase
@@ -11,7 +11,9 @@ from swagger_server.test import BaseTestCase
 
 class AuthenticationTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",

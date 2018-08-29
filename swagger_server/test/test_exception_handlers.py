@@ -10,12 +10,14 @@ from project.settings import API_KEY_HEADER
 from swagger_server.models.domain import Domain
 from swagger_server.test import BaseTestCase
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 
 class TestExceptions(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",

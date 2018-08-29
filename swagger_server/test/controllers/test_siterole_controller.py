@@ -15,11 +15,12 @@ from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.test import BaseTestCase
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 
 class SiteRoleTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         self.role_data = {

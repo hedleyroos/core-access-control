@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import random
 import uuid
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from flask import json
 
 from project.settings import API_KEY_HEADER
@@ -16,7 +16,9 @@ from swagger_server.test import BaseTestCase
 
 class TestOperationalController(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",

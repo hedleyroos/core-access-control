@@ -1,9 +1,8 @@
 import json
 import uuid
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.test import BaseTestCase
 from swagger_server.models.domain import Domain
@@ -29,7 +28,9 @@ ROLES = [
 
 class TestUsersWithRolesForDomain(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
+        super().setUp()
         # Parent Domain
         self.domain_parent_data = {
             "name": ("%s" % uuid.uuid1())[:30],

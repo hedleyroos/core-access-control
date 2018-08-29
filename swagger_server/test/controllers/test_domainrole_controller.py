@@ -14,11 +14,12 @@ from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.test import BaseTestCase
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 
 class DomainRoleTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         self.role_data = {
@@ -52,7 +53,6 @@ class DomainRoleTestCase(BaseTestCase):
             data=self.domain_role_data,
             action="create"
         )
-
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_domain_role_create(self):

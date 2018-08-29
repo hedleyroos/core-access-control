@@ -11,11 +11,12 @@ from project.settings import API_KEY_HEADER
 from swagger_server.models.resource import Resource  # noqa: E501
 from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 
 class ResourceTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         self.resource_data = {

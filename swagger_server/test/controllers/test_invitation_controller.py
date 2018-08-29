@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timedelta
 
 import werkzeug
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
@@ -23,6 +23,7 @@ from flask import json
 
 class InvitationTestCase(BaseTestCase):
 
+    @decorators._db_exception
     def setUp(self):
         super().setUp()
         role_data = {
