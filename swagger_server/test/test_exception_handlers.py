@@ -40,12 +40,12 @@ class TestExceptions(BaseTestCase):
             content_type='application/json',
             headers=self.headers)
         r_data = json.loads(response.data)
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 409)
         self.assertEqual(
             r_data["error"],
-            "(psycopg2.IntegrityError) duplicate key value violates unique " \
+            "ERROR:  duplicate key value violates unique " \
             "constraint \"ix_domain_name\" "\
             "DETAIL:  "\
-            "Key (name)=(%s) already exists. " % self.domain_model.name
+            "Key (name)=(%s) already exists." % self.domain_model.name
         )
 

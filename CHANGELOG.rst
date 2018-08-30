@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.2.4
+-----
+- Exception handler status code and message updates.
+
 1.2.3
 -----
 - Added metrics endpoint along with middleware and controller decorators.
