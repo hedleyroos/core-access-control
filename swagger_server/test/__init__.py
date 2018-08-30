@@ -34,6 +34,7 @@ class BaseTestCase(TestCase):
 
     @decorators._db_exception
     def setUp(self):
+        super().setUp()
         meta = DB.metadata
         meta.reflect(DB.engine)
 
@@ -46,6 +47,7 @@ class BaseTestCase(TestCase):
         DB.session.commit()
 
     def tearDown(self):
+        super().tearDown()
         # Closes all active connections between tests. Prevents session errors
         # bleeding over.
         DB.session.close_all()
