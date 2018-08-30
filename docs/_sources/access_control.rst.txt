@@ -1,6 +1,14 @@
 access\_control package
 =======================
 
+Subpackages
+-----------
+
+.. toctree::
+
+    access_control.fixtures
+    access_control.test
+
 Submodules
 ----------
 

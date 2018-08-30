@@ -49,7 +49,7 @@ clean-virtualenv:
 # Build sphinx docs, then move them to docs/ root for GitHub Pages usage.
 docs-build:  $(VENV)
 	@echo "$(CYAN)Installing Sphinx requirements...$(CLEAR)"
-	$(PIP) install sphinx sphinx-autobuild
+	$(PIP) install sphinx sphinx-autobuild sphinx_rtd_theme
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Backing up docs/ directory content...$(CLEAR)"
 	tar -cvf backup.tar docs/source docs/Makefile
@@ -64,7 +64,8 @@ docs-build:  $(VENV)
 	rm backup.tar
 	# Actually make html from index.rst
 	@echo "$(CYAN)Generating sphinx sources...$(CLEAR)"
-	$(VENV)/bin/sphinx-apidoc --separate --private --force -o docs/source access_control/ access_control/migrations access_control/test access_control/fixtures
+	$(VENV)/bin/sphinx-apidoc --separate --force -o docs/source/ access_control '**/migrations/versions/*.py'
+	$(VENV)/bin/sphinx-apidoc --separate --force -o docs/source/ swagger_server
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Generating sphinx docs...$(CLEAR)"
 	$(MAKE) -C docs/source clean html SPHINXBUILD=../../$(VENV)/bin/sphinx-build

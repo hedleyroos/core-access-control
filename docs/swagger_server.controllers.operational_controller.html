@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>swagger_server.controllers.operational_controller module &mdash; access_control  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> access_control
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">swagger_server.controllers.operational_controller module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">access_control</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>swagger_server.controllers.operational_controller module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/swagger_server.controllers.operational_controller.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-swagger_server.controllers.operational_controller">
+<span id="swagger-server-controllers-operational-controller-module"></span><h1>swagger_server.controllers.operational_controller module<a class="headerlink" href="#module-swagger_server.controllers.operational_controller" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.delete_user_data">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">delete_user_data</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#delete_user_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.delete_user_data" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div># noqa: E501</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> (<em>dict | bytes</em>) – A UUID value identifying the user.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.user_deletion_data.html#swagger_server.models.user_deletion_data.UserDeletionData" title="swagger_server.models.user_deletion_data.UserDeletionData">UserDeletionData</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_all_user_roles">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_all_user_roles</code><span class="sig-paren">(</span><em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_all_user_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_all_user_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the effective roles that a user has at any place in the organisational tree. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>user_id</strong> (<em>dict | bytes</em>) – A UUID value identifying the user.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.all_user_roles.html#swagger_server.models.all_user_roles.AllUserRoles" title="swagger_server.models.all_user_roles.AllUserRoles">AllUserRoles</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_domain_roles">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_domain_roles</code><span class="sig-paren">(</span><em>domain_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_domain_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_domain_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the domain and its lineage's roles defined for a domain. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>domain_id</strong> (<em>int</em>) – A unique integer value identifying the domain.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.domain_roles.html#swagger_server.models.domain_roles.DomainRoles" title="swagger_server.models.domain_roles.DomainRoles">DomainRoles</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_resource_permissions_for_roles">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_resource_permissions_for_roles</code><span class="sig-paren">(</span><em>role_ids</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_resource_permissions_for_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_resource_permissions_for_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all resource permissions the specified roles have. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>role_ids</strong> (<em>List</em><em>[</em><em>int</em><em>]</em>) – </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List[<a class="reference internal" href="swagger_server.models.resource_permission.html#swagger_server.models.resource_permission.ResourcePermission" title="swagger_server.models.resource_permission.ResourcePermission">ResourcePermission</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_site_and_domain_roles">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_site_and_domain_roles</code><span class="sig-paren">(</span><em>site_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_site_and_domain_roles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_site_and_domain_roles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the site- and domain lineage roles defined for a given site. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_id</strong> (<em>int</em>) – A unique integer value identifying the site.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.site_and_domain_roles.html#swagger_server.models.site_and_domain_roles.SiteAndDomainRoles" title="swagger_server.models.site_and_domain_roles.SiteAndDomainRoles">SiteAndDomainRoles</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_site_role_labels_aggregated">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_site_role_labels_aggregated</code><span class="sig-paren">(</span><em>site_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_site_role_labels_aggregated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_site_role_labels_aggregated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all possible role labels that a user can have from the specified site's perspective. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_id</strong> (<em>int</em>) – A unique integer value identifying the site.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.site_role_labels_aggregated.html#swagger_server.models.site_role_labels_aggregated.SiteRoleLabelsAggregated" title="swagger_server.models.site_role_labels_aggregated.SiteRoleLabelsAggregated">SiteRoleLabelsAggregated</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_sites_under_domain">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_sites_under_domain</code><span class="sig-paren">(</span><em>domain_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_sites_under_domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_sites_under_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all sites linked directly or indirectly to the specified domain. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>domain_id</strong> (<em>int</em>) – A unique integer value identifying the domain.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List[<a class="reference internal" href="access_control.models.html#access_control.models.Site" title="access_control.models.Site">Site</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_tech_admin_resource_permissions">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_tech_admin_resource_permissions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_tech_admin_resource_permissions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_tech_admin_resource_permissions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all possible permissions any user can have. This is effectively what a tech admin user can do. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">List[<a class="reference internal" href="swagger_server.models.resource_permission.html#swagger_server.models.resource_permission.ResourcePermission" title="swagger_server.models.resource_permission.ResourcePermission">ResourcePermission</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_user_site_role_labels_aggregated">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_user_site_role_labels_aggregated</code><span class="sig-paren">(</span><em>user_id</em>, <em>site_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_user_site_role_labels_aggregated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_user_site_role_labels_aggregated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of all role labels that the specified user has from the specified site's perspective. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>user_id</strong> (<em>dict | bytes</em>) – A UUID value identifying the user.</li>
+<li><strong>site_id</strong> (<em>int</em>) – A unique integer value identifying the site.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="swagger_server.models.user_site_role_labels_aggregated.html#swagger_server.models.user_site_role_labels_aggregated.UserSiteRoleLabelsAggregated" title="swagger_server.models.user_site_role_labels_aggregated.UserSiteRoleLabelsAggregated">UserSiteRoleLabelsAggregated</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_users_with_roles_for_domain">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_users_with_roles_for_domain</code><span class="sig-paren">(</span><em>domain_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_users_with_roles_for_domain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_users_with_roles_for_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of Users with their effective roles within the given domain. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>domain_id</strong> (<em>int</em>) – A unique integer value identifying the domain.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List[<a class="reference internal" href="swagger_server.models.user_with_roles.html#swagger_server.models.user_with_roles.UserWithRoles" title="swagger_server.models.user_with_roles.UserWithRoles">UserWithRoles</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.get_users_with_roles_for_site">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">get_users_with_roles_for_site</code><span class="sig-paren">(</span><em>site_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#get_users_with_roles_for_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.get_users_with_roles_for_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of Users with their effective roles within the given site. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_id</strong> (<em>int</em>) – A unique integer value identifying the site.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">List [<a class="reference internal" href="swagger_server.models.user_with_roles.html#swagger_server.models.user_with_roles.UserWithRoles" title="swagger_server.models.user_with_roles.UserWithRoles">UserWithRoles</a>]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.healthcheck">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">healthcheck</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#healthcheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.healthcheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the status of the service. # noqa: E501</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.health_info.html#swagger_server.models.health_info.HealthInfo" title="swagger_server.models.health_info.HealthInfo">HealthInfo</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="swagger_server.controllers.operational_controller.purge_expired_invitations">
+<code class="descclassname">swagger_server.controllers.operational_controller.</code><code class="descname">purge_expired_invitations</code><span class="sig-paren">(</span><em>cutoff_date=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/swagger_server/controllers/operational_controller.html#purge_expired_invitations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#swagger_server.controllers.operational_controller.purge_expired_invitations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Purge all the expired invitations past a cutoff_date (defaults to today).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>cutoff_date</strong> (<em>date</em>) – An optional cutoff_date to purge invitations expired past this date.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="swagger_server.models.purged_invitations.html#swagger_server.models.purged_invitations.PurgedInvitations" title="swagger_server.models.purged_invitations.PurgedInvitations">PurgedInvitations</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

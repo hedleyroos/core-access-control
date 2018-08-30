@@ -10,8 +10,6 @@ Welcome to Core Access Control's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   access_control
-
 Indices and tables
 ==================
 
