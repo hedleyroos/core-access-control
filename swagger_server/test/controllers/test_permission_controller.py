@@ -11,12 +11,14 @@ from project.settings import API_KEY_HEADER
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
 
 class PermissionTestCase(BaseTestCase):
 
+    @decorators.db_exception
     def setUp(self):
+        super().setUp()
         self.permission_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test permission",

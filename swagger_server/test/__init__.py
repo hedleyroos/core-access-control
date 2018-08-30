@@ -10,7 +10,7 @@ os.environ.update(orig_environ)
 from flask_sqlalchemy import SQLAlchemy
 from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import exception_handlers, middleware
+from ge_core_shared import decorators, exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
 
@@ -32,6 +32,7 @@ class BaseTestCase(TestCase):
         app.add_api('swagger.yaml', arguments={'title': 'Test Access Control API'})
         return flask_app
 
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         meta = DB.metadata

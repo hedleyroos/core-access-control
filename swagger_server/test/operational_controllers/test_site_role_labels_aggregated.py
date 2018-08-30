@@ -4,10 +4,9 @@ from __future__ import absolute_import
 import random
 import uuid
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from flask import json
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -18,12 +17,9 @@ from swagger_server.test import BaseTestCase
 
 class TestOperationalController(BaseTestCase):
 
+    @decorators.db_exception
     def setUp(self):
-        # Clear tables
-        models.UserSiteRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Site.query.delete()
-
+        super().setUp()
         self.domain_data = {
             "name": ("%s" % uuid.uuid1())[:30],
             "description": "a super cool test domain",
@@ -89,7 +85,6 @@ class TestOperationalController(BaseTestCase):
         for role in self.roles:
             self.assertIn(role.label, r_data["roles"])
         self.assertEqual(self.site_model.id, r_data["site_id"])
-
 
 
 if __name__ == '__main__':
