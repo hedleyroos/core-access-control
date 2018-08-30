@@ -16,7 +16,7 @@ from ge_core_shared import db_actions, decorators
 
 class PermissionTestCase(BaseTestCase):
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.permission_data = {

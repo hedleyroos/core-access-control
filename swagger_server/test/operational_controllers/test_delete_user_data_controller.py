@@ -3,7 +3,7 @@ import uuid
 import werkzeug
 
 from flask import json
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from project.settings import API_KEY_HEADER
 from unittest import mock
 
@@ -26,6 +26,7 @@ from swagger_server.test import BaseTestCase
 class DeleteUserDataTestCase(BaseTestCase):
 
     @classmethod
+    @decorators.db_exception
     def setUpClass(cls):
         super().setUpClass()
         cls.headers = {API_KEY_HEADER: "test-api-key"}

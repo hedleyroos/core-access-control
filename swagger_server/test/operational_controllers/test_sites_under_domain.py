@@ -10,7 +10,7 @@ from swagger_server.models.site import Site
 
 class TestGetSitesUnderDomain(BaseTestCase):
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         """
         Top Level Domain

@@ -14,7 +14,7 @@ class TestOperationalController(BaseTestCase):
     NUM_PERMISSIONS = 5
     NUM_RESOURCES = 10
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.headers = {API_KEY_HEADER: "test-api-key"}

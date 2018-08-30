@@ -23,7 +23,7 @@ from flask import json
 
 class InvitationTestCase(BaseTestCase):
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         role_data = {

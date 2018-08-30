@@ -20,7 +20,7 @@ from ge_core_shared import db_actions, decorators
 
 class SiteRoleTestCase(BaseTestCase):
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.role_data = {

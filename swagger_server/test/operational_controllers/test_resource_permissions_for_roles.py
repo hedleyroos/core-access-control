@@ -13,7 +13,7 @@ from swagger_server.test import BaseTestCase
 class TestOperationalController(BaseTestCase):
     NUM_TESTS = 10
 
-    @decorators._db_exception
+    @decorators.db_exception
     def setUp(self):
         super().setUp()
         self.headers = {API_KEY_HEADER: "test-api-key"}
