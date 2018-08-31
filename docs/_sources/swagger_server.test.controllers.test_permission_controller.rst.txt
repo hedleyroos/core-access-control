@@ -1,0 +1,7 @@
+swagger\_server.test.controllers.test\_permission\_controller module
+====================================================================
+
+.. automodule:: swagger_server.test.controllers.test_permission_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:

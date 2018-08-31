@@ -1,0 +1,7 @@
+swagger\_server.models.domain\_roles module
+===========================================
+
+.. automodule:: swagger_server.models.domain_roles
+    :members:
+    :undoc-members:
+    :show-inheritance:

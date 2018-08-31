@@ -1,0 +1,7 @@
+swagger\_server.test.operational\_controllers.test\_domain\_roles module
+========================================================================
+
+.. automodule:: swagger_server.test.operational_controllers.test_domain_roles
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+swagger\_server.models.base\_model\_ module
+===========================================
+
+.. automodule:: swagger_server.models.base_model_
+    :members:
+    :undoc-members:
+    :show-inheritance:

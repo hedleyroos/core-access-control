@@ -1,0 +1,7 @@
+swagger\_server.models.invitation\_site\_role\_create module
+============================================================
+
+.. automodule:: swagger_server.models.invitation_site_role_create
+    :members:
+    :undoc-members:
+    :show-inheritance:

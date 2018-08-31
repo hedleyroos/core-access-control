@@ -1,0 +1,29 @@
+swagger\_server.test.operational\_controllers package
+=====================================================
+
+Submodules
+----------
+
+.. toctree::
+
+   swagger_server.test.operational_controllers.test_delete_user_data_controller
+   swagger_server.test.operational_controllers.test_domain_roles
+   swagger_server.test.operational_controllers.test_get_all_user_roles
+   swagger_server.test.operational_controllers.test_healthcheck
+   swagger_server.test.operational_controllers.test_purge_expired_invitations
+   swagger_server.test.operational_controllers.test_resource_permissions_for_roles
+   swagger_server.test.operational_controllers.test_site_and_domain_roles
+   swagger_server.test.operational_controllers.test_site_role_labels_aggregated
+   swagger_server.test.operational_controllers.test_sites_under_domain
+   swagger_server.test.operational_controllers.test_tech_admin_resource_permissions
+   swagger_server.test.operational_controllers.test_user_site_role_labels_aggregated
+   swagger_server.test.operational_controllers.test_users_with_roles_for_domain
+   swagger_server.test.operational_controllers.test_users_with_roles_for_site
+
+Module contents
+---------------
+
+.. automodule:: swagger_server.test.operational_controllers
+    :members:
+    :undoc-members:
+    :show-inheritance:

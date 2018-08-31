@@ -1,0 +1,7 @@
+swagger\_server.controllers.access\_control\_controller module
+==============================================================
+
+.. automodule:: swagger_server.controllers.access_control_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:

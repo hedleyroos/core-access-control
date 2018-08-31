@@ -1,0 +1,7 @@
+swagger\_server.models.role\_resource\_permission\_create module
+================================================================
+
+.. automodule:: swagger_server.models.role_resource_permission_create
+    :members:
+    :undoc-members:
+    :show-inheritance:

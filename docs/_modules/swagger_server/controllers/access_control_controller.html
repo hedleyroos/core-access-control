@@ -1,0 +1,1774 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>swagger_server.controllers.access_control_controller &mdash; access_control  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> access_control
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">access_control</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../swagger_server.html">swagger_server</a> &raquo;</li>
+        
+      <li>swagger_server.controllers.access_control_controller</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for swagger_server.controllers.access_control_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">connexion</span>
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">dateutil.relativedelta</span> <span class="k">import</span> <span class="n">relativedelta</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">abort</span>
+<span class="kn">from</span> <span class="nn">ge_core_shared</span> <span class="k">import</span> <span class="n">db_actions</span><span class="p">,</span> <span class="n">decorators</span>
+<span class="kn">from</span> <span class="nn">project</span> <span class="k">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">func</span><span class="p">,</span> <span class="n">text</span>
+
+<span class="kn">import</span> <span class="nn">project.app</span>
+<span class="kn">from</span> <span class="nn">access_control</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">swagger_server.controllers.operational_controller</span> <span class="k">import</span> <span class="n">get_all_user_roles</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.all_user_roles</span> <span class="k">import</span> <span class="n">AllUserRoles</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain</span> <span class="k">import</span> <span class="n">Domain</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_create</span> <span class="k">import</span> <span class="n">DomainCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_role</span> <span class="k">import</span> <span class="n">DomainRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_role_create</span> <span class="k">import</span> <span class="n">DomainRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_role_update</span> <span class="k">import</span> <span class="n">DomainRoleUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_update</span> <span class="k">import</span> <span class="n">DomainUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation</span> <span class="k">import</span> <span class="n">Invitation</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_create</span> <span class="k">import</span> <span class="n">InvitationCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_domain_role</span> <span class="k">import</span> <span class="n">InvitationDomainRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_domain_role_create</span> <span class="k">import</span> <span class="n">InvitationDomainRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_site_role</span> <span class="k">import</span> <span class="n">InvitationSiteRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_site_role_create</span> <span class="k">import</span> <span class="n">InvitationSiteRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.invitation_update</span> <span class="k">import</span> <span class="n">InvitationUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.permission</span> <span class="k">import</span> <span class="n">Permission</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.permission_create</span> <span class="k">import</span> <span class="n">PermissionCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.permission_update</span> <span class="k">import</span> <span class="n">PermissionUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.resource</span> <span class="k">import</span> <span class="n">Resource</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.resource_create</span> <span class="k">import</span> <span class="n">ResourceCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.resource_update</span> <span class="k">import</span> <span class="n">ResourceUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.role</span> <span class="k">import</span> <span class="n">Role</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.role_create</span> <span class="k">import</span> <span class="n">RoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.role_resource_permission</span> <span class="k">import</span> <span class="n">RoleResourcePermission</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.role_resource_permission_create</span> <span class="k">import</span> <span class="n">RoleResourcePermissionCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.role_update</span> <span class="k">import</span> <span class="n">RoleUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site</span> <span class="k">import</span> <span class="n">Site</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_create</span> <span class="k">import</span> <span class="n">SiteCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_role</span> <span class="k">import</span> <span class="n">SiteRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_role_create</span> <span class="k">import</span> <span class="n">SiteRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_role_update</span> <span class="k">import</span> <span class="n">SiteRoleUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_update</span> <span class="k">import</span> <span class="n">SiteUpdate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_domain_role</span> <span class="k">import</span> <span class="n">UserDomainRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_domain_role_create</span> <span class="k">import</span> <span class="n">UserDomainRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_role</span> <span class="k">import</span> <span class="n">UserSiteRole</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_role_create</span> <span class="k">import</span> <span class="n">UserSiteRoleCreate</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server</span> <span class="k">import</span> <span class="n">util</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">DB</span>
+
+<span class="n">SQL_REDEEM_INVITATION</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given an invitation id (:invitation_id) and user id (:user_id),</span>
+<span class="s2">-- create UserDomainRoles and UserSiteRoles for all InvitationDomainRoles</span>
+<span class="s2">-- and InvitationSiteRoles found, respectively.</span>
+
+<span class="s2">-- Once the roles have been created, remove the invitation roles and the</span>
+<span class="s2">-- invitation itself.</span>
+
+<span class="s2">BEGIN;</span>
+
+<span class="s2">INSERT INTO user_domain_role (user_id, domain_id, role_id, created_at, updated_at)</span>
+<span class="s2">SELECT :user_id, domain_id, role_id, NOW(), NOW()</span>
+<span class="s2">  FROM invitation_domain_role</span>
+<span class="s2"> WHERE invitation_id = :invitation_id;</span>
+
+<span class="s2">DELETE FROM invitation_domain_role</span>
+<span class="s2"> WHERE invitation_id = :invitation_id;</span>
+
+<span class="s2">INSERT INTO user_site_role (user_id, site_id, role_id, created_at, updated_at)</span>
+<span class="s2">SELECT :user_id, site_id, role_id, NOW(), NOW()</span>
+<span class="s2">  FROM invitation_site_role</span>
+<span class="s2"> WHERE invitation_id = :invitation_id;</span>
+
+<span class="s2">DELETE FROM invitation_site_role</span>
+<span class="s2"> WHERE invitation_id = :invitation_id;</span>
+
+<span class="s2">DELETE FROM invitation</span>
+<span class="s2"> WHERE id = :invitation_id;</span>
+
+<span class="s2">COMMIT;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="access_control_roleresourcepermission_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.access_control_roleresourcepermission_delete">[docs]</a><span class="k">def</span> <span class="nf">access_control_roleresourcepermission_delete</span><span class="p">(</span><span class="n">role_id</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">permission_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;access_control_roleresourcepermission_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param resource_id: A unique integer value identifying the resource.</span>
+<span class="sd">    :type resource_id: int</span>
+<span class="sd">    :param permission_id: A unique integer value identifying the permission.</span>
+<span class="sd">    :type permission_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;RoleResourcePermission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">RoleResourcePermission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+            <span class="s2">&quot;resource_id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">,</span>
+            <span class="s2">&quot;permission_id&quot;</span><span class="p">:</span> <span class="n">permission_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domain_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domain_create">[docs]</a><span class="k">def</span> <span class="nf">domain_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domain_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Domain</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Domain&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Domain</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domain_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domain_delete">[docs]</a><span class="k">def</span> <span class="nf">domain_delete</span><span class="p">(</span><span class="n">domain_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domain_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Domain&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Domain</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domain_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domain_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">domain_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parent_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">domain_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domain_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param parent_id: An optional query parameter to filter by parent_id</span>
+<span class="sd">    :type parent_id: int</span>
+<span class="sd">    :param domain_ids: An optional list of domain ids</span>
+<span class="sd">    :type domain_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[Domain]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Domain&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Domain</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">domain_ids</span><span class="p">,</span>
+                <span class="s2">&quot;parent_id&quot;</span><span class="p">:</span> <span class="n">parent_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domain_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domain_read">[docs]</a><span class="k">def</span> <span class="nf">domain_read</span><span class="p">(</span><span class="n">domain_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domain_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+
+<span class="sd">    :rtype: Domain</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Domain&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Domain</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domain_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domain_update">[docs]</a><span class="k">def</span> <span class="nf">domain_update</span><span class="p">(</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domain_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Domain</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Domain&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Domain</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domainrole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domainrole_create">[docs]</a><span class="k">def</span> <span class="nf">domainrole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domainrole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domainrole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domainrole_delete">[docs]</a><span class="k">def</span> <span class="nf">domainrole_delete</span><span class="p">(</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domainrole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domainrole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domainrole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">domainrole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">domain_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domainrole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param domain_id: An optional query parameter to filter by domain_id</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[DomainRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span> <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domainrole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domainrole_read">[docs]</a><span class="k">def</span> <span class="nf">domainrole_read</span><span class="p">(</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domainrole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: DomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="domainrole_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.domainrole_update">[docs]</a><span class="k">def</span> <span class="nf">domainrole_update</span><span class="p">(</span><span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;domainrole_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: DomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;DomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">DomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_create">[docs]</a><span class="k">def</span> <span class="nf">invitation_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Invitation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="c1"># If not expiry was provided, compute one.</span>
+    <span class="k">if</span> <span class="s2">&quot;expires_at&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">data</span> <span class="ow">or</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;expires_at&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;expires_at&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span> <span class="o">+</span> <span class="n">relativedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">INVITATION_EXPIRY_DAYS</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_delete">[docs]</a><span class="k">def</span> <span class="nf">invitation_delete</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">invitation_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invitor_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invitation_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param invitor_id: Optional filter based on the invitor (the user who created the invitation)</span>
+<span class="sd">    :type invitor_id: dict | bytes</span>
+<span class="sd">    :param invitation_ids: An optional list of invitation ids</span>
+<span class="sd">    :type invitation_ids: List[str]</span>
+
+<span class="sd">    :rtype: List[Invitation]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;invitor_id&quot;</span><span class="p">:</span> <span class="n">invitor_id</span><span class="p">,</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">invitation_ids</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;invitor_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_read">[docs]</a><span class="k">def</span> <span class="nf">invitation_read</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+
+<span class="sd">    :rtype: Invitation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_redeem"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_redeem">[docs]</a><span class="k">def</span> <span class="nf">invitation_redeem</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_redeem</span>
+
+<span class="sd">    Assign all roles assigned to the invitation to the specified user, removing the invitation and related configuration when done. Note: We may have to change the role assignment to an asynchronous task depending on the complexity of the implementation. # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: AllUserRoles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">invitation</span> <span class="o">=</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">expired</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="n">invitation</span><span class="o">.</span><span class="n">expires_at</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">tzinfo</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">expired</span><span class="p">:</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">SQL_REDEEM_INVITATION</span><span class="p">),</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">get_all_user_roles</span><span class="p">(</span><span class="n">user_id</span><span class="o">=</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">abort</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitation_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitation_update">[docs]</a><span class="k">def</span> <span class="nf">invitation_update</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitation_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Invitation</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Invitation&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Invitation</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationdomainrole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationdomainrole_create">[docs]</a><span class="k">def</span> <span class="nf">invitationdomainrole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationdomainrole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: InvitationDomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationdomainrole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationdomainrole_delete">[docs]</a><span class="k">def</span> <span class="nf">invitationdomainrole_delete</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationdomainrole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationdomainrole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationdomainrole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">invitationdomainrole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invitation_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">domain_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationdomainrole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param invitation_id: An optional query parameter to filter by invitation_id</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param domain_id: An optional query parameter to filter by domain_id</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[InvitationDomainRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+                <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+                <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationdomainrole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationdomainrole_read">[docs]</a><span class="k">def</span> <span class="nf">invitationdomainrole_read</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationdomainrole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: InvitationDomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationsiterole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationsiterole_create">[docs]</a><span class="k">def</span> <span class="nf">invitationsiterole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationsiterole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: InvitationSiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationsiterole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationsiterole_delete">[docs]</a><span class="k">def</span> <span class="nf">invitationsiterole_delete</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationsiterole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationsiterole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationsiterole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">invitationsiterole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">invitation_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationsiterole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param invitation_id: An optional query parameter to filter by invitation_id</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param site_id: An optional query parameter to filter by site_id</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[InvitationSiteRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+                <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="invitationsiterole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.invitationsiterole_read">[docs]</a><span class="k">def</span> <span class="nf">invitationsiterole_read</span><span class="p">(</span><span class="n">invitation_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;invitationsiterole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param invitation_id: A UUID value identifying the invitation.</span>
+<span class="sd">    :type invitation_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: InvitationSiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;InvitationSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">InvitationSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;invitation_id&quot;</span><span class="p">:</span> <span class="n">invitation_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="permission_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.permission_create">[docs]</a><span class="k">def</span> <span class="nf">permission_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;permission_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Permission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Permission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="permission_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.permission_delete">[docs]</a><span class="k">def</span> <span class="nf">permission_delete</span><span class="p">(</span><span class="n">permission_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;permission_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param permission_id: A unique integer value identifying the permission.</span>
+<span class="sd">    :type permission_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Permission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">permission_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="permission_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.permission_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">permission_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permission_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;permission_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param permission_ids: An optional list of permission ids</span>
+<span class="sd">    :type permission_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[Permission]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Permission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span> <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span> <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="n">permission_ids</span><span class="p">,</span> <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="permission_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.permission_read">[docs]</a><span class="k">def</span> <span class="nf">permission_read</span><span class="p">(</span><span class="n">permission_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;permission_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param permission_id: A unique integer value identifying the permission.</span>
+<span class="sd">    :type permission_id: int</span>
+
+<span class="sd">    :rtype: Permission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Permission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">permission_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="permission_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.permission_update">[docs]</a><span class="k">def</span> <span class="nf">permission_update</span><span class="p">(</span><span class="n">permission_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;permission_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param permission_id: A unique integer value identifying the permission.</span>
+<span class="sd">    :type permission_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Permission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Permission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Permission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">permission_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resource_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.resource_create">[docs]</a><span class="k">def</span> <span class="nf">resource_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;resource_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Resource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Resource&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Resource</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resource_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.resource_delete">[docs]</a><span class="k">def</span> <span class="nf">resource_delete</span><span class="p">(</span><span class="n">resource_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;resource_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param resource_id: A unique integer value identifying the resource.</span>
+<span class="sd">    :type resource_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Resource&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Resource</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resource_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.resource_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">resource_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resource_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;resource_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param prefix: An optional URN prefix filter</span>
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :param resource_ids: An optional list of resource ids</span>
+<span class="sd">    :type resource_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[Resource]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Mimicking db_actions.list_entry() with additional filter of prefix.</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">count</span><span class="p">()</span><span class="o">.</span><span class="n">over</span><span class="p">()</span><span class="o">.</span><span class="n">label</span><span class="p">(</span><span class="s2">&quot;x_total_count&quot;</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">resource_ids</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">in_</span><span class="p">(</span><span class="n">resource_ids</span><span class="p">))</span>
+
+    <span class="c1"># Additional prefix filter startswith.</span>
+    <span class="k">if</span> <span class="n">prefix</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="o">.</span><span class="n">urn</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Resource</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span>
+        <span class="n">offset</span> <span class="ow">or</span> <span class="mi">0</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span>
+        <span class="n">limit</span> <span class="ow">or</span> <span class="n">settings</span><span class="o">.</span><span class="n">DEFAULT_API_LIMIT</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
+        <span class="n">instance</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Resource</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resource_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.resource_read">[docs]</a><span class="k">def</span> <span class="nf">resource_read</span><span class="p">(</span><span class="n">resource_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;resource_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param resource_id: A unique integer value identifying the resource.</span>
+<span class="sd">    :type resource_id: int</span>
+
+<span class="sd">    :rtype: Resource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Resource&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Resource</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resource_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.resource_update">[docs]</a><span class="k">def</span> <span class="nf">resource_update</span><span class="p">(</span><span class="n">resource_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;resource_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param resource_id: A unique integer value identifying the resource.</span>
+<span class="sd">    :type resource_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Resource</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Resource&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Resource</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="role_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.role_create">[docs]</a><span class="k">def</span> <span class="nf">role_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;role_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Role</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="role_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.role_delete">[docs]</a><span class="k">def</span> <span class="nf">role_delete</span><span class="p">(</span><span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;role_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Role</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="role_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.role_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">role_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;role_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param role_ids: An optional list of role ids</span>
+<span class="sd">    :type role_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[Role]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Role</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span> <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span> <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="n">role_ids</span><span class="p">,</span> <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="role_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.role_read">[docs]</a><span class="k">def</span> <span class="nf">role_read</span><span class="p">(</span><span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;role_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: Role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Role</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="role_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.role_update">[docs]</a><span class="k">def</span> <span class="nf">role_update</span><span class="p">(</span><span class="n">role_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;role_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Role</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Role&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Role</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="roleresourcepermission_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.roleresourcepermission_create">[docs]</a><span class="k">def</span> <span class="nf">roleresourcepermission_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;roleresourcepermission_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: RoleResourcePermission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;RoleResourcePermission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">RoleResourcePermission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="roleresourcepermission_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.roleresourcepermission_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">roleresourcepermission_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">resource_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permission_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;roleresourcepermission_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param resource_id: An optional resource filter</span>
+<span class="sd">    :type resource_id: int</span>
+<span class="sd">    :param permission_id: An optional permission filter</span>
+<span class="sd">    :type permission_id: int</span>
+
+<span class="sd">    :rtype: List[RoleResourcePermission]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;RoleResourcePermission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">RoleResourcePermission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span> <span class="s2">&quot;resource_id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">,</span> <span class="s2">&quot;permission_id&quot;</span><span class="p">:</span> <span class="n">permission_id</span><span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;role_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="roleresourcepermission_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.roleresourcepermission_read">[docs]</a><span class="k">def</span> <span class="nf">roleresourcepermission_read</span><span class="p">(</span><span class="n">role_id</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">,</span> <span class="n">permission_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;roleresourcepermission_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param resource_id: A unique integer value identifying the resource.</span>
+<span class="sd">    :type resource_id: int</span>
+<span class="sd">    :param permission_id: A unique integer value identifying the permission.</span>
+<span class="sd">    :type permission_id: int</span>
+
+<span class="sd">    :rtype: RoleResourcePermission</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;RoleResourcePermission&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">RoleResourcePermission</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+            <span class="s2">&quot;resource_id&quot;</span><span class="p">:</span> <span class="n">resource_id</span><span class="p">,</span>
+            <span class="s2">&quot;permission_id&quot;</span><span class="p">:</span> <span class="n">permission_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.site_create">[docs]</a><span class="k">def</span> <span class="nf">site_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;site_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Site</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.site_delete">[docs]</a><span class="k">def</span> <span class="nf">site_delete</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;site_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Site</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.site_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">site_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">client_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;site_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param site_ids: An optional list of site ids</span>
+<span class="sd">    :type site_ids: List[int]</span>
+<span class="sd">    :param client_id: An optional client id to filter on</span>
+<span class="sd">    :type client_id: int</span>
+
+<span class="sd">    :rtype: List[Site]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Site</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span> <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+               <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">site_ids</span><span class="p">,</span> <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">client_id</span><span class="p">},</span> <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.site_read">[docs]</a><span class="k">def</span> <span class="nf">site_read</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;site_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: Site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Site</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="site_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.site_update">[docs]</a><span class="k">def</span> <span class="nf">site_update</span><span class="p">(</span><span class="n">site_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;site_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: Site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">Site</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="siterole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.siterole_create">[docs]</a><span class="k">def</span> <span class="nf">siterole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;siterole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: SiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="siterole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.siterole_delete">[docs]</a><span class="k">def</span> <span class="nf">siterole_delete</span><span class="p">(</span><span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;siterole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="siterole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.siterole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">siterole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;siterole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param site_id: An optional query parameter to filter by site_id</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[SiteRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span> <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="siterole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.siterole_read">[docs]</a><span class="k">def</span> <span class="nf">siterole_read</span><span class="p">(</span><span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;siterole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: SiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="siterole_update"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.siterole_update">[docs]</a><span class="k">def</span> <span class="nf">siterole_update</span><span class="p">(</span><span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;siterole_update</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: SiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">SiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="userdomainrole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.userdomainrole_create">[docs]</a><span class="k">def</span> <span class="nf">userdomainrole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;userdomainrole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: UserDomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="userdomainrole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.userdomainrole_delete">[docs]</a><span class="k">def</span> <span class="nf">userdomainrole_delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;userdomainrole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="userdomainrole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.userdomainrole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">userdomainrole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">domain_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;userdomainrole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param user_id: An optional query parameter to filter by user_id</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param domain_id: An optional query parameter to filter by domain_id</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[UserDomainRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+                <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="userdomainrole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.userdomainrole_read">[docs]</a><span class="k">def</span> <span class="nf">userdomainrole_read</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">domain_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;userdomainrole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: UserDomainRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserDomainRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserDomainRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="usersiterole_create"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.usersiterole_create">[docs]</a><span class="k">def</span> <span class="nf">usersiterole_create</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersiterole_create</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param data:</span>
+<span class="sd">    :type data: dict | bytes</span>
+
+<span class="sd">    :rtype: UserSiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">is_json</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">connexion</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;create&quot;</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersiterole_delete"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.usersiterole_delete">[docs]</a><span class="k">def</span> <span class="nf">usersiterole_delete</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersiterole_delete</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+<div class="viewcode-block" id="usersiterole_list"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.usersiterole_list">[docs]</a><span class="nd">@decorators</span><span class="o">.</span><span class="n">list_response</span>
+<span class="k">def</span> <span class="nf">usersiterole_list</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">role_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersiterole_list</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param offset: An optional query parameter specifying the offset in the result set to start from.</span>
+<span class="sd">    :type offset: int</span>
+<span class="sd">    :param limit: An optional query parameter to limit the number of results returned.</span>
+<span class="sd">    :type limit: int</span>
+<span class="sd">    :param user_id: An optional query parameter to filter by user_id</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: An optional query parameter to filter by site_id</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: An optional query parameter to filter by role_id</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: List[UserSiteRole]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;list&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;offset&quot;</span><span class="p">:</span> <span class="n">offset</span><span class="p">,</span>
+            <span class="s2">&quot;limit&quot;</span><span class="p">:</span> <span class="n">limit</span><span class="p">,</span>
+            <span class="s2">&quot;ids&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+                <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+                <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span>
+            <span class="p">},</span>
+            <span class="s2">&quot;order_by&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;site_id&quot;</span><span class="p">]}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="usersiterole_read"><a class="viewcode-back" href="../../../swagger_server.controllers.access_control_controller.html#swagger_server.controllers.access_control_controller.usersiterole_read">[docs]</a><span class="k">def</span> <span class="nf">usersiterole_read</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">,</span> <span class="n">role_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;usersiterole_read</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+<span class="sd">    :param role_id: A unique integer value identifying the role.</span>
+<span class="sd">    :type role_id: int</span>
+
+<span class="sd">    :rtype: UserSiteRole</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">db_actions</span><span class="o">.</span><span class="n">crud</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;UserSiteRole&quot;</span><span class="p">,</span>
+        <span class="n">api_model</span><span class="o">=</span><span class="n">UserSiteRole</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">,</span>
+        <span class="n">query</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+            <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">,</span>
+            <span class="s2">&quot;role_id&quot;</span><span class="p">:</span> <span class="n">role_id</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

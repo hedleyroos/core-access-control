@@ -69,6 +69,9 @@ instance/
 
 # Sphinx documentation
 docs/build/
+docs/source/swagger_server*.rst
+docs/source/access_control*.rst
+
 
 # PyBuilder
 target/

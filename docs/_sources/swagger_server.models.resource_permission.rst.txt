@@ -1,0 +1,7 @@
+swagger\_server.models.resource\_permission module
+==================================================
+
+.. automodule:: swagger_server.models.resource_permission
+    :members:
+    :undoc-members:
+    :show-inheritance:

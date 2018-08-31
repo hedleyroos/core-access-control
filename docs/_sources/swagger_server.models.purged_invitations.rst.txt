@@ -1,0 +1,7 @@
+swagger\_server.models.purged\_invitations module
+=================================================
+
+.. automodule:: swagger_server.models.purged_invitations
+    :members:
+    :undoc-members:
+    :show-inheritance:
