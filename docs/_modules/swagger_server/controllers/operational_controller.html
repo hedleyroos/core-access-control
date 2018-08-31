@@ -1,0 +1,862 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>swagger_server.controllers.operational_controller &mdash; access_control  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> access_control
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">access_control</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../swagger_server.html">swagger_server</a> &raquo;</li>
+        
+      <li>swagger_server.controllers.operational_controller</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for swagger_server.controllers.operational_controller</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">connexion</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="k">import</span> <span class="n">text</span>
+
+<span class="kn">import</span> <span class="nn">project.app</span>
+<span class="kn">from</span> <span class="nn">access_control</span> <span class="k">import</span> <span class="n">__version__</span>
+
+<span class="kn">from</span> <span class="nn">swagger_server.models.all_user_roles</span> <span class="k">import</span> <span class="n">AllUserRoles</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.domain_roles</span> <span class="k">import</span> <span class="n">DomainRoles</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.health_info</span> <span class="k">import</span> <span class="n">HealthInfo</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.purged_invitations</span> <span class="k">import</span> <span class="n">PurgedInvitations</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.resource_permission</span> <span class="k">import</span> <span class="n">ResourcePermission</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site</span> <span class="k">import</span> <span class="n">Site</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_and_domain_roles</span> <span class="k">import</span> <span class="n">SiteAndDomainRoles</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.site_role_labels_aggregated</span> <span class="k">import</span> <span class="n">SiteRoleLabelsAggregated</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_deletion_data</span> <span class="k">import</span> <span class="n">UserDeletionData</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_site_role_labels_aggregated</span> <span class="k">import</span> <span class="n">UserSiteRoleLabelsAggregated</span>  <span class="c1"># noqa: E501</span>
+<span class="kn">from</span> <span class="nn">swagger_server.models.user_with_roles</span> <span class="k">import</span> <span class="n">UserWithRoles</span>  <span class="c1"># noqa: E501</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">DB</span>
+
+<span class="n">SQL_ALL_DOMAIN_ROLES_FOR_USER</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a user id (:user_id), find all roles in the organisational domain tree</span>
+
+<span class="s2">-- Finding all the implicit and explicit roles is simple,</span>
+<span class="s2">-- however, we need to return the results in such a way</span>
+<span class="s2">-- that the domain hierarchy can be interpreted and roles</span>
+<span class="s2">-- pushed down the tree.</span>
+
+<span class="s2">WITH RECURSIVE _domain_tree AS (</span>
+<span class="s2">  SELECT domain.id, domain.parent_id, 0 AS position</span>
+<span class="s2">    FROM domain</span>
+<span class="s2">   WHERE domain.parent_id IS NULL  -- The root domain</span>
+<span class="s2">   UNION</span>
+<span class="s2">  SELECT domain.id, domain.parent_id,</span>
+<span class="s2">         _domain_tree.position + 1 AS position</span>
+<span class="s2">    FROM _domain_tree,</span>
+<span class="s2">         domain</span>
+<span class="s2">   WHERE domain.parent_id = _domain_tree.id</span>
+<span class="s2">),</span>
+<span class="s2">_roles AS (</span>
+<span class="s2">  SELECT domain.id, domain.parent_id,</span>
+<span class="s2">         -- Domain roles are distinct per definition</span>
+<span class="s2">         array_agg(domainrole.role_id) AS implicit_roles,</span>
+<span class="s2">         -- User domain roles are distinct per definition</span>
+<span class="s2">         array_agg(userdomainrole.role_id) AS explicit_roles</span>
+<span class="s2">    FROM _domain_tree AS domain</span>
+<span class="s2">    LEFT OUTER JOIN domain_role AS domainrole</span>
+<span class="s2">         ON (domain.id = domainrole.domain_id AND</span>
+<span class="s2">             domainrole.grant_implicitly)</span>
+<span class="s2">    LEFT OUTER JOIN user_domain_role AS userdomainrole</span>
+<span class="s2">         ON (domain.id = userdomainrole.domain_id AND</span>
+<span class="s2">             userdomainrole.user_id = :user_id)</span>
+<span class="s2">   GROUP BY domain.id, domain.parent_id, domain.position</span>
+<span class="s2">   ORDER BY domain.position</span>
+<span class="s2">)</span>
+<span class="s2">-- Return all the nodes of the tree with the roles for the</span>
+<span class="s2">-- specified user. The list of roles needs to be post-processed</span>
+<span class="s2">-- as it may contain duplicates and NULL values, e.g. {6,null} or {null,null}</span>
+<span class="s2">SELECT id, parent_id, implicit_roles || explicit_roles AS roles</span>
+<span class="s2">  FROM _roles;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_ALL_SITE_ROLES_FOR_USER</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">WITH _roles AS (</span>
+<span class="s2">  SELECT site.id, site.domain_id,</span>
+<span class="s2">         -- Site roles are distinct per definition</span>
+<span class="s2">         array_agg(siterole.role_id) AS implicit_roles,</span>
+<span class="s2">         -- User site roles are distinct per definition</span>
+<span class="s2">         array_agg(usersiterole.role_id) AS explicit_roles</span>
+<span class="s2">    FROM site</span>
+<span class="s2">    LEFT OUTER JOIN site_role AS siterole</span>
+<span class="s2">      ON (site.id = siterole.site_id AND</span>
+<span class="s2">          siterole.grant_implicitly)</span>
+<span class="s2">    LEFT OUTER JOIN user_site_role AS usersiterole</span>
+<span class="s2">      ON (site.id = usersiterole.site_id AND</span>
+<span class="s2">          usersiterole.user_id = :user_id)</span>
+<span class="s2">   GROUP BY site.id, site.domain_id</span>
+<span class="s2">)</span>
+<span class="s2">-- Return all the sites with the implicit and explicit</span>
+<span class="s2">-- roles for the specified user.</span>
+<span class="s2">-- The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.</span>
+<span class="s2">-- {6,null} or {null,null}</span>
+<span class="s2">SELECT id, domain_id, implicit_roles || explicit_roles AS roles</span>
+<span class="s2">  FROM _roles;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_DOMAIN_ROLES</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a domain id (:domain_id), find all roles that can be assigned</span>
+<span class="s2">-- in the domain lineage</span>
+
+<span class="s2">-- Finding all the roles is simple,</span>
+<span class="s2">-- however, we need to return the results in such a way</span>
+<span class="s2">-- that the domain hierarchy can be interpreted and roles</span>
+<span class="s2">-- pushed down the tree.</span>
+
+<span class="s2">WITH RECURSIVE _domain_tree AS (</span>
+<span class="s2">  SELECT domain.id, domain.parent_id, 0 AS position</span>
+<span class="s2">    FROM domain</span>
+<span class="s2">   WHERE domain.id = :domain_id</span>
+<span class="s2">   UNION</span>
+<span class="s2">  SELECT domain.id, domain.parent_id,</span>
+<span class="s2">         _domain_tree.position - 1 AS position</span>
+<span class="s2">    FROM _domain_tree,</span>
+<span class="s2">         domain</span>
+<span class="s2">   WHERE _domain_tree.parent_id = domain.id</span>
+<span class="s2">)</span>
+<span class="s2">SELECT domain.id, domain.parent_id,</span>
+<span class="s2">       array_agg(domainrole.role_id) AS roles</span>
+<span class="s2">  FROM _domain_tree AS domain</span>
+<span class="s2">  LEFT OUTER JOIN domain_role AS domainrole</span>
+<span class="s2">    ON (domain.id = domainrole.domain_id)</span>
+<span class="s2"> GROUP BY domain.id, domain.parent_id, domain.position</span>
+<span class="s2"> ORDER BY domain.position</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_SITE_ROLES</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a site id (:site_id), find all roles that can be assigned</span>
+<span class="s2">-- to it.</span>
+<span class="s2">SELECT site.id, site.domain_id, array_agg(siterole.role_id) AS roles</span>
+<span class="s2">FROM site</span>
+<span class="s2">LEFT OUTER JOIN site_role AS siterole</span>
+<span class="s2">  ON (site.id = siterole.site_id)</span>
+<span class="s2">WHERE site.id = :site_id</span>
+<span class="s2">GROUP BY site.id, site.domain_id</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_SITE_ROLE_LABELS_AGGREGATED</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a site id (:site_id) find all roles that can be assigned to it</span>
+<span class="s2">-- directly and via its domain lineage.</span>
+
+<span class="s2">-- The recursive query needs to come first</span>
+<span class="s2">-- Get domain lineage ids</span>
+<span class="s2">WITH RECURSIVE _domain_lineage AS (</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, site</span>
+<span class="s2">     WHERE domain.id = site.domain_id</span>
+<span class="s2">       AND site.id = :site_id</span>
+<span class="s2">     UNION DISTINCT</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, _domain_lineage</span>
+<span class="s2">     WHERE domain.id = _domain_lineage.parent_id</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all roles that can be assigned in the domain lineage</span>
+<span class="s2">_domain_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM domain_role, _domain_lineage</span>
+<span class="s2">     WHERE domain_role.domain_id = _domain_lineage.id</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all roles that can be assigned for the site</span>
+<span class="s2">_site_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM site_role</span>
+<span class="s2">     WHERE site_role.site_id = :site_id</span>
+<span class="s2">),</span>
+<span class="s2">-- Create a list of role ids, potentially containing duplicates</span>
+<span class="s2">_role_ids AS (</span>
+<span class="s2">    SELECT * FROM _domain_role_ids</span>
+<span class="s2">     UNION</span>
+<span class="s2">    SELECT * FROM _site_role_ids</span>
+<span class="s2">)</span>
+<span class="s2">-- Return a set of role labels</span>
+<span class="s2">-- The order in which the roles are returned is not guaranteed and</span>
+<span class="s2">-- applications should not rely on it.</span>
+<span class="s2">SELECT DISTINCT(label)</span>
+<span class="s2">  FROM role, _role_ids</span>
+<span class="s2"> WHERE role.id = _role_ids.role_id</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_USER_SITE_ROLE_LABELS_AGGREGATED</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a site id (:site_id) and a user id (:user_id), find all roles</span>
+
+<span class="s2">-- The recursive query needs to come first</span>
+<span class="s2">-- Get domain lineage ids</span>
+<span class="s2">WITH RECURSIVE _domain_lineage AS (</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, site</span>
+<span class="s2">     WHERE domain.id = site.domain_id</span>
+<span class="s2">       AND site.id = :site_id</span>
+<span class="s2">     UNION DISTINCT</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, _domain_lineage</span>
+<span class="s2">     WHERE domain.id = _domain_lineage.parent_id</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all implicit roles defined for the domain lineage</span>
+<span class="s2">_implicit_domain_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM domain_role, _domain_lineage</span>
+<span class="s2">     WHERE domain_role.domain_id = _domain_lineage.id</span>
+<span class="s2">       AND domain_role.grant_implicitly</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all explicit roles defined for the domain lineage</span>
+<span class="s2">_explicit_domain_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM user_domain_role, _domain_lineage</span>
+<span class="s2">     WHERE user_domain_role.domain_id = _domain_lineage.id</span>
+<span class="s2">       AND user_domain_role.user_id = :user_id</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all implicit roles defined for the site</span>
+<span class="s2">_implicit_site_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM site_role</span>
+<span class="s2">     WHERE site_role.site_id = :site_id</span>
+<span class="s2">       AND site_role.grant_implicitly</span>
+<span class="s2">),</span>
+<span class="s2">-- Find all explicit roles defined for the site</span>
+<span class="s2">_explicit_site_role_ids AS (</span>
+<span class="s2">    SELECT role_id</span>
+<span class="s2">      FROM user_site_role</span>
+<span class="s2">     WHERE user_site_role.site_id = :site_id</span>
+<span class="s2">       AND user_site_role.user_id = :user_id</span>
+<span class="s2">),</span>
+<span class="s2">-- Create a list of role ids, potentially containing duplicates</span>
+<span class="s2">_role_ids AS (</span>
+<span class="s2">    SELECT * FROM _implicit_domain_role_ids</span>
+<span class="s2">     UNION</span>
+<span class="s2">    SELECT * FROM _explicit_domain_role_ids</span>
+<span class="s2">     UNION</span>
+<span class="s2">    SELECT * FROM _implicit_site_role_ids</span>
+<span class="s2">     UNION</span>
+<span class="s2">    SELECT * FROM _explicit_site_role_ids</span>
+<span class="s2">)</span>
+<span class="s2">-- Return a set of role labels</span>
+<span class="s2">-- The order in which the roles are returned is not guaranteed and</span>
+<span class="s2">-- applications should not rely on it.</span>
+<span class="s2">SELECT DISTINCT(label)</span>
+<span class="s2">  FROM role, _role_ids</span>
+<span class="s2"> WHERE role.id = _role_ids.role_id</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_USERS_WITH_ROLES_FOR_DOMAIN</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a domain_id, find all users and their roles on that domain.</span>
+
+<span class="s2">-- We find all the users that has roles in the specified domains lineage</span>
+<span class="s2">-- in order to get all effective roles the a users have.</span>
+<span class="s2">WITH RECURSIVE _domain_lineage AS (</span>
+<span class="s2">  SELECT domain.id, domain.parent_id</span>
+<span class="s2">    FROM domain</span>
+<span class="s2">   WHERE domain.id = :domain_id</span>
+<span class="s2">   UNION</span>
+<span class="s2">  SELECT domain.id, domain.parent_id</span>
+<span class="s2">    FROM _domain_lineage, domain</span>
+<span class="s2">   WHERE domain.id = _domain_lineage.parent_id</span>
+<span class="s2">)</span>
+<span class="s2">SELECT user_domain_role.user_id,</span>
+<span class="s2">       array_agg(DISTINCT user_domain_role.role_id) AS role_ids</span>
+<span class="s2">  FROM user_domain_role, _domain_lineage AS domain  </span>
+<span class="s2"> WHERE domain.id = user_domain_role.domain_id</span>
+<span class="s2"> GROUP BY user_domain_role.user_id;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_USERS_WITH_ROLES_FOR_SITE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a site id (:site_id) find all users and their roles on that site.</span>
+
+<span class="s2">-- The recursive query needs to come first</span>
+<span class="s2">-- Get domain lineage ids</span>
+<span class="s2">WITH RECURSIVE _domain_lineage AS (</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, site</span>
+<span class="s2">     WHERE domain.id = site.domain_id</span>
+<span class="s2">       AND site.id = :site_id</span>
+<span class="s2">     UNION DISTINCT</span>
+<span class="s2">    SELECT domain.id, domain.parent_id</span>
+<span class="s2">      FROM domain, _domain_lineage</span>
+<span class="s2">     WHERE domain.id = _domain_lineage.parent_id</span>
+<span class="s2">),</span>
+<span class="s2">_user_roles AS (</span>
+<span class="s2">    SELECT user_domain_role.user_id, user_domain_role.role_id </span>
+<span class="s2">      FROM user_domain_role, _domain_lineage AS domain</span>
+<span class="s2">     WHERE domain.id = user_domain_role.domain_id</span>
+<span class="s2">    UNION</span>
+<span class="s2">    SELECT user_id, role_id</span>
+<span class="s2">      FROM user_site_role</span>
+<span class="s2">     WHERE site_id = :site_id</span>
+<span class="s2">)</span>
+<span class="s2">SELECT user_id, array_agg(DISTINCT role_id) AS role_ids</span>
+<span class="s2">  FROM _user_roles</span>
+<span class="s2"> GROUP BY user_id</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_TECH_ADMIN_RESOURCE_PERMISSIONS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- A user with the tech admin role has all permissions on all resources.</span>
+<span class="s2">-- This is computed as the cross-product between the resource and permission table.</span>
+<span class="s2">SELECT resource.id AS resource_id, permission.id AS permission_id</span>
+<span class="s2">  FROM resource, permission</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_RESOURCE_PERMISSIONS_FOR_ROLES</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a list of roles (:role_ids) find all resource permissions linked to them.</span>
+<span class="s2">SELECT resource_id, permission_id</span>
+<span class="s2">  FROM role_resource_permission</span>
+<span class="s2"> WHERE role_resource_permission.role_id = ANY(:role_ids)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_SITES_UNDER_DOMAIN</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a domain id (:domain_id) find all sites linked to it or any of its subdomains.</span>
+
+<span class="s2">-- The recursive query needs to come first</span>
+<span class="s2">-- Get domain ids for the subtree rooted at the domain with id :domain_id</span>
+<span class="s2">WITH RECURSIVE _domain_tree AS (</span>
+<span class="s2">    SELECT domain.id</span>
+<span class="s2">      FROM domain</span>
+<span class="s2">     WHERE domain.id = :domain_id</span>
+<span class="s2">     UNION DISTINCT</span>
+<span class="s2">    SELECT domain.id</span>
+<span class="s2">      FROM domain, _domain_tree</span>
+<span class="s2">     WHERE domain.parent_id = _domain_tree.id</span>
+<span class="s2">)</span>
+<span class="s2">SELECT site.*</span>
+<span class="s2">  FROM site, _domain_tree</span>
+<span class="s2"> WHERE domain_id = _domain_tree.id</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_PURGE_EXPIRED_INVITATIONS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a cutoff date (:cutoff_date), find all invitations with an</span>
+<span class="s2">-- expired_date beyond the cutoff_date and purge them.</span>
+
+<span class="s2">-- The InvitationDomainRoles and InvitationSiteRoles must be purged prior to</span>
+<span class="s2">-- purging the Invitation itself, to avoid errors.</span>
+<span class="s2">WITH invitations_to_delete AS (</span>
+<span class="s2">    SELECT id</span>
+<span class="s2">      FROM invitation</span>
+<span class="s2">     WHERE expires_at &lt; :cutoff_date</span>
+<span class="s2">),</span>
+<span class="s2">deleted_invitation_domain_roles AS (</span>
+<span class="s2">    DELETE FROM invitation_domain_role</span>
+<span class="s2">     USING invitations_to_delete</span>
+<span class="s2">     WHERE invitation_id = invitations_to_delete.id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_invitation_site_roles AS (</span>
+<span class="s2">    DELETE FROM invitation_site_role</span>
+<span class="s2">     USING invitations_to_delete</span>
+<span class="s2">     WHERE invitation_id = invitations_to_delete.id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_invitations AS (</span>
+<span class="s2">    DELETE FROM invitation</span>
+<span class="s2">     USING invitations_to_delete</span>
+<span class="s2">     WHERE invitation.id = invitations_to_delete.id</span>
+<span class="s2">    RETURNING * </span>
+<span class="s2">)</span>
+<span class="s2">SELECT COUNT(*) AS amount</span>
+<span class="s2">  FROM deleted_invitations;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">SQL_DELETE_USER_DATA</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">-- Given a user id (:user_id),</span>
+<span class="s2">-- delete UserDomainRoles and UserSiteRoles tied to user id</span>
+
+<span class="s2">WITH deleted_site_roles AS (</span>
+<span class="s2">    DELETE FROM user_site_role</span>
+<span class="s2">        WHERE user_id = :user_id</span>
+<span class="s2">    RETURNING user_id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_domain_roles AS (</span>
+<span class="s2">    DELETE FROM user_domain_role</span>
+<span class="s2">        WHERE user_id = :user_id</span>
+<span class="s2">    RETURNING user_id</span>
+<span class="s2">),</span>
+<span class="s2">deleted_rows AS (</span>
+<span class="s2">   SELECT * FROM deleted_site_roles</span>
+<span class="s2">   UNION ALL  -- ALL is required so that duplicates are not dropped</span>
+<span class="s2">   SELECT * FROM deleted_domain_roles</span>
+<span class="s2">)</span>
+
+<span class="s2">SELECT COUNT(*) AS amount</span>
+<span class="s2">  FROM deleted_rows;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="delete_user_data"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.delete_user_data">[docs]</a><span class="k">def</span> <span class="nf">delete_user_data</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;delete_user_data</span>
+
+<span class="sd">     # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: UserDeletionData</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">SQL_DELETE_USER_DATA</span><span class="p">),</span>
+            <span class="o">**</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">UserDeletionData</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="get_all_user_roles"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_all_user_roles">[docs]</a><span class="k">def</span> <span class="nf">get_all_user_roles</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_all_user_roles</span>
+
+<span class="sd">    Get the effective roles that a user has at any place in the organisational tree. # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+
+<span class="sd">    :rtype: AllUserRoles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">domain_rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">(</span><span class="n">SQL_ALL_DOMAIN_ROLES_FOR_USER</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">site_rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">(</span><span class="n">SQL_ALL_SITE_ROLES_FOR_USER</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">domain_rows</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]:</span>
+            <span class="c1"># Child domains inherit the roles of their parent</span>
+            <span class="n">parent_key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]</span>
+            <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">site_rows</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;s:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]:</span>
+            <span class="c1"># Sites inherit the roles of their domain</span>
+            <span class="n">parent_key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]</span>
+            <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span>
+
+    <span class="c1"># Convert the sets to lists so that they are JSON serialisable</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">roles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">AllUserRoles</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;roles_map&quot;</span><span class="p">:</span> <span class="n">roles</span><span class="p">,</span> <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="get_domain_roles"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_domain_roles">[docs]</a><span class="k">def</span> <span class="nf">get_domain_roles</span><span class="p">(</span><span class="n">domain_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_domain_roles</span>
+
+<span class="sd">    Get the domain and its lineage&amp;#39;s roles defined for a domain. # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+
+<span class="sd">    :rtype: DomainRoles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">(</span><span class="n">SQL_DOMAIN_ROLES</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]:</span>
+            <span class="c1"># Child domains inherit the roles of their parent</span>
+            <span class="n">parent_key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">])</span>
+            <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span>
+    <span class="c1"># Convert the sets to lists so that they are JSON serialisable</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">roles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">DomainRoles</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">,</span> <span class="s2">&quot;roles_map&quot;</span><span class="p">:</span> <span class="n">roles</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="get_resource_permissions_for_roles"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_resource_permissions_for_roles">[docs]</a><span class="k">def</span> <span class="nf">get_resource_permissions_for_roles</span><span class="p">(</span><span class="n">role_ids</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_resource_permissions_for_roles</span>
+
+<span class="sd">    Get a list of all resource permissions the specified roles have. # noqa: E501</span>
+
+<span class="sd">    :param role_ids:</span>
+<span class="sd">    :type role_ids: List[int]</span>
+
+<span class="sd">    :rtype: List[ResourcePermission]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resource_permissions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">SQL_RESOURCE_PERMISSIONS_FOR_ROLES</span><span class="p">),</span>
+                                                         <span class="n">role_ids</span><span class="o">=</span><span class="n">role_ids</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ResourcePermission</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">resource_permissions</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_site_and_domain_roles"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_site_and_domain_roles">[docs]</a><span class="k">def</span> <span class="nf">get_site_and_domain_roles</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_site_and_domain_roles</span>
+
+<span class="sd">    Get the site- and domain lineage roles defined for a given site. # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: SiteAndDomainRoles</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">site_rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="n">text</span><span class="p">(</span><span class="n">SQL_SITE_ROLES</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">roles</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">site_row</span> <span class="ow">in</span> <span class="n">site_rows</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]:</span>
+            <span class="n">domain_rows</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+                <span class="n">text</span><span class="p">(</span><span class="n">SQL_DOMAIN_ROLES</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]}</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">domain_rows</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]:</span>
+                    <span class="c1"># Child domains inherit the roles of their parent</span>
+                    <span class="n">parent_key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]</span>
+                    <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span>
+
+        <span class="n">key</span> <span class="o">=</span> <span class="s2">&quot;s:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;roles&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]:</span>
+            <span class="c1"># Sites inherit the roles of their domain</span>
+            <span class="n">parent_key</span> <span class="o">=</span> <span class="s2">&quot;d:</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">site_row</span><span class="p">[</span><span class="s2">&quot;domain_id&quot;</span><span class="p">]</span>
+            <span class="n">roles</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">roles</span><span class="p">[</span><span class="n">parent_key</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">roles</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">roles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">SiteAndDomainRoles</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;roles_map&quot;</span><span class="p">:</span> <span class="n">roles</span><span class="p">,</span> <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="get_site_role_labels_aggregated"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_site_role_labels_aggregated">[docs]</a><span class="k">def</span> <span class="nf">get_site_role_labels_aggregated</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_site_role_labels_aggregated</span>
+
+<span class="sd">    Get a list of all possible role labels that a user can have from the specified site&amp;#39;s perspective. # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: SiteRoleLabelsAggregated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">SQL_SITE_ROLE_LABELS_AGGREGATED</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">SiteRoleLabelsAggregated</span><span class="p">(</span>
+        <span class="o">**</span><span class="p">{</span><span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">],</span>
+        <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">}</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_sites_under_domain"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_sites_under_domain">[docs]</a><span class="k">def</span> <span class="nf">get_sites_under_domain</span><span class="p">(</span><span class="n">domain_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_sites_under_domain</span>
+
+<span class="sd">    Get a list of all sites linked directly or indirectly to the specified domain. # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+
+<span class="sd">    :rtype: List[Site]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">SQL_SITES_UNDER_DOMAIN</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">})</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">Site</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_tech_admin_resource_permissions"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_tech_admin_resource_permissions">[docs]</a><span class="k">def</span> <span class="nf">get_tech_admin_resource_permissions</span><span class="p">():</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_tech_admin_resource_permissions</span>
+
+<span class="sd">    Get a list of all possible permissions any user can have. This is effectively what a tech admin user can do. # noqa: E501</span>
+
+
+<span class="sd">    :rtype: List[ResourcePermission]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">resource_permissions</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">SQL_TECH_ADMIN_RESOURCE_PERMISSIONS</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ResourcePermission</span><span class="p">(</span><span class="o">**</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">resource_permissions</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_user_site_role_labels_aggregated"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_user_site_role_labels_aggregated">[docs]</a><span class="k">def</span> <span class="nf">get_user_site_role_labels_aggregated</span><span class="p">(</span><span class="n">user_id</span><span class="p">,</span> <span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_user_site_role_labels_aggregated</span>
+
+<span class="sd">    Get a list of all role labels that the specified user has from the specified site&amp;#39;s perspective. # noqa: E501</span>
+
+<span class="sd">    :param user_id: A UUID value identifying the user.</span>
+<span class="sd">    :type user_id: dict | bytes</span>
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: UserSiteRoleLabelsAggregated</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="n">SQL_USER_SITE_ROLE_LABELS_AGGREGATED</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span> <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">})</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="p">]</span>
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">UserSiteRoleLabelsAggregated</span><span class="p">(</span>
+        <span class="o">**</span><span class="p">{</span><span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="n">items</span><span class="p">,</span>
+        <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="n">user_id</span><span class="p">,</span>
+        <span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">}</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="get_users_with_roles_for_domain"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_users_with_roles_for_domain">[docs]</a><span class="k">def</span> <span class="nf">get_users_with_roles_for_domain</span><span class="p">(</span><span class="n">domain_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_users_with_roles_for_domain</span>
+
+<span class="sd">    Get a list of Users with their effective roles within the given domain. # noqa: E501</span>
+
+<span class="sd">    :param domain_id: A unique integer value identifying the domain.</span>
+<span class="sd">    :type domain_id: int</span>
+
+<span class="sd">    :rtype: List[UserWithRoles]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="n">SQL_USERS_WITH_ROLES_FOR_DOMAIN</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;domain_id&quot;</span><span class="p">:</span> <span class="n">domain_id</span><span class="p">})</span>
+    <span class="n">users_with_roles</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">UserWithRoles</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+            <span class="n">role_ids</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;role_ids&quot;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">users_with_roles</span></div>
+
+
+<div class="viewcode-block" id="get_users_with_roles_for_site"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.get_users_with_roles_for_site">[docs]</a><span class="k">def</span> <span class="nf">get_users_with_roles_for_site</span><span class="p">(</span><span class="n">site_id</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;get_users_with_roles_for_site</span>
+
+<span class="sd">    Get a list of Users with their effective roles within the given site. # noqa: E501</span>
+
+<span class="sd">    :param site_id: A unique integer value identifying the site.</span>
+<span class="sd">    :type site_id: int</span>
+
+<span class="sd">    :rtype: List [UserWithRoles]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sql</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="n">SQL_USERS_WITH_ROLES_FOR_SITE</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;site_id&quot;</span><span class="p">:</span> <span class="n">site_id</span><span class="p">})</span>
+    <span class="n">users_with_roles</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">UserWithRoles</span><span class="p">(</span>
+            <span class="n">user_id</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;user_id&quot;</span><span class="p">],</span>
+            <span class="n">role_ids</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;role_ids&quot;</span><span class="p">]</span>
+        <span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">users_with_roles</span></div>
+
+
+<div class="viewcode-block" id="purge_expired_invitations"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.purge_expired_invitations">[docs]</a><span class="k">def</span> <span class="nf">purge_expired_invitations</span><span class="p">(</span><span class="n">cutoff_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;purge_expired_invitations</span>
+
+<span class="sd">    Purge all the expired invitations past a cutoff_date (defaults to today).</span>
+
+<span class="sd">    :param cutoff_date: An optional cutoff_date to purge invitations expired past this date.</span>
+<span class="sd">    :type cutoff_date: date</span>
+
+<span class="sd">    :rtype: PurgedInvitations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">cutoff_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cutoff_date</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">())</span>
+
+    <span class="c1"># For some reason we have to do this SQL query in a transaction.</span>
+    <span class="c1"># Ref: http://docs.sqlalchemy.org/en/latest/core/connections.html#using-transactions</span>
+    <span class="k">with</span> <span class="n">db</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span><span class="o">.</span><span class="n">begin</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+            <span class="n">text</span><span class="p">(</span><span class="n">SQL_PURGE_EXPIRED_INVITATIONS</span><span class="p">),</span> <span class="o">**</span><span class="p">{</span><span class="s2">&quot;cutoff_date&quot;</span><span class="p">:</span> <span class="n">cutoff_date</span><span class="p">}</span>
+        <span class="p">)</span>
+
+    <span class="n">amount</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">PurgedInvitations</span><span class="p">(</span><span class="n">amount</span><span class="o">=</span><span class="n">amount</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="healthcheck"><a class="viewcode-back" href="../../../swagger_server.controllers.operational_controller.html#swagger_server.controllers.operational_controller.healthcheck">[docs]</a><span class="k">def</span> <span class="nf">healthcheck</span><span class="p">():</span>  <span class="c1"># noqa: E501</span>
+    <span class="sd">&quot;&quot;&quot;healthcheck</span>
+
+<span class="sd">    Get the status of the service. # noqa: E501</span>
+
+
+<span class="sd">    :rtype: HealthInfo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s2">&quot;SELECT LOCALTIMESTAMP&quot;</span><span class="p">)</span>
+    <span class="n">db_timestamp</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">HealthInfo</span><span class="p">(</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">getfqdn</span><span class="p">(),</span>
+        <span class="n">server_timestamp</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(),</span>
+        <span class="n">version</span><span class="o">=</span><span class="n">__version__</span><span class="p">,</span>
+        <span class="n">db_timestamp</span><span class="o">=</span><span class="n">db_timestamp</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

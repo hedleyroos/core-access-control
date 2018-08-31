@@ -1,0 +1,7 @@
+swagger\_server.controllers.operational\_controller module
+==========================================================
+
+.. automodule:: swagger_server.controllers.operational_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:

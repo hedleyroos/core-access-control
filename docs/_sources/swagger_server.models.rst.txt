@@ -1,0 +1,62 @@
+swagger\_server.models package
+==============================
+
+Submodules
+----------
+
+.. toctree::
+
+   swagger_server.models.all_user_roles
+   swagger_server.models.base_model_
+   swagger_server.models.domain
+   swagger_server.models.domain_create
+   swagger_server.models.domain_role
+   swagger_server.models.domain_role_create
+   swagger_server.models.domain_role_update
+   swagger_server.models.domain_roles
+   swagger_server.models.domain_update
+   swagger_server.models.health_info
+   swagger_server.models.invitation
+   swagger_server.models.invitation_create
+   swagger_server.models.invitation_domain_role
+   swagger_server.models.invitation_domain_role_create
+   swagger_server.models.invitation_site_role
+   swagger_server.models.invitation_site_role_create
+   swagger_server.models.invitation_update
+   swagger_server.models.permission
+   swagger_server.models.permission_create
+   swagger_server.models.permission_update
+   swagger_server.models.purged_invitations
+   swagger_server.models.resource
+   swagger_server.models.resource_create
+   swagger_server.models.resource_permission
+   swagger_server.models.resource_update
+   swagger_server.models.role
+   swagger_server.models.role_create
+   swagger_server.models.role_label
+   swagger_server.models.role_resource_permission
+   swagger_server.models.role_resource_permission_create
+   swagger_server.models.role_update
+   swagger_server.models.site
+   swagger_server.models.site_and_domain_roles
+   swagger_server.models.site_create
+   swagger_server.models.site_role
+   swagger_server.models.site_role_create
+   swagger_server.models.site_role_labels_aggregated
+   swagger_server.models.site_role_update
+   swagger_server.models.site_update
+   swagger_server.models.user_deletion_data
+   swagger_server.models.user_domain_role
+   swagger_server.models.user_domain_role_create
+   swagger_server.models.user_site_role
+   swagger_server.models.user_site_role_create
+   swagger_server.models.user_site_role_labels_aggregated
+   swagger_server.models.user_with_roles
+
+Module contents
+---------------
+
+.. automodule:: swagger_server.models
+    :members:
+    :undoc-members:
+    :show-inheritance:

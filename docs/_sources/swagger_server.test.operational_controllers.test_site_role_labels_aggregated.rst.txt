@@ -1,0 +1,7 @@
+swagger\_server.test.operational\_controllers.test\_site\_role\_labels\_aggregated module
+=========================================================================================
+
+.. automodule:: swagger_server.test.operational_controllers.test_site_role_labels_aggregated
+    :members:
+    :undoc-members:
+    :show-inheritance:

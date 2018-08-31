@@ -1,0 +1,7 @@
+swagger\_server.models.resource module
+======================================
+
+.. automodule:: swagger_server.models.resource
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -52,6 +52,8 @@ docs-build:  $(VENV)
 	$(PIP) install sphinx sphinx-autobuild sphinx_rtd_theme
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Backing up docs/ directory content...$(CLEAR)"
+	rm -rf docs/source/user_data_store*.rst
+	rm -rf docs/source/swagger_server*.rst
 	tar -cvf backup.tar docs/source docs/Makefile
 	@echo "$(GREEN)DONE$(CLEAR)"
 	@echo "$(CYAN)Clearing out docs/ directory content...$(CLEAR)"
@@ -111,6 +113,7 @@ test: $(PYTEST)
 
 database:
 	sql/create_database.sh $(DB_NAME) $(DB_USER) | sudo -u postgres psql -f -
+	make migrate
 
 makemigrations: $(VENV)
 	@echo "$(CYAN)Creating migrations...$(CLEAR)"

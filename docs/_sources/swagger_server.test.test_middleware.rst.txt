@@ -1,0 +1,7 @@
+swagger\_server.test.test\_middleware module
+============================================
+
+.. automodule:: swagger_server.test.test_middleware
+    :members:
+    :undoc-members:
+    :show-inheritance:

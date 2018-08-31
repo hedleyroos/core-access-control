@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>access_control.test.test_transformation &mdash; access_control  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> access_control
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">access_control</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>access_control.test.test_transformation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for access_control.test.test_transformation</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">date</span><span class="p">,</span> <span class="n">timedelta</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="k">import</span> <span class="n">TestCase</span>
+<span class="kn">from</span> <span class="nn">ge_core_shared.transformation</span> <span class="k">import</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Transformation</span>
+
+
+<div class="viewcode-block" id="tomorrow"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.tomorrow">[docs]</a><span class="k">def</span> <span class="nf">tomorrow</span><span class="p">(</span><span class="n">today</span><span class="p">:</span> <span class="n">date</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">date</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">today</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestTransformation"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation">[docs]</a><span class="k">class</span> <span class="nc">TestTransformation</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestTransformation.setUpClass"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation.setUpClass">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">transformation</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">([</span>
+            <span class="c1"># Copy key and value</span>
+            <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;verbatim&quot;</span><span class="p">),</span>
+            <span class="c1"># Copy value to a new field</span>
+            <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;old_name&quot;</span><span class="p">,</span> <span class="s2">&quot;new_name&quot;</span><span class="p">),</span>
+            <span class="c1"># Convert a value using a specified function</span>
+            <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;uppercase_name&quot;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">upper</span><span class="p">()),</span>
+            <span class="c1"># Convert a value. Use same field name.</span>
+            <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;sneaky&quot;</span><span class="p">,</span> <span class="n">conversion</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span>
+            <span class="c1"># Conversion function working on dates</span>
+            <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;today&quot;</span><span class="p">,</span> <span class="n">output_field</span><span class="o">=</span><span class="s2">&quot;tomorrow&quot;</span><span class="p">,</span> <span class="n">conversion</span><span class="o">=</span><span class="n">tomorrow</span><span class="p">),</span>
+            <span class="c1"># Fields without mappings are not included in the result</span>
+        <span class="p">])</span></div>
+
+<div class="viewcode-block" id="TestTransformation.test_transformations"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation.test_transformations">[docs]</a>    <span class="k">def</span> <span class="nf">test_transformations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;verbatim&quot;</span><span class="p">:</span> <span class="s2">&quot;the same&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;old_name&quot;</span><span class="p">:</span> <span class="s2">&quot;getting a new name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sneaky&quot;</span><span class="p">:</span> <span class="s2">&quot;0123456789&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;no_map&quot;</span><span class="p">:</span> <span class="s2">&quot;I&#39;m disappearing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;today&quot;</span><span class="p">:</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;verbatim&quot;</span><span class="p">:</span> <span class="s2">&quot;the same&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;new_name&quot;</span><span class="p">:</span> <span class="s2">&quot;getting a new name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;uppercase_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ADAM&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sneaky&quot;</span><span class="p">:</span> <span class="s2">&quot;9876543210&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tomorrow&quot;</span><span class="p">:</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestTransformation.test_bad_data"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation.test_bad_data">[docs]</a>    <span class="k">def</span> <span class="nf">test_bad_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">bad_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>  <span class="c1"># Name should be a string</span>
+        <span class="p">}</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transformation</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">bad_data</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TestTransformation.test_copy_fields"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation.test_copy_fields">[docs]</a>    <span class="k">def</span> <span class="nf">test_copy_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;verbatim&quot;</span><span class="p">:</span> <span class="s2">&quot;the same&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;old_name&quot;</span><span class="p">:</span> <span class="s2">&quot;getting a new name&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Adam&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;sneaky&quot;</span><span class="p">:</span> <span class="s2">&quot;0123456789&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;no_map&quot;</span><span class="p">:</span> <span class="s2">&quot;I&#39;m disappearing&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;today&quot;</span><span class="p">:</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="c1"># The copy_fields argument is a convenience mechanism</span>
+        <span class="n">copy_transform</span> <span class="o">=</span> <span class="n">Transformation</span><span class="p">(</span>
+            <span class="n">copy_fields</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">copy_transform</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestTransformation.test_duplicate_input_fields"><a class="viewcode-back" href="../../../access_control.test.test_transformation.html#access_control.test.test_transformation.TestTransformation.test_duplicate_input_fields">[docs]</a>    <span class="k">def</span> <span class="nf">test_duplicate_input_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="n">Transformation</span><span class="p">([</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">),</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">),</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">),</span>  <span class="c1"># Duplicate</span>
+            <span class="p">])</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="n">Transformation</span><span class="p">(</span><span class="n">mappings</span><span class="o">=</span><span class="p">[</span><span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">),</span> <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)],</span>
+                           <span class="n">copy_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">])</span>  <span class="c1"># Duplicate</span>
+
+        <span class="c1"># For output fields</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">RuntimeError</span><span class="p">):</span>
+            <span class="n">Transformation</span><span class="p">([</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">),</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">),</span>
+                <span class="n">Mapping</span><span class="p">(</span><span class="s2">&quot;c&quot;</span><span class="p">),</span>  <span class="c1"># Implied output field &quot;c&quot; already specified</span>
+            <span class="p">])</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Girl Effect.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            LANGUAGE:'en',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

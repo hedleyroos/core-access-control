@@ -1,0 +1,7 @@
+swagger\_server.test.operational\_controllers.test\_delete\_user\_data\_controller module
+=========================================================================================
+
+.. automodule:: swagger_server.test.operational_controllers.test_delete_user_data_controller
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+swagger\_server.models.site\_role module
+========================================
+
+.. automodule:: swagger_server.models.site_role
+    :members:
+    :undoc-members:
+    :show-inheritance:

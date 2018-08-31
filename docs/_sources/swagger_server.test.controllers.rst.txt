@@ -1,0 +1,29 @@
+swagger\_server.test.controllers package
+========================================
+
+Submodules
+----------
+
+.. toctree::
+
+   swagger_server.test.controllers.test_domain_controller
+   swagger_server.test.controllers.test_domainrole_controller
+   swagger_server.test.controllers.test_invitation_controller
+   swagger_server.test.controllers.test_invitationdomainrole_controller
+   swagger_server.test.controllers.test_invitationsiterole_controller
+   swagger_server.test.controllers.test_permission_controller
+   swagger_server.test.controllers.test_resource_controller
+   swagger_server.test.controllers.test_role_controller
+   swagger_server.test.controllers.test_roleresourcepermission_controller
+   swagger_server.test.controllers.test_site_controller
+   swagger_server.test.controllers.test_siterole_controller
+   swagger_server.test.controllers.test_userdomainrole_controller
+   swagger_server.test.controllers.test_usersiterole_controller
+
+Module contents
+---------------
+
+.. automodule:: swagger_server.test.controllers
+    :members:
+    :undoc-members:
+    :show-inheritance:
