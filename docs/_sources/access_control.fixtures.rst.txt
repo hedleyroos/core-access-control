@@ -1,0 +1,21 @@
+access\_control.fixtures package
+================================
+
+Submodules
+----------
+
+.. toctree::
+
+   access_control.fixtures.domains
+   access_control.fixtures.permissions
+   access_control.fixtures.resources
+   access_control.fixtures.role_resource_permissions
+   access_control.fixtures.roles
+
+Module contents
+---------------
+
+.. automodule:: access_control.fixtures
+    :members:
+    :undoc-members:
+    :show-inheritance:

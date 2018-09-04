@@ -1,0 +1,27 @@
+swagger\_server package
+=======================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    swagger_server.controllers
+    swagger_server.models
+    swagger_server.test
+
+Submodules
+----------
+
+.. toctree::
+
+   swagger_server.encoder
+   swagger_server.util
+
+Module contents
+---------------
+
+.. automodule:: swagger_server
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -4,9 +4,8 @@ from datetime import datetime
 
 import werkzeug
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
@@ -20,10 +19,9 @@ from flask import json
 
 class InvitationDomainRoleTestCase(BaseTestCase):
 
+    @decorators.db_exception
     def setUp(self):
-        models.InvitationSiteRole.query.delete()
-        models.InvitationDomainRole.query.delete()
-        models.Invitation.query.delete()
+        super().setUp()
         self.role_data = {
             "label": ("%s" % uuid.uuid4())[:30],
             "description": "invitation_site_role to create",

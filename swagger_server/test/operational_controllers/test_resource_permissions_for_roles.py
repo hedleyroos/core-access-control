@@ -2,10 +2,9 @@
 
 from __future__ import absolute_import
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from flask import json
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Permission, Resource, Role, RoleResourcePermission
 from swagger_server.test import BaseTestCase
@@ -14,17 +13,9 @@ from swagger_server.test import BaseTestCase
 class TestOperationalController(BaseTestCase):
     NUM_TESTS = 10
 
+    @decorators.db_exception
     def setUp(self):
-        # Clear tables
-        models.RoleResourcePermission.query.delete()
-        models.UserDomainRole.query.delete()
-        models.UserSiteRole.query.delete()
-        models.DomainRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Role.query.delete()
-        models.Resource.query.delete()
-        models.Permission.query.delete()
-
+        super().setUp()
         self.headers = {API_KEY_HEADER: "test-api-key"}
         self.role_ids = []
 

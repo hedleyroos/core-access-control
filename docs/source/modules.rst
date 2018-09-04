@@ -1,7 +1,7 @@
-access_control
+swagger_server
 ==============
 
 .. toctree::
    :maxdepth: 4
 
-   access_control
+   swagger_server

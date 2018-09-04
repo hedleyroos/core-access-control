@@ -1,0 +1,7 @@
+swagger\_server.models.domain module
+====================================
+
+.. automodule:: swagger_server.models.domain
+    :members:
+    :undoc-members:
+    :show-inheritance:

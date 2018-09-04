@@ -1,13 +1,10 @@
 # coding: utf-8
 
 from __future__ import absolute_import
-import random
-import uuid
 
-from ge_core_shared import db_actions
+from ge_core_shared import db_actions, decorators
 from flask import json
 
-from access_control import models
 from project.settings import API_KEY_HEADER
 from swagger_server.models import Permission, Resource
 from swagger_server.test import BaseTestCase
@@ -17,17 +14,10 @@ class TestOperationalController(BaseTestCase):
     NUM_PERMISSIONS = 5
     NUM_RESOURCES = 10
 
+    @decorators.db_exception
     def setUp(self):
+        super().setUp()
         self.headers = {API_KEY_HEADER: "test-api-key"}
-        # Clear tables
-        models.RoleResourcePermission.query.delete()
-        models.UserDomainRole.query.delete()
-        models.UserSiteRole.query.delete()
-        models.DomainRole.query.delete()
-        models.SiteRole.query.delete()
-        models.Role.query.delete()
-        models.Resource.query.delete()
-        models.Permission.query.delete()
 
         for i in range(0, self.NUM_PERMISSIONS):
             data = {

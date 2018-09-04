@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.5
+-----
+- Updated documentation
+- Use new version of core_shared library and decorate unit tests accordingly.
+
 1.2.4
 -----
 - Exception handler status code and message updates.
