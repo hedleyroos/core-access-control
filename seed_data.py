@@ -28,7 +28,8 @@ class SeedDataLoader:
     def load_resources():
         print("Loading resources...")
         for resource in RESOURCES:
-            instance, created = get_or_create(Resource, urn=resource, description="")
+            instance, created = get_or_create(Resource, urn=resource,
+                                              defaults={"description": ""})
             print("Resource %s loaded..." % instance.urn)
         print("Done")
 
@@ -36,7 +37,8 @@ class SeedDataLoader:
     def load_permissions():
         print("Loading permissions...")
         for permission in PERMISSIONS:
-            instance, created = get_or_create(Permission, name=permission, description="")
+            instance, created = get_or_create(Permission, name=permission,
+                                              defaults={"description": ""})
             print("Permission %s loaded..." % instance.name)
         print("Done")
 
@@ -44,7 +46,8 @@ class SeedDataLoader:
     def load_roles():
         print("Loading roles...")
         for role in ROLES:
-            instance, created = get_or_create(Role, label=role, description="")
+            instance, created = get_or_create(Role, label=role,
+                                              defaults={"description": ""})
             print("Role %s loaded..." % instance.label)
         print("Done")
 
@@ -56,8 +59,10 @@ class SeedDataLoader:
             ))
             domain, created = get_or_create(
                 Domain, name=item.get("name"),
-                description=item.get("description") or "",
-                parent_id=parent.id if parent else None
+                defaults={
+                    "description": item.get("description") or "",
+                    "parent_id": parent.id if parent else None
+                }
             )
 
             roles = item.get("roles", [])
@@ -82,8 +87,10 @@ class SeedDataLoader:
             ))
             site, created = get_or_create(
                 Site, name=site_to_create["name"],
-                description=site_to_create["description"] or "",
-                domain_id=domain.id if domain else None
+                defaults={
+                    "description": site_to_create["description"] or "",
+                    "domain_id": domain.id if domain else None
+                }
             )
             roles = site_to_create.get("roles", [])
             for label in roles:

@@ -20,15 +20,19 @@ if __name__ == "__main__":
 
     domain, created = get_or_create(
         Domain, name="girl_effect_organisation",
-        description="The top level of the organisation",
-        parent_id=None
+        defaults={
+            "description": "The top level of the organisation",
+            "parent_id": None
+        }
     )
 
     site, created = get_or_create(
         Site, name="Management Portal",
-        description="The Management Portal",
-        client_id=client_id,
-        domain_id=domain.id
+        defaults={
+            "description": "The Management Portal",
+            "client_id": client_id,
+            "domain_id": domain.id
+        }
     )
 
     print("Done")
