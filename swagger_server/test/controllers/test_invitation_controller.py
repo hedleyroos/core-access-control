@@ -7,9 +7,10 @@ import werkzeug
 from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
-from swagger_server.models import Domain, Invitationredirecturl
+from swagger_server.models import Domain
 from swagger_server.models import DomainRole
 from swagger_server.models import Invitation
+from swagger_server.models import Invitationredirecturl
 from swagger_server.models import InvitationCreate
 from swagger_server.models import InvitationDomainRole
 from swagger_server.models import InvitationSiteRole
