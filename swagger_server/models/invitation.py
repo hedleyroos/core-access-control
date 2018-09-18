@@ -15,7 +15,7 @@ class Invitation(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: str=None, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: str=None, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None, invitation_redirect_url_id: int=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """Invitation - a model defined in Swagger
 
         :param id: The id of this Invitation.  # noqa: E501
@@ -32,6 +32,8 @@ class Invitation(Model):
         :type organisation_id: int
         :param expires_at: The expires_at of this Invitation.  # noqa: E501
         :type expires_at: datetime
+        :param invitation_redirect_url_id: The invitation_redirect_url_id of this Invitation.  # noqa: E501
+        :type invitation_redirect_url_id: int
         :param created_at: The created_at of this Invitation.  # noqa: E501
         :type created_at: datetime
         :param updated_at: The updated_at of this Invitation.  # noqa: E501
@@ -45,6 +47,7 @@ class Invitation(Model):
             'email': str,
             'organisation_id': int,
             'expires_at': datetime,
+            'invitation_redirect_url_id': int,
             'created_at': datetime,
             'updated_at': datetime
         }
@@ -57,6 +60,7 @@ class Invitation(Model):
             'email': 'email',
             'organisation_id': 'organisation_id',
             'expires_at': 'expires_at',
+            'invitation_redirect_url_id': 'invitation_redirect_url_id',
             'created_at': 'created_at',
             'updated_at': 'updated_at'
         }
@@ -68,6 +72,7 @@ class Invitation(Model):
         self._email = email
         self._organisation_id = organisation_id
         self._expires_at = expires_at
+        self._invitation_redirect_url_id = invitation_redirect_url_id
         self._created_at = created_at
         self._updated_at = updated_at
 
@@ -248,6 +253,27 @@ class Invitation(Model):
             raise ValueError("Invalid value for `expires_at`, must not be `None`")  # noqa: E501
 
         self._expires_at = expires_at
+
+    @property
+    def invitation_redirect_url_id(self) -> int:
+        """Gets the invitation_redirect_url_id of this Invitation.
+
+
+        :return: The invitation_redirect_url_id of this Invitation.
+        :rtype: int
+        """
+        return self._invitation_redirect_url_id
+
+    @invitation_redirect_url_id.setter
+    def invitation_redirect_url_id(self, invitation_redirect_url_id: int):
+        """Sets the invitation_redirect_url_id of this Invitation.
+
+
+        :param invitation_redirect_url_id: The invitation_redirect_url_id of this Invitation.
+        :type invitation_redirect_url_id: int
+        """
+
+        self._invitation_redirect_url_id = invitation_redirect_url_id
 
     @property
     def created_at(self) -> datetime:

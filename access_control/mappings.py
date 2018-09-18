@@ -138,7 +138,8 @@ DB_TO_API_INVITATION_TRANSFORMATION = Transformation(
         Mapping(input_field="expires_at", conversion=datetime_to_string),
     ],
     copy_fields=[
-        "id", "first_name", "last_name", "email", "invitor_id", "organisation_id"
+        "id", "first_name", "last_name", "email", "invitor_id", "organisation_id",
+        "invitation_redirect_url_id"
     ]
 )
 
@@ -159,5 +160,15 @@ DB_TO_API_INVITATIONSITEROLE_TRANSFORMATION = Transformation(
     ],
     copy_fields=[
         "site_id", "role_id", "invitation_id"
+    ]
+)
+
+DB_TO_API_INVITATIONREDIRECTURL_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string),
+    ],
+    copy_fields=[
+        "id", "url", "description"
     ]
 )

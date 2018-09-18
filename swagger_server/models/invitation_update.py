@@ -15,7 +15,7 @@ class InvitationUpdate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None):  # noqa: E501
+    def __init__(self, invitor_id: str=None, first_name: str=None, last_name: str=None, email: str=None, organisation_id: int=None, expires_at: datetime=None, invitation_redirect_url_id: int=None):  # noqa: E501
         """InvitationUpdate - a model defined in Swagger
 
         :param invitor_id: The invitor_id of this InvitationUpdate.  # noqa: E501
@@ -30,6 +30,8 @@ class InvitationUpdate(Model):
         :type organisation_id: int
         :param expires_at: The expires_at of this InvitationUpdate.  # noqa: E501
         :type expires_at: datetime
+        :param invitation_redirect_url_id: The invitation_redirect_url_id of this InvitationUpdate.  # noqa: E501
+        :type invitation_redirect_url_id: int
         """
         self.swagger_types = {
             'invitor_id': str,
@@ -37,7 +39,8 @@ class InvitationUpdate(Model):
             'last_name': str,
             'email': str,
             'organisation_id': int,
-            'expires_at': datetime
+            'expires_at': datetime,
+            'invitation_redirect_url_id': int
         }
 
         self.attribute_map = {
@@ -46,7 +49,8 @@ class InvitationUpdate(Model):
             'last_name': 'last_name',
             'email': 'email',
             'organisation_id': 'organisation_id',
-            'expires_at': 'expires_at'
+            'expires_at': 'expires_at',
+            'invitation_redirect_url_id': 'invitation_redirect_url_id'
         }
 
         self._invitor_id = invitor_id
@@ -55,6 +59,7 @@ class InvitationUpdate(Model):
         self._email = email
         self._organisation_id = organisation_id
         self._expires_at = expires_at
+        self._invitation_redirect_url_id = invitation_redirect_url_id
 
     @classmethod
     def from_dict(cls, dikt) -> 'InvitationUpdate':
@@ -198,3 +203,24 @@ class InvitationUpdate(Model):
         """
 
         self._expires_at = expires_at
+
+    @property
+    def invitation_redirect_url_id(self) -> int:
+        """Gets the invitation_redirect_url_id of this InvitationUpdate.
+
+
+        :return: The invitation_redirect_url_id of this InvitationUpdate.
+        :rtype: int
+        """
+        return self._invitation_redirect_url_id
+
+    @invitation_redirect_url_id.setter
+    def invitation_redirect_url_id(self, invitation_redirect_url_id: int):
+        """Sets the invitation_redirect_url_id of this InvitationUpdate.
+
+
+        :param invitation_redirect_url_id: The invitation_redirect_url_id of this InvitationUpdate.
+        :type invitation_redirect_url_id: int
+        """
+
+        self._invitation_redirect_url_id = invitation_redirect_url_id

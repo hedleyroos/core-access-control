@@ -1,8 +1,10 @@
 import uuid
+from urllib.parse import urlparse
 
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
 from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.orm import validates
 from sqlalchemy.sql import expression
 from sqlalchemy.types import TypeDecorator
 
@@ -279,6 +281,10 @@ class Invitation(DB.Model):
     expires_at = DB.Column(DB.DateTime, nullable=False)
     invitor_id = DB.Column(UUID, nullable=False)
     organisation_id = DB.Column(DB.Integer, nullable=False)
+    invitation_redirect_url_id = DB.Column(
+        DB.Integer, DB.ForeignKey("invitation_redirect_url.id"),
+        nullable=True  # Redirect URLs are optional
+    )
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
@@ -347,3 +353,31 @@ class InvitationSiteRole(DB.Model):
 
     def __repr__(self):
         return "<InvitationSiteRole(%s-%s)>" % (self.site_id, self.role_id)
+
+
+class InvitationRedirectUrl(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    url = DB.Column(DB.Text, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+    @validates("url")
+    def validate_url(self, _key, url):
+        parsed_url = urlparse(url)
+
+        if parsed_url.scheme not in ["http", "https"]:
+            raise ValueError("Unsupported scheme")
+
+        if parsed_url.netloc == "":
+            raise ValueError("Malformed URL")
+
+        return url
+
+    def __repr__(self):
+        return "<InvitationRedirectURL(%s)>" % (self.url)

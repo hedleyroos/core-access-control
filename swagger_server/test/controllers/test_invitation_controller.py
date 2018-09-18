@@ -7,7 +7,7 @@ import werkzeug
 from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
-from swagger_server.models import Domain
+from swagger_server.models import Domain, Invitationredirecturl
 from swagger_server.models import DomainRole
 from swagger_server.models import Invitation
 from swagger_server.models import InvitationCreate
@@ -168,10 +168,21 @@ class InvitationTestCase(BaseTestCase):
             data=expired_invite_data,
             action="create"
         )
+        invitation_redirect_url_data = {
+            "url": "http://example.com/redirect?foo=bar",
+            "description": "A test redirect URL"
+        }
+        self.invitation_redirect_url = db_actions.crud(
+            model="InvitationRedirectUrl",
+            api_model=Invitationredirecturl,
+            data=invitation_redirect_url_data,
+            action="create"
+        )
 
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_invitation_create(self):
+        # Without redirect URL
         data = InvitationCreate(**{
             "first_name": "first",
             "last_name": "last",
@@ -192,6 +203,31 @@ class InvitationTestCase(BaseTestCase):
         self.assertEqual(r_data["email"], data.email)
         self.assertEqual(r_data["organisation_id"], data.organisation_id)
         self.assertEqual(r_data["invitor_id"], data.invitor_id)
+
+        # With redirect URL
+        data = InvitationCreate(**{
+            "first_name": "first",
+            "last_name": "last",
+            "email": "2firstlast@test.com",
+            "organisation_id": 1,
+            "invitor_id": "%s" % uuid.uuid1(),
+            "expires_at": datetime.now(),
+            "invitation_redirect_url_id": self.invitation_redirect_url.id
+        })
+        response = self.client.open(
+            '/api/v1/invitations',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        r_data = json.loads(response.data)
+        self.assertEqual(r_data["first_name"], data.first_name)
+        self.assertEqual(r_data["last_name"], data.last_name)
+        self.assertEqual(r_data["email"], data.email)
+        self.assertEqual(r_data["organisation_id"], data.organisation_id)
+        self.assertEqual(r_data["invitor_id"], data.invitor_id)
+        self.assertEqual(r_data["invitation_redirect_url_id"],
+                         data.invitation_redirect_url_id)
 
     def test_invitation_create_without_expiry(self):
         data = InvitationCreate(**{

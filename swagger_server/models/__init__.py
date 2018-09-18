@@ -19,6 +19,9 @@ from swagger_server.models.invitation_domain_role_create import InvitationDomain
 from swagger_server.models.invitation_site_role import InvitationSiteRole
 from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate
 from swagger_server.models.invitation_update import InvitationUpdate
+from swagger_server.models.invitationredirecturl import Invitationredirecturl
+from swagger_server.models.invitationredirecturl_create import InvitationredirecturlCreate
+from swagger_server.models.invitationredirecturl_update import InvitationredirecturlUpdate
 from swagger_server.models.permission import Permission
 from swagger_server.models.permission_create import PermissionCreate
 from swagger_server.models.permission_update import PermissionUpdate

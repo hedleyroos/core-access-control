@@ -26,6 +26,9 @@ from swagger_server.models.invitation_domain_role_create import InvitationDomain
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
 from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
 from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
+from swagger_server.models.invitationredirecturl import Invitationredirecturl  # noqa: E501
+from swagger_server.models.invitationredirecturl_create import InvitationredirecturlCreate  # noqa: E501
+from swagger_server.models.invitationredirecturl_update import InvitationredirecturlUpdate  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.models.permission_create import PermissionCreate  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
@@ -609,6 +612,128 @@ def invitationdomainrole_read(invitation_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
+
+def invitationredirecturl_create(data=None):  # noqa: E501
+    """invitationredirecturl_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Invitationredirecturl
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    try:
+        return db_actions.crud(
+            model="InvitationRedirectUrl",
+            api_model=Invitationredirecturl,
+            action="create",
+            data=data,
+        )
+    except ValueError:  # Model validation failed
+        raise abort(400)
+
+
+def invitationredirecturl_delete(invitationredirecturl_id):  # noqa: E501
+    """invitationredirecturl_delete
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=Invitationredirecturl,
+        action="delete",
+        query={
+            "id": invitationredirecturl_id,
+        }
+    )
+
+
+@decorators.list_response
+def invitationredirecturl_list(offset=None, limit=None, invitationredirecturl_ids=None):  # noqa: E501
+    """invitationredirecturl_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+    :param invitationredirecturl_ids: An optional list of invitationredirecturl ids
+    :type invitationredirecturl_ids: List[int]
+
+    :rtype: List[Invitationredirecturl]
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=Invitationredirecturl,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": invitationredirecturl_ids
+            },
+            "order_by": ["id"]}
+    )
+
+
+def invitationredirecturl_read(invitationredirecturl_id):  # noqa: E501
+    """invitationredirecturl_read
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+
+    :rtype: Invitationredirecturl
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=Invitationredirecturl,
+        action="read",
+        query={
+            "id": invitationredirecturl_id
+        }
+    )
+
+
+def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: E501
+    """invitationredirecturl_update
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Invitationredirecturl
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    try:
+        return db_actions.crud(
+            model="InvitationRedirectUrl",
+            api_model=Invitationredirecturl,
+            action="update",
+            data=data,
+            query={
+                "id": invitationredirecturl_id,
+            },
+        )
+    except ValueError:  # Model validation failed
+        raise abort(400)
 
 
 def invitationsiterole_create(data=None):  # noqa: E501
