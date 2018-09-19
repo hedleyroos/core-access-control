@@ -3,8 +3,8 @@ import werkzeug
 from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
-from swagger_server.models import Invitationredirecturl, InvitationredirecturlCreate, \
-    InvitationredirecturlUpdate
+from swagger_server.models import InvitationRedirectUrl, InvitationRedirectUrlCreate, \
+    InvitationRedirectUrlUpdate
 from swagger_server.test import BaseTestCase
 from flask import json
 
@@ -21,7 +21,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         }
         self.invitation_redirect_url = db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             data=invitation_redirect_url_data,
             action="create"
         )
@@ -29,7 +29,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         self.headers = {API_KEY_HEADER: "test-api-key"}
 
     def test_invitationredirecturl_create(self):
-        data = InvitationredirecturlCreate(**{
+        data = InvitationRedirectUrlCreate(**{
             "url": "http://example.com/redirect?foo=bar",
             "description": "A test URL",
         })
@@ -52,7 +52,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
             "http:/example.com/redirect?foo=bar",  # Incorrect ://
             "thisisjustamess",                     # Totally bogus
         ]:
-            data = InvitationredirecturlCreate(**{
+            data = InvitationRedirectUrlCreate(**{
                 "url": bad_url,
                 "description": "A test URL",
             })
@@ -85,7 +85,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         }
         model = db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             data=data,
             action="create"
         )
@@ -97,7 +97,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         with self.assertRaises(werkzeug.exceptions.NotFound):
             db_actions.crud(
                 model="InvitationRedirectUrl",
-                api_model=Invitationredirecturl,
+                api_model=InvitationRedirectUrl,
                 action="read",
                 query={"id": model.id}
             )
@@ -113,7 +113,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
             }
             objects.append(db_actions.crud(
                 model="InvitationRedirectUrl",
-                api_model=Invitationredirecturl,
+                api_model=InvitationRedirectUrl,
                 data=data,
                 action="create"
             ))
@@ -149,7 +149,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         }
         model = db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             data=data,
             action="create"
         )
@@ -157,7 +157,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
             "url": "http://example.com/redirect/2",
             "description": "Updated description goes here",
         }
-        data = InvitationredirecturlUpdate(
+        data = InvitationRedirectUrlUpdate(
             **data
         )
         response = self.client.open(
@@ -170,7 +170,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
         r_data = json.loads(response.data)
         updated_entry = db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             action="read",
             query={"id": model.id}
         )
@@ -182,7 +182,7 @@ class InvitationRedirectUrlTestCase(BaseTestCase):
             "url": "bad url",
             "description": "Updated description goes here",
         }
-        data = InvitationredirecturlUpdate(
+        data = InvitationRedirectUrlUpdate(
             **data
         )
         response = self.client.open(

@@ -1,5 +1,4 @@
 import connexion
-import six
 
 from datetime import datetime
 
@@ -23,12 +22,12 @@ from swagger_server.models.invitation import Invitation  # noqa: E501
 from swagger_server.models.invitation_create import InvitationCreate  # noqa: E501
 from swagger_server.models.invitation_domain_role import InvitationDomainRole  # noqa: E501
 from swagger_server.models.invitation_domain_role_create import InvitationDomainRoleCreate  # noqa: E501
+from swagger_server.models.invitation_redirect_url import InvitationRedirectUrl  # noqa: E501
+from swagger_server.models.invitation_redirect_url_create import InvitationRedirectUrlCreate  # noqa: E501
+from swagger_server.models.invitation_redirect_url_update import InvitationRedirectUrlUpdate  # noqa: E501
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
 from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
 from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
-from swagger_server.models.invitationredirecturl import Invitationredirecturl  # noqa: E501
-from swagger_server.models.invitationredirecturl_create import InvitationredirecturlCreate  # noqa: E501
-from swagger_server.models.invitationredirecturl_update import InvitationredirecturlUpdate  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
 from swagger_server.models.permission_create import PermissionCreate  # noqa: E501
 from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
@@ -622,7 +621,7 @@ def invitationredirecturl_create(data=None):  # noqa: E501
     :param data:
     :type data: dict | bytes
 
-    :rtype: Invitationredirecturl
+    :rtype: InvitationRedirectUrl
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
@@ -630,7 +629,7 @@ def invitationredirecturl_create(data=None):  # noqa: E501
     try:
         return db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             action="create",
             data=data,
         )
@@ -650,7 +649,7 @@ def invitationredirecturl_delete(invitationredirecturl_id):  # noqa: E501
     """
     return db_actions.crud(
         model="InvitationRedirectUrl",
-        api_model=Invitationredirecturl,
+        api_model=InvitationRedirectUrl,
         action="delete",
         query={
             "id": invitationredirecturl_id,
@@ -671,11 +670,11 @@ def invitationredirecturl_list(offset=None, limit=None, invitationredirecturl_id
     :param invitationredirecturl_ids: An optional list of invitationredirecturl ids
     :type invitationredirecturl_ids: List[int]
 
-    :rtype: List[Invitationredirecturl]
+    :rtype: List[InvitationRedirectUrl]
     """
     return db_actions.crud(
         model="InvitationRedirectUrl",
-        api_model=Invitationredirecturl,
+        api_model=InvitationRedirectUrl,
         action="list",
         query={
             "offset": offset,
@@ -695,11 +694,11 @@ def invitationredirecturl_read(invitationredirecturl_id):  # noqa: E501
     :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
     :type invitationredirecturl_id: int
 
-    :rtype: Invitationredirecturl
+    :rtype: InvitationRedirectUrl
     """
     return db_actions.crud(
         model="InvitationRedirectUrl",
-        api_model=Invitationredirecturl,
+        api_model=InvitationRedirectUrl,
         action="read",
         query={
             "id": invitationredirecturl_id
@@ -717,7 +716,7 @@ def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: 
     :param data:
     :type data: dict | bytes
 
-    :rtype: Invitationredirecturl
+    :rtype: InvitationRedirectUrl
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
@@ -725,7 +724,7 @@ def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: 
     try:
         return db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             action="update",
             data=data,
             query={

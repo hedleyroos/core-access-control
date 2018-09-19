@@ -722,7 +722,7 @@ definitions:
         type: integer
     minProperties: 1
 
-  invitationredirecturl:
+  invitation_redirect_url:
     type: object
     properties:
       id:
@@ -747,7 +747,7 @@ definitions:
     - created_at
     - updated_at
 
-  invitationredirecturl_create:
+  invitation_redirect_url_create:
     type: object
     properties:
       url:
@@ -759,7 +759,7 @@ definitions:
     - url
     - description
 
-  invitationredirecturl_update:
+  invitation_redirect_url_update:
     type: object
     properties:
       url:
@@ -1582,7 +1582,7 @@ paths:
           schema:
             type: array
             items:
-              $ref: '#/definitions/invitationredirecturl'
+              $ref: '#/definitions/invitation_redirect_url'
       tags:
       - access_control
     post:
@@ -1593,14 +1593,14 @@ paths:
       - in: body
         name: data
         schema:
-          $ref: '#/definitions/invitationredirecturl_create'
+          $ref: '#/definitions/invitation_redirect_url_create'
       produces:
       - application/json
       responses:
         '201':
           description: ''
           schema:
-            $ref: '#/definitions/invitationredirecturl'
+            $ref: '#/definitions/invitation_redirect_url'
       tags:
       - access_control
 
@@ -1622,7 +1622,7 @@ paths:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/invitationredirecturl'
+            $ref: '#/definitions/invitation_redirect_url'
       tags:
       - access_control
     put:
@@ -1633,14 +1633,14 @@ paths:
       - in: body
         name: data
         schema:
-          $ref: '#/definitions/invitationredirecturl_update'
+          $ref: '#/definitions/invitation_redirect_url_update'
       produces:
       - application/json
       responses:
         '200':
           description: ''
           schema:
-            $ref: '#/definitions/invitationredirecturl'
+            $ref: '#/definitions/invitation_redirect_url'
       tags:
       - access_control
 

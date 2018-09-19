@@ -801,7 +801,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/invitationredirecturl"
+              $ref: "#/definitions/invitation_redirect_url"
           headers:
             X-Total-Count:
               type: "integer"
@@ -820,12 +820,12 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/invitationredirecturl_create"
+          $ref: "#/definitions/invitation_redirect_url_create"
       responses:
         201:
           description: ""
           schema:
-            $ref: "#/definitions/invitationredirecturl"
+            $ref: "#/definitions/invitation_redirect_url"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
   /invitationredirecturls/{invitationredirecturl_id}:
     get:
@@ -844,7 +844,7 @@ paths:
         200:
           description: ""
           schema:
-            $ref: "#/definitions/invitationredirecturl"
+            $ref: "#/definitions/invitation_redirect_url"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     put:
       tags:
@@ -864,12 +864,12 @@ paths:
         name: "data"
         required: false
         schema:
-          $ref: "#/definitions/invitationredirecturl_update"
+          $ref: "#/definitions/invitation_redirect_url_update"
       responses:
         200:
           description: ""
           schema:
-            $ref: "#/definitions/invitationredirecturl"
+            $ref: "#/definitions/invitation_redirect_url"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     delete:
       tags:
@@ -2780,7 +2780,7 @@ definitions:
         format: "date-time"
       invitation_redirect_url_id:
         type: "integer"
-  invitationredirecturl:
+  invitation_redirect_url:
     type: "object"
     required:
     - "created_at"
@@ -2810,7 +2810,7 @@ definitions:
       created_at: "2000-01-23T04:56:07.000+00:00"
       id: 0
       url: "http://example.com/aeiou"
-  invitationredirecturl_create:
+  invitation_redirect_url_create:
     type: "object"
     required:
     - "description"
@@ -2821,7 +2821,7 @@ definitions:
         format: "uri"
       description:
         type: "string"
-  invitationredirecturl_update:
+  invitation_redirect_url_update:
     type: "object"
     properties:
       url:

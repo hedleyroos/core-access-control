@@ -10,7 +10,7 @@ from project.settings import API_KEY_HEADER
 from swagger_server.models import Domain
 from swagger_server.models import DomainRole
 from swagger_server.models import Invitation
-from swagger_server.models import Invitationredirecturl
+from swagger_server.models import InvitationRedirectUrl
 from swagger_server.models import InvitationCreate
 from swagger_server.models import InvitationDomainRole
 from swagger_server.models import InvitationSiteRole
@@ -175,7 +175,7 @@ class InvitationTestCase(BaseTestCase):
         }
         self.invitation_redirect_url = db_actions.crud(
             model="InvitationRedirectUrl",
-            api_model=Invitationredirecturl,
+            api_model=InvitationRedirectUrl,
             data=invitation_redirect_url_data,
             action="create"
         )
