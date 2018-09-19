@@ -26,6 +26,7 @@ ROLE_RESOURCE_PERMISSIONS = {
         ("urn:ge:access_control:invitation", "read"),
         ("urn:ge:access_control:invitation", "update"),
         ("urn:ge:access_control:invitation", "delete"),
+        ("urn:ge:access_control:invitationredirecturl", "read"),
         ("urn:ge:access_control:invitationdomainrole", "create"),
         ("urn:ge:access_control:invitationdomainrole", "read"),
         ("urn:ge:access_control:invitationdomainrole", "update"),
