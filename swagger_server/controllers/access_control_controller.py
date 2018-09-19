@@ -3,7 +3,7 @@ import connexion
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from flask import abort
+from flask import abort, jsonify
 from ge_core_shared import db_actions, decorators
 from project import settings
 from sqlalchemy import func, text
@@ -633,8 +633,12 @@ def invitationredirecturl_create(data=None):  # noqa: E501
             action="create",
             data=data,
         )
-    except ValueError:  # Model validation failed
-        raise abort(400)
+    except ValueError as e:  # Model validation failed
+        result = {
+            "success": False,
+            "error": str(e)
+        }
+        return jsonify(result), 400
 
 
 def invitationredirecturl_delete(invitationredirecturl_id):  # noqa: E501
@@ -731,8 +735,12 @@ def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: 
                 "id": invitationredirecturl_id,
             },
         )
-    except ValueError:  # Model validation failed
-        raise abort(400)
+    except ValueError as e:  # Model validation failed
+        result = {
+            "success": False,
+            "error": str(e)
+        }
+        return jsonify(result), 400
 
 
 def invitationsiterole_create(data=None):  # noqa: E501
