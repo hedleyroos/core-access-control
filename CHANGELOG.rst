@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.0
+-----
+- Added model, migration, definitions, etc. for invitation redirect URLs.
+
 1.2.6
 -----
 - Updated version of core-shared library and modified all usages of the `get_or_create()` function to use the new `defaults` argument.

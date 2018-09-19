@@ -1,10 +1,9 @@
 import connexion
-import six
 
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from flask import abort
+from flask import abort, jsonify
 from ge_core_shared import db_actions, decorators
 from project import settings
 from sqlalchemy import func, text
@@ -23,6 +22,9 @@ from swagger_server.models.invitation import Invitation  # noqa: E501
 from swagger_server.models.invitation_create import InvitationCreate  # noqa: E501
 from swagger_server.models.invitation_domain_role import InvitationDomainRole  # noqa: E501
 from swagger_server.models.invitation_domain_role_create import InvitationDomainRoleCreate  # noqa: E501
+from swagger_server.models.invitation_redirect_url import InvitationRedirectUrl  # noqa: E501
+from swagger_server.models.invitation_redirect_url_create import InvitationRedirectUrlCreate  # noqa: E501
+from swagger_server.models.invitation_redirect_url_update import InvitationRedirectUrlUpdate  # noqa: E501
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
 from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
 from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
@@ -609,6 +611,136 @@ def invitationdomainrole_read(invitation_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
+
+def invitationredirecturl_create(data=None):  # noqa: E501
+    """invitationredirecturl_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: InvitationRedirectUrl
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    try:
+        return db_actions.crud(
+            model="InvitationRedirectUrl",
+            api_model=InvitationRedirectUrl,
+            action="create",
+            data=data,
+        )
+    except ValueError as e:  # Model validation failed
+        result = {
+            "success": False,
+            "error": str(e)
+        }
+        return jsonify(result), 400
+
+
+def invitationredirecturl_delete(invitationredirecturl_id):  # noqa: E501
+    """invitationredirecturl_delete
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=InvitationRedirectUrl,
+        action="delete",
+        query={
+            "id": invitationredirecturl_id,
+        }
+    )
+
+
+@decorators.list_response
+def invitationredirecturl_list(offset=None, limit=None, invitationredirecturl_ids=None):  # noqa: E501
+    """invitationredirecturl_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+    :param invitationredirecturl_ids: An optional list of invitationredirecturl ids
+    :type invitationredirecturl_ids: List[int]
+
+    :rtype: List[InvitationRedirectUrl]
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=InvitationRedirectUrl,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": invitationredirecturl_ids
+            },
+            "order_by": ["id"]}
+    )
+
+
+def invitationredirecturl_read(invitationredirecturl_id):  # noqa: E501
+    """invitationredirecturl_read
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+
+    :rtype: InvitationRedirectUrl
+    """
+    return db_actions.crud(
+        model="InvitationRedirectUrl",
+        api_model=InvitationRedirectUrl,
+        action="read",
+        query={
+            "id": invitationredirecturl_id
+        }
+    )
+
+
+def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: E501
+    """invitationredirecturl_update
+
+     # noqa: E501
+
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
+    :type invitationredirecturl_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: InvitationRedirectUrl
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    try:
+        return db_actions.crud(
+            model="InvitationRedirectUrl",
+            api_model=InvitationRedirectUrl,
+            action="update",
+            data=data,
+            query={
+                "id": invitationredirecturl_id,
+            },
+        )
+    except ValueError as e:  # Model validation failed
+        result = {
+            "success": False,
+            "error": str(e)
+        }
+        return jsonify(result), 400
 
 
 def invitationsiterole_create(data=None):  # noqa: E501

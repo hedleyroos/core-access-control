@@ -34,17 +34,21 @@ def upgrade():
     sql = "UPDATE {table} SET {column} = {value} WHERE {column} IS NULL;"
     session.execute(sql.format(table="domain", column="created_at", value=now))
     session.execute(sql.format(table="domain", column="description", value=empty_description))
-    domains = session.query(Domain).filter(Domain.name.is_(None)).all()
-    for domain in domains:
-        domain.name = str(uuid.uuid4())[:30]
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # domains = session.query(Domain).filter(Domain.name.is_(None)).all()
+    # for domain in domains:
+    #     domain.name = str(uuid.uuid4())[:30]
     session.execute(sql.format(table="domain", column="updated_at", value=now))
     session.execute(sql.format(table="domain_role", column="created_at", value=now))
     session.execute(sql.format(table="domain_role", column="grant_implicitly", value="false"))
     session.execute(sql.format(table="domain_role", column="updated_at", value=now))
     session.execute(sql.format(table="invitation", column="created_at", value=now))
-    invitations = session.query(Invitation).filter(Invitation.email.is_(None)).all()
-    for invitation in invitations:
-        invitation.email = "placeholder@{uuid}.com".format(uuid=str(uuid.uuid4()))
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # invitations = session.query(Invitation).filter(Invitation.email.is_(None)).all()
+    # for invitation in invitations:
+    #     invitation.email = "placeholder@{uuid}.com".format(uuid=str(uuid.uuid4()))
     session.execute(sql.format(table="invitation", column="first_name", value=empty_name))
     session.execute(sql.format(table="invitation", column="invitor_id", value=empty_uuid))
     session.execute(sql.format(table="invitation", column="last_name", value=empty_name))
@@ -56,21 +60,27 @@ def upgrade():
     session.execute(sql.format(table="invitation_site_role", column="updated_at", value=now))
     session.execute(sql.format(table="permission", column="created_at", value=now))
     session.execute(sql.format(table="permission", column="description", value=empty_description))
-    permissions = session.query(Permission).filter(Permission.name.is_(None)).all()
-    for permission in permissions:
-        permission.name = str(uuid.uuid4())[:30]
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # permissions = session.query(Permission).filter(Permission.name.is_(None)).all()
+    # for permission in permissions:
+    #     permission.name = str(uuid.uuid4())[:30]
     session.execute(sql.format(table="permission", column="updated_at", value=now))
     session.execute(sql.format(table="resource", column="created_at", value=now))
     session.execute(sql.format(table="resource", column="description", value=empty_description))
     session.execute(sql.format(table="resource", column="updated_at", value=now))
-    resources = session.query(Resource).filter(Resource.urn.is_(None)).all()
-    for resource in resources:
-        resource.urn = str(uuid.uuid4())
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # resources = session.query(Resource).filter(Resource.urn.is_(None)).all()
+    # for resource in resources:
+    #     resource.urn = str(uuid.uuid4())
     session.execute(sql.format(table="role", column="created_at", value=now))
     session.execute(sql.format(table="role", column="description", value=empty_description))
-    roles = session.query(Role).filter(Role.label.is_(None)).all()
-    for role in roles:
-        role.label = str(uuid.uuid4())[:30]
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # roles = session.query(Role).filter(Role.label.is_(None)).all()
+    # for role in roles:
+    #     role.label = str(uuid.uuid4())[:30]
     session.execute(sql.format(table="role", column="requires_2fa", value="false"))
     session.execute(sql.format(table="role", column="updated_at", value=now))
     session.execute(sql.format(table="role_resource_permission", column="created_at", value=now))
@@ -78,28 +88,30 @@ def upgrade():
     session.execute(sql.format(table="site", column="created_at", value=now))
     session.execute(sql.format(table="site", column="description", value=empty_description))
     # All sites without a domain_id should be set to the parent domain and can be manually corrected.
-    sites = session.query(Site).filter(Site.name.is_(None)).all()
-    if sites:
-        parent_domain = session.query(Domain).filter(Domain.parent_id.is_(None)).first()
-        if not parent_domain:
-            parent_domain = session.query(Domain).first()
-            # If there are sites and no domains, make a dud domain, to be removed when the
-            if not parent_domain:
-                parent_domain = Domain(
-                    name="Placeholder",
-                    description="A placeholder for sites that had no domain."
-                                "Please move the sites under this domain then remove this domain."
-                )
-                session.add(parent_domain)
-                session.commit()
-        domain_id = parent_domain.id
-        session.execute(sql.format(
-            table="site", column="domain_id", value="{domain_id}".format(domain_id=domain_id)))
-        session.execute(sql.format(table="site", column="is_active", value="false"))
-
-        for site in sites:
-            site.name = str(uuid.uuid4())[:30]
-        session.execute(sql.format(table="site", column="updated_at", value=now))
+    # cobusc: Removed model instances that were being created as it breaks when new
+    # columns are added in later migrations.
+    # sites = session.query(Site).filter(Site.name.is_(None)).all()
+    # if sites:
+    #     parent_domain = session.query(Domain).filter(Domain.parent_id.is_(None)).first()
+    #     if not parent_domain:
+    #         parent_domain = session.query(Domain).first()
+    #         # If there are sites and no domains, make a dud domain, to be removed when the
+    #         if not parent_domain:
+    #             parent_domain = Domain(
+    #                 name="Placeholder",
+    #                 description="A placeholder for sites that had no domain."
+    #                             "Please move the sites under this domain then remove this domain."
+    #             )
+    #             session.add(parent_domain)
+    #             session.commit()
+    #     domain_id = parent_domain.id
+    #     session.execute(sql.format(
+    #         table="site", column="domain_id", value="{domain_id}".format(domain_id=domain_id)))
+    #     session.execute(sql.format(table="site", column="is_active", value="false"))
+    #
+    #     for site in sites:
+    #         site.name = str(uuid.uuid4())[:30]
+    #     session.execute(sql.format(table="site", column="updated_at", value=now))
     session.execute(sql.format(table="site_role", column="created_at", value=now))
     session.execute(sql.format(table="site_role", column="grant_implicitly", value="false"))
     session.execute(sql.format(table="site_role", column="updated_at", value=now))

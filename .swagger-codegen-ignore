@@ -9,3 +9,4 @@ test-requirements.txt
 swagger_server/controllers/
 swagger_server/test/
 swagger_server/__main__.py
+swagger_server/__init__.py

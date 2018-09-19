@@ -761,6 +761,130 @@ paths:
         410:
           description: "Gone: Resource has expired or no longer exists"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationredirecturls:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationredirecturl_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "invitationredirecturl_ids"
+        in: "query"
+        description: "An optional list of invitationredirecturl ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "csv"
+        minItems: 1
+        uniqueItems: true
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/invitation_redirect_url"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "invitationredirecturl_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_redirect_url_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_redirect_url"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /invitationredirecturls/{invitationredirecturl_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "invitationredirecturl_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitationredirecturl_id"
+        in: "path"
+        description: "A unique integer value identifying the redirect URL."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_redirect_url"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "invitationredirecturl_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "invitationredirecturl_id"
+        in: "path"
+        description: "A unique integer value identifying the redirect URL."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/invitation_redirect_url_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/invitation_redirect_url"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "invitationredirecturl_delete"
+      parameters:
+      - name: "invitationredirecturl_id"
+        in: "path"
+        description: "A unique integer value identifying the redirect URL."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
   /invitationdomainroles:
     get:
       tags:
@@ -2583,6 +2707,8 @@ definitions:
       expires_at:
         type: "string"
         format: "date-time"
+      invitation_redirect_url_id:
+        type: "integer"
       created_at:
         type: "string"
         format: "date-time"
@@ -2593,6 +2719,7 @@ definitions:
         readOnly: true
     example:
       organisation_id: 0
+      invitation_redirect_url_id: 6
       expires_at: "2000-01-23T04:56:07.000+00:00"
       updated_at: "2000-01-23T04:56:07.000+00:00"
       invitor_id: "046b6c7f-0b8a-43b9-b35d-6489e6daee91"
@@ -2628,6 +2755,8 @@ definitions:
       expires_at:
         type: "string"
         format: "date-time"
+      invitation_redirect_url_id:
+        type: "integer"
   invitation_update:
     type: "object"
     properties:
@@ -2649,6 +2778,57 @@ definitions:
       expires_at:
         type: "string"
         format: "date-time"
+      invitation_redirect_url_id:
+        type: "integer"
+  invitation_redirect_url:
+    type: "object"
+    required:
+    - "created_at"
+    - "description"
+    - "id"
+    - "updated_at"
+    - "url"
+    properties:
+      id:
+        type: "integer"
+      url:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      url: "http://example.com/aeiou"
+  invitation_redirect_url_create:
+    type: "object"
+    required:
+    - "description"
+    - "url"
+    properties:
+      url:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
+  invitation_redirect_url_update:
+    type: "object"
+    properties:
+      url:
+        type: "string"
+        format: "uri"
+      description:
+        type: "string"
   invitation_domain_role:
     type: "object"
     required:
@@ -3039,6 +3219,12 @@ parameters:
     required: true
     type: "string"
     format: "uuid"
+  invitationredirecturl_id:
+    name: "invitationredirecturl_id"
+    in: "path"
+    description: "A unique integer value identifying the redirect URL."
+    required: true
+    type: "integer"
   permission_id:
     name: "permission_id"
     in: "path"

@@ -617,30 +617,6 @@ def get_users_with_roles_for_site(site_id):  # noqa: E501
     return users_with_roles
 
 
-def purge_expired_invitations(cutoff_date=None):  # noqa: E501
-    """purge_expired_invitations
-
-    Purge all the expired invitations past a cutoff_date (defaults to today).
-
-    :param cutoff_date: An optional cutoff_date to purge invitations expired past this date.
-    :type cutoff_date: date
-
-    :rtype: PurgedInvitations
-    """
-    if cutoff_date is None:
-        cutoff_date = str(datetime.datetime.now().date())
-
-    # For some reason we have to do this SQL query in a transaction.
-    # Ref: http://docs.sqlalchemy.org/en/latest/core/connections.html#using-transactions
-    with db.session.get_bind().begin() as connection:
-        result = connection.execute(
-            text(SQL_PURGE_EXPIRED_INVITATIONS), **{"cutoff_date": cutoff_date}
-        )
-
-    amount = result.fetchone()["amount"]
-    return PurgedInvitations(amount=amount)
-
-
 def healthcheck():  # noqa: E501
     """healthcheck
 
@@ -659,3 +635,29 @@ def healthcheck():  # noqa: E501
         db_timestamp=db_timestamp
     )
     return result
+
+def purge_expired_invitations(cutoff_date=None):  # noqa: E501
+    """purge_expired_invitations
+
+    Purge all the expired invitations past a cutoff_date (defaults to today).
+
+    :param cutoff_date: An optional cutoff date to purge invites before this date
+    :type cutoff_date: str
+
+    :rtype: PurgedInvitations
+    """
+    if cutoff_date is None:
+        cutoff_date = str(datetime.datetime.now().date())
+
+    # For some reason we have to do this SQL query in a transaction.
+    # Ref: http://docs.sqlalchemy.org/en/latest/core/connections.html#using-transactions
+    with db.session.get_bind().begin() as connection:
+        result = connection.execute(
+            text(SQL_PURGE_EXPIRED_INVITATIONS), **{"cutoff_date": cutoff_date}
+        )
+
+    amount = result.fetchone()["amount"]
+    return PurgedInvitations(amount=amount)
+
+
+
