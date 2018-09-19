@@ -642,7 +642,7 @@ def invitationredirecturl_delete(invitationredirecturl_id):  # noqa: E501
 
      # noqa: E501
 
-    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
     :type invitationredirecturl_id: int
 
     :rtype: None
@@ -691,7 +691,7 @@ def invitationredirecturl_read(invitationredirecturl_id):  # noqa: E501
 
      # noqa: E501
 
-    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
     :type invitationredirecturl_id: int
 
     :rtype: InvitationRedirectUrl
@@ -711,7 +711,7 @@ def invitationredirecturl_update(invitationredirecturl_id, data=None):  # noqa: 
 
      # noqa: E501
 
-    :param invitationredirecturl_id: A unique unteger value identifying the redirect URL.
+    :param invitationredirecturl_id: A unique integer value identifying the redirect URL.
     :type invitationredirecturl_id: int
     :param data:
     :type data: dict | bytes

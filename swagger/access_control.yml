@@ -110,7 +110,7 @@ parameters:
     type: string
     format: uuid
   invitationredirecturl_id:
-    description: A unique unteger value identifying the redirect URL.
+    description: A unique integer value identifying the redirect URL.
     in: path
     name: invitationredirecturl_id
     required: true

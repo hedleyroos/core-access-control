@@ -837,7 +837,7 @@ paths:
       parameters:
       - name: "invitationredirecturl_id"
         in: "path"
-        description: "A unique unteger value identifying the redirect URL."
+        description: "A unique integer value identifying the redirect URL."
         required: true
         type: "integer"
       responses:
@@ -857,7 +857,7 @@ paths:
       parameters:
       - name: "invitationredirecturl_id"
         in: "path"
-        description: "A unique unteger value identifying the redirect URL."
+        description: "A unique integer value identifying the redirect URL."
         required: true
         type: "integer"
       - in: "body"
@@ -878,7 +878,7 @@ paths:
       parameters:
       - name: "invitationredirecturl_id"
         in: "path"
-        description: "A unique unteger value identifying the redirect URL."
+        description: "A unique integer value identifying the redirect URL."
         required: true
         type: "integer"
       responses:
@@ -3222,7 +3222,7 @@ parameters:
   invitationredirecturl_id:
     name: "invitationredirecturl_id"
     in: "path"
-    description: "A unique unteger value identifying the redirect URL."
+    description: "A unique integer value identifying the redirect URL."
     required: true
     type: "integer"
   permission_id:
