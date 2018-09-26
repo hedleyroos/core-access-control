@@ -10,6 +10,7 @@ RESOURCES = [
     "urn:ge:access_control:resource",
     "urn:ge:access_control:roleresourcepermission",
     "urn:ge:access_control:invitation",
+    "urn:ge:access_control:invitationredirecturl",
     "urn:ge:access_control:invitationdomainrole",
     "urn:ge:access_control:invitationsiterole",
 
