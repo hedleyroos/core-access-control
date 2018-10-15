@@ -31,8 +31,11 @@ app.app.config["SQLALCHEMY_DATABASE_URI"] = settings.SQLALCHEMY_DATABASE_URI
 app.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
 
 app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
-app.app.wsgi_app = middleware.AuthMiddleware(app.app.wsgi_app)
 app.app.register_blueprint(errors)
+
+# Register middleware
+middleware.metric_middleware(app.app, "core_access_control")
+middleware.auth_middleware(app.app, "core_access_control")
 
 DB.init_app(app.app)
 CLIENT = Client(
@@ -51,5 +54,4 @@ app.app = DispatcherMiddleware(app.app, {
 })
 
 if __name__ == '__main__':
-    middleware.metric_middleware(app.app.wsgi_app, "core_access_control")
     app.run(port=8080)

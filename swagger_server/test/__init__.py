@@ -28,7 +28,9 @@ class BaseTestCase(TestCase):
         flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         DB.init_app(flask_app)
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
-        flask_app.wsgi_app = middleware.AuthMiddleware(flask_app.wsgi_app)
+
+        # Register middleware
+        middleware.auth_middleware(flask_app, "core_access_control")
         app.add_api('swagger.yaml', arguments={'title': 'Test Access Control API'})
         return flask_app
 
