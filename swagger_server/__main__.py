@@ -24,7 +24,6 @@ metrics.decorate_all_in_modules()
 
 # We create and set up the app variable in the global context as it is used by uwsgi.
 app = connexion.App(__name__, specification_dir='./swagger/')
-middleware.metric_middleware(app.app, "core_access_control")
 app.app.json_encoder = encoder.JSONEncoder
 app.add_api('swagger.yaml', arguments={'title': 'Access Control API'}, strict_validation=True)
 
@@ -52,4 +51,5 @@ app.app = DispatcherMiddleware(app.app, {
 })
 
 if __name__ == '__main__':
+    middleware.metric_middleware(app.app.wsgi_app, "core_access_control")
     app.run(port=8080)
