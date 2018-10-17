@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.3.1
+-----
+- Update authentication middleware implementation.
+
 1.3.0
 -----
 - Added model, migration, definitions, etc. for invitation redirect URLs.
