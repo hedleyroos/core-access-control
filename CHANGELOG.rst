@@ -1,8 +1,8 @@
 Changelog
 =========
 
-next
-----
+1.3.2
+-----
 - Update test requirements.
 
 1.3.1
