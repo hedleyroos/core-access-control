@@ -53,7 +53,6 @@ class TestExceptions(BaseTestCase):
 
     @patch("ge_core_shared.db_actions.db.session.commit")
     def test_operationalerror_response(self, mocked_crud):
-        # TODO Alter error to wrap a psycopg2.OperationalError
         error = SQLAlchemyError(
             "Server closed the connection unexpectedly"
         )
