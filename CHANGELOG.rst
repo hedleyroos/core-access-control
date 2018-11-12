@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.3.3
+-----
+- Make use of core-shared:1.3.1
+- Add tests for core-shared:1.3.1 additions.
+- Quality of life updates for unit tests.
+
 1.3.2
 -----
 - Update test requirements.
