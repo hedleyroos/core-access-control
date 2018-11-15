@@ -381,3 +381,28 @@ class InvitationRedirectUrl(DB.Model):
 
     def __repr__(self):
         return "<InvitationRedirectURL(%s)>" % (self.url)
+
+
+class Credentials(DB.Model):
+    """
+    Credentials are (id, secret) pairs that can be linked to a site.
+    These credentials are used when a site needs to perform an action
+    which requires authentication.
+    """
+    id = DB.Column(DB.Integer, primary_key=True)
+    site_id = DB.Column(
+        DB.Integer, DB.ForeignKey("site.id"), nullable=False, index=True
+    )
+    account_id = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
+    account_secret = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+    def __repr__(self):
+        return f"<Credentials({self.id})>"
