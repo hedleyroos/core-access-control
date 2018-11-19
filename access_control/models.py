@@ -151,22 +151,6 @@ class RoleResourcePermission(DB.Model):
         )
 
 
-# TODO: NOTE: There is another piece of work that will move the kinesis client
-# out to the core-shared repo. There is JSON validation included in there to
-# replace this.
-@jsonschema.FormatChecker.cls_checks("uuid")
-def check_uuid_format(instance):
-    try:
-        uuid.UUID(instance)
-        return True
-    except ValueError:
-        return False
-
-
-# The instance of the format checker must be created after
-# the UUID format checker was registered.
-_FORMAT_CHECKER = jsonschema.FormatChecker()
-
 class Site(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
@@ -192,7 +176,7 @@ class Site(DB.Model):
         jsonschema.validate(
             data,
             schema=instance.data_schema,
-            format_checker=_FORMAT_CHECKER
+            format_checker=jsonschema.FormatChecker()
         )
 
     def __repr__(self):

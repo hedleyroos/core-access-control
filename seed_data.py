@@ -7,7 +7,7 @@ from access_control.fixtures.resources import RESOURCES
 from access_control.fixtures.roles import ROLES
 from access_control.fixtures.role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
 from access_control.models import Resource, Permission, Role, Domain, \
-    DomainRole, RoleResourcePermission, Site, SiteRole
+    DomainRole, RoleResourcePermission, Site, SiteRole, DeletionMethod
 
 app = Flask(__name__)
 
@@ -112,6 +112,14 @@ class SeedDataLoader:
                 get_or_create(RoleResourcePermission, role_id=role.id, resource_id=resource.id,
                               permission_id=permission.id)
         print("Done.")
+
+    @staticmethod
+    def load_deletion_methods():
+        print("Loading Deletion Methods...")
+        for method in DELETION_METHODS:
+            instance, created = get_or_create(DeletionMethod, **method)
+            print("Deletion Method %s loaded..." % instance.label)
+        print("Done")
 
 
 loader = SeedDataLoader()
