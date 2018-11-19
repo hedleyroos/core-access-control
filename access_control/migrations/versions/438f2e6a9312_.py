@@ -1,16 +1,17 @@
 """empty message
 
-Revision ID: 7ca6c33a41c5
+Revision ID: 438f2e6a9312
 Revises: 1c24f1c1e551
-Create Date: 2018-11-15 13:10:54.649250
+Create Date: 2018-11-19 13:52:45.457428
 
 """
 from alembic import op
+from sqlalchemy.sql import table, column
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '7ca6c33a41c5'
+revision = '438f2e6a9312'
 down_revision = '1c24f1c1e551'
 branch_labels = None
 depends_on = None
@@ -28,7 +29,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_deletion_method_label'), 'deletion_method', ['label'], unique=True)
-    op.add_column('site', sa.Column('deletion_method_data', sa.JSON(), nullable=False))
+    # server_default added manually
+    op.add_column('site', sa.Column('deletion_method_data', sa.JSON(), nullable=False, server_default='{}'))
     op.add_column('site', sa.Column('deletion_method_id', sa.Integer(), nullable=True))
     op.create_foreign_key(None, 'site', 'deletion_method', ['deletion_method_id'], ['id'])
     # ### end Alembic commands ###
