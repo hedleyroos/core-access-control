@@ -196,3 +196,74 @@ class CredentialsTestCase(BaseTestCase):
         self.assertEqual(r_data["account_id"], updated_entry.account_id)
         self.assertEqual(r_data["account_secret"], updated_entry.account_secret)
         self.assertEqual(r_data["description"], updated_entry.description)
+
+    def test_credentials_length(self):
+        # account_id too short
+        with self.assertRaises(ValueError):
+            db_actions.crud(
+                model="Credentials",
+                api_model=Credentials,
+                action="create",
+                data={
+                    "site_id": self.site_model.id,
+                    "account_id": "0000",
+                    "account_secret": "".rjust(32),
+                    "description": "A test"
+                }
+            )
+
+        # account_secret too short
+        with self.assertRaises(ValueError):
+            db_actions.crud(
+                model="Credentials",
+                api_model=Credentials,
+                action="create",
+                data={
+                    "site_id": self.site_model.id,
+                    "account_id": "".rjust(32),
+                    "account_secret": "000",
+                    "description": "A test"
+                }
+            )
+
+        # No error
+        db_actions.crud(
+            model="Credentials",
+            api_model=Credentials,
+            action="create",
+            data={
+                "site_id": self.site_model.id,
+                "account_id": "123".rjust(32),
+                "account_secret": "123".rjust(32),
+                "description": "A test"
+            }
+        )
+
+        # account_id too long
+        with self.assertRaises(ValueError):
+            db_actions.crud(
+                model="Credentials",
+                api_model=Credentials,
+                action="create",
+                data={
+                    "site_id": self.site_model.id,
+                    "account_id": "".rjust(257),
+                    "account_secret": "".rjust(32),
+                    "description": "A test"
+                }
+            )
+
+        # account_secret too long
+        with self.assertRaises(ValueError):
+            db_actions.crud(
+                model="Credentials",
+                api_model=Credentials,
+                action="create",
+                data={
+                    "site_id": self.site_model.id,
+                    "account_id": "".rjust(32),
+                    "account_secret": "".rjust(257),
+                    "description": "A test"
+                }
+            )
+

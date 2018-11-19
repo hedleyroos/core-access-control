@@ -417,12 +417,24 @@ class Credentials(DB.Model):
 
     @validates("account_id")
     def validate_account_id(self, _key, account_id):
-        if len(account_id) < 32:
+        length = len(account_id)
+
+        if length < 32:
             raise ValueError("account_id too short")
+
+        if length > 256:
+            raise ValueError("account_id too long")
+
         return account_id
 
     @validates("account_secret")
     def validate_account_secret(self, _key, account_secret):
-        if len(account_secret) < 32:
+        length = len(account_secret)
+
+        if length < 32:
             raise ValueError("account_secret too short")
+
+        if length > 256:
+            raise ValueError("account_secret too long")
+
         return account_secret
