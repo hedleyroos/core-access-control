@@ -404,5 +404,25 @@ class Credentials(DB.Model):
         nullable=False
     )
 
+    __table_args__ = (
+        DB.CheckConstraint("char_length(account_id)>=32",
+                           name="account_id_min_length"),
+        DB.CheckConstraint("char_length(account_secret)>=32",
+                           name="account_secret_min_length"),
+        {}
+    )
+
     def __repr__(self):
         return f"<Credentials({self.id})>"
+
+    @validates("account_id")
+    def validate_account_id(self, _key, account_id):
+        if len(account_id) < 32:
+            raise ValueError("account_id too short")
+        return account_id
+
+    @validates("account_secret")
+    def validate_account_secret(self, _key, account_secret):
+        if len(account_secret) < 32:
+            raise ValueError("account_secret too short")
+        return account_secret
