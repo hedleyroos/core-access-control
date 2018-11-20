@@ -71,6 +71,16 @@ DB_TO_API_SITE_TRANSFORMATION = Transformation(
     ]
 )
 
+DB_TO_API_CREDENTIALS_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string)
+    ],
+    copy_fields=[
+        "id", "site_id", "account_id", "account_secret", "description"
+    ]
+)
+
 DB_TO_API_DOMAINROLE_TRANSFORMATION = Transformation(
     mappings=[
         Mapping(input_field="created_at", conversion=datetime_to_string),

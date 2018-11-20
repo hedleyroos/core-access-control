@@ -12,6 +12,7 @@ import project.app
 from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
+from swagger_server.models.credentials import Credentials
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_create import DomainCreate  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
@@ -109,6 +110,120 @@ def access_control_roleresourcepermission_delete(role_id, resource_id, permissio
             "resource_id": resource_id,
             "permission_id": permission_id
         }
+    )
+
+
+def credentials_create(data=None):  # noqa: E501
+    """credentials_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Credentials
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="create",
+        data=data,
+    )
+
+
+def credentials_delete(credentials_id):  # noqa: E501
+    """credentials_delete
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="delete",
+        query={"id": credentials_id},
+    )
+
+
+@decorators.list_response
+def credentials_list(offset=None, limit=None, credentials_ids=None, site_id=None):  # noqa: E501
+    """credentials_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+    :param credentials_ids: An optional list of credentials ids
+    :type credentials_ids: List[int]
+    :param site_id: An optional query parameter to filter by site_id
+    :type site_id: int
+
+    :rtype: List[Credentials]
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": credentials_ids,
+                "site_id": site_id
+            },
+            "order_by": ["id"]
+        }
+    )
+
+
+def credentials_read(credentials_id):  # noqa: E501
+    """credentials_read
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+
+    :rtype: Credentials
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="read",
+        query={"id": credentials_id}
+    )
+
+
+def credentials_update(credentials_id, data=None):  # noqa: E501
+    """credentials_update
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Credentials
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="update",
+        data=data,
+        query={"id": credentials_id},
     )
 
 

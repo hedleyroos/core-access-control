@@ -13,6 +13,7 @@ RESOURCES = [
     "urn:ge:access_control:invitationredirecturl",
     "urn:ge:access_control:invitationdomainrole",
     "urn:ge:access_control:invitationsiterole",
+    "urn:ge:access_control:credentials",
 
     "urn:ge:identity_provider:oidc_provider:client",
     "urn:ge:identity_provider:oidc_provider:code",
