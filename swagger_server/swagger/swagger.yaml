@@ -2294,6 +2294,11 @@ definitions:
         type: "string"
       is_active:
         type: "boolean"
+      deletion_method_id:
+        type: "integer"
+      deletion_method_data:
+        type: "object"
+        properties: {}
   site_update:
     type: "object"
     properties:
@@ -2308,6 +2313,11 @@ definitions:
         type: "string"
       is_active:
         type: "boolean"
+      deletion_method_id:
+        type: "integer"
+      deletion_method_data:
+        type: "object"
+        properties: {}
   role:
     type: "object"
     required:

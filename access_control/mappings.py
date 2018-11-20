@@ -67,7 +67,8 @@ DB_TO_API_SITE_TRANSFORMATION = Transformation(
         Mapping(input_field="updated_at", conversion=datetime_to_string)
     ],
     copy_fields=[
-        "id", "name", "domain_id", "description", "client_id", "is_active"
+        "id", "name", "domain_id", "description", "client_id", "is_active",
+        "deletion_method_id", "deletion_method_data"
     ]
 )
 

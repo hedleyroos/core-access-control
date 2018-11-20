@@ -257,6 +257,10 @@ definitions:
         type: string
       is_active:
         type: boolean
+      deletion_method_id:
+        type: integer
+      deletion_method_data:
+        type: object
     required:
       - domain_id
       - name
@@ -275,6 +279,10 @@ definitions:
         type: string
       is_active:
         type: boolean
+      deletion_method_id:
+        type: integer
+      deletion_method_data:
+        type: object
     minProperties: 1
 
   role:
