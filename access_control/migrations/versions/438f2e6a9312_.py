@@ -29,7 +29,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_deletion_method_label'), 'deletion_method', ['label'], unique=True)
-    # server_default added manually
+
+    # NOTE: server_default added manually
     op.add_column('site', sa.Column('deletion_method_data', sa.JSON(), nullable=False, server_default='{}'))
     op.add_column('site', sa.Column('deletion_method_id', sa.Integer(), nullable=True))
     op.create_foreign_key(None, 'site', 'deletion_method', ['deletion_method_id'], ['id'])
