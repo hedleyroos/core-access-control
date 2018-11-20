@@ -2,6 +2,7 @@ from flask import Flask
 
 from ge_core_shared.db_actions import get_or_create, read_entry
 from access_control.fixtures.domains import DOMAIN_HIERARCHY
+from access_control.fixtures.deletionmethods import DELETION_METHODS
 from access_control.fixtures.permissions import PERMISSIONS
 from access_control.fixtures.resources import RESOURCES
 from access_control.fixtures.roles import ROLES
@@ -22,6 +23,7 @@ class SeedDataLoader:
         # resources and permissions have been loaded.
         self.load_role_resource_permissions()
         self.load_domain(DOMAIN_HIERARCHY)
+        self.load_deletion_methods()
         print("Done")
 
     @staticmethod
@@ -117,7 +119,8 @@ class SeedDataLoader:
     def load_deletion_methods():
         print("Loading Deletion Methods...")
         for method in DELETION_METHODS:
-            instance, created = get_or_create(DeletionMethod, **method)
+            label = method.pop("label")
+            instance, created = get_or_create(DeletionMethod, defaults=method, **{"label": label})
             print("Deletion Method %s loaded..." % instance.label)
         print("Done")
 
