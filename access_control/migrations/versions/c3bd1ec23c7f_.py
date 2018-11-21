@@ -14,15 +14,6 @@ revision = 'c3bd1ec23c7f'
 down_revision = 'f826c9bf9577'
 branch_labels = None
 depends_on = None
-access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
-	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
-	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
-access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
-	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
-	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
-access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
-	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
-	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
 
 
 def upgrade():
