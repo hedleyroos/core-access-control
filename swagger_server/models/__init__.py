@@ -4,6 +4,9 @@
 from __future__ import absolute_import
 # import models into model package
 from swagger_server.models.all_user_roles import AllUserRoles
+from swagger_server.models.credentials import Credentials
+from swagger_server.models.credentials_create import CredentialsCreate
+from swagger_server.models.credentials_update import CredentialsUpdate
 from swagger_server.models.domain import Domain
 from swagger_server.models.domain_create import DomainCreate
 from swagger_server.models.domain_role import DomainRole

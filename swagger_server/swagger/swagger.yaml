@@ -2164,6 +2164,135 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /credentials:
+    get:
+      tags:
+      - "access_control"
+      operationId: "credentials_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "credentials_ids"
+        in: "query"
+        description: "An optional list of credentials ids"
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+        collectionFormat: "multi"
+        minItems: 0
+        uniqueItems: true
+      - name: "site_id"
+        in: "query"
+        description: "An optional query parameter to filter by site_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/credentials"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "credentials_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/credentials_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/credentials"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /credentials/{credentials_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "credentials_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "credentials_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/credentials"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "credentials_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "credentials_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/credentials_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/credentials"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "credentials_delete"
+      parameters:
+      - name: "credentials_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
@@ -3119,6 +3248,81 @@ definitions:
     example:
       resource_id: 0
       permission_id: 6
+  credentials:
+    type: "object"
+    required:
+    - "account_id"
+    - "account_secret"
+    - "created_at"
+    - "description"
+    - "id"
+    - "site_id"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+      site_id:
+        type: "integer"
+      account_id:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      account_secret:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+      updated_at:
+        type: "string"
+        format: "date-time"
+    description: "An object containing account credentials"
+    example:
+      account_id: "account_id"
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      site_id: 6
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      account_secret: "account_secret"
+  credentials_create:
+    type: "object"
+    required:
+    - "account_id"
+    - "account_secret"
+    - "description"
+    - "site_id"
+    properties:
+      site_id:
+        type: "integer"
+      account_id:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      account_secret:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      description:
+        type: "string"
+  credentials_update:
+    type: "object"
+    properties:
+      site_id:
+        type: "integer"
+      account_id:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      account_secret:
+        type: "string"
+        minLength: 32
+        maxLength: 256
+      description:
+        type: "string"
   health_info:
     type: "object"
     required:
@@ -3275,3 +3479,9 @@ parameters:
     required: true
     type: "string"
     format: "uuid"
+  credentials_id:
+    name: "credentials_id"
+    in: "path"
+    description: "A unique integer value identifying the credentials."
+    required: true
+    type: "integer"

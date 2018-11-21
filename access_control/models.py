@@ -401,6 +401,27 @@ class DeletionMethod(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     label = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
     data_schema = DB.Column(DB.JSON, default={}, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+
+class Credentials(DB.Model):
+    """
+    Credentials are (id, secret) pairs that can be linked to a site.
+    These credentials are used when a site needs to perform an action
+    which requires authentication.
+    """
+    id = DB.Column(DB.Integer, primary_key=True)
+    site_id = DB.Column(
+        DB.Integer, DB.ForeignKey("site.id"), nullable=False, index=True
+    )
+    account_id = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
+    account_secret = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
     description = DB.Column(DB.Text, nullable=False)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
@@ -409,3 +430,38 @@ class DeletionMethod(DB.Model):
         onupdate=utcnow(),
         nullable=False
     )
+
+    __table_args__ = (
+        DB.CheckConstraint("char_length(account_id)>=32",
+                           name="account_id_min_length"),
+        DB.CheckConstraint("char_length(account_secret)>=32",
+                           name="account_secret_min_length"),
+        {}
+    )
+
+    def __repr__(self):
+        return f"<Credentials({self.id})>"
+
+    @validates("account_id")
+    def validate_account_id(self, _key, account_id):
+        length = len(account_id)
+
+        if length < 32:
+            raise ValueError("account_id too short")
+
+        if length > 256:
+            raise ValueError("account_id too long")
+
+        return account_id
+
+    @validates("account_secret")
+    def validate_account_secret(self, _key, account_secret):
+        length = len(account_secret)
+
+        if length < 32:
+            raise ValueError("account_secret too short")
+
+        if length > 256:
+            raise ValueError("account_secret too long")
+
+        return account_secret
