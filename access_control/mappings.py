@@ -112,26 +112,6 @@ DB_TO_API_USERSITEROLE_TRANSFORMATION = Transformation(
     ]
 )
 
-API_TO_DB_USERSITEROLE_TRANSFORMATION = Transformation(
-    mappings=[
-        Mapping(input_field="created_at", conversion=datetime_to_string),
-        Mapping(input_field="updated_at", conversion=datetime_to_string),
-    ],
-    copy_fields=[
-        "site_id", "role_id", "user_id"
-    ]
-)
-
-DB_TO_API_DOMAINROLE_TRANSFORMATION = Transformation(
-    mappings=[
-        Mapping(input_field="created_at", conversion=datetime_to_string),
-        Mapping(input_field="updated_at", conversion=datetime_to_string)
-    ],
-    copy_fields=[
-        "domain_id", "role_id", "grant_implicitly",
-    ]
-)
-
 DB_TO_API_USERDOMAINROLE_TRANSFORMATION = Transformation(
     mappings=[
         Mapping(input_field="created_at", conversion=datetime_to_string),
