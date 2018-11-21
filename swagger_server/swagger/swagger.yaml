@@ -2412,9 +2412,6 @@ definitions:
     - "domain_id"
     - "name"
     properties:
-      id:
-        type: "integer"
-        readOnly: true
       name:
         type: "string"
         maxLength: 30

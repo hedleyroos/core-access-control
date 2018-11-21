@@ -3,7 +3,7 @@ import json
 from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 from swagger_server.models.domain import Domain
 from swagger_server.models.site import Site
 from swagger_server.models.site_create import SiteCreate
@@ -70,11 +70,9 @@ class TestGetSitesUnderDomain(BaseTestCase):
             "description": "Site 1",
             "is_active": True,
         }
-        self.site_1 = db_actions.crud(
+        self.site_1 = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=self.site_data,
-            action="create"
         )
         # Site 2
         self.site_data = {
@@ -83,11 +81,9 @@ class TestGetSitesUnderDomain(BaseTestCase):
             "description": "Site 2",
             "is_active": True,
         }
-        self.site_2 = db_actions.crud(
+        self.site_2 = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=self.site_data,
-            action="create"
         )
         # Site 3
         self.site_data = {
@@ -96,11 +92,9 @@ class TestGetSitesUnderDomain(BaseTestCase):
             "description": "Site 3",
             "is_active": True,
         }
-        self.site_3 = db_actions.crud(
+        self.site_3 = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=self.site_data,
-            action="create"
         )
         self.headers = {API_KEY_HEADER: "test-api-key"}
 

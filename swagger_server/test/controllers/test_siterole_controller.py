@@ -15,7 +15,7 @@ from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_create import SiteCreate  # noqa: E501
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 from ge_core_shared import db_actions, decorators
 
 
@@ -51,11 +51,9 @@ class SiteRoleTestCase(BaseTestCase):
             "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=self.site_data,
-            action="create"
         )
 
         self.site_role_data = {
@@ -101,11 +99,9 @@ class SiteRoleTestCase(BaseTestCase):
             "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
-        site_model = db_actions.crud(
+        site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=site_data,
-            action="create"
         )
 
         data = SiteRoleCreate(**{
@@ -166,11 +162,9 @@ class SiteRoleTestCase(BaseTestCase):
             "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
-        site_model = db_actions.crud(
+        site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=site_data,
-            action="create"
         )
 
         site_role_data = {
@@ -235,11 +229,9 @@ class SiteRoleTestCase(BaseTestCase):
                 "client_id": uuid.uuid1().int>>97,
                 "is_active": True,
             }
-            site_model = db_actions.crud(
+            site_model = db_create_entry(
                 model="Site",
-                api_model=SiteCreate,
                 data=site_data,
-                action="create"
             )
 
             site_role_data = {
@@ -306,11 +298,9 @@ class SiteRoleTestCase(BaseTestCase):
             "client_id": uuid.uuid1().int>>97,
             "is_active": True,
         }
-        site_model = db_actions.crud(
+        site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=site_data,
-            action="create"
         )
         site_role_data = {
             "role_id": role_model.id,

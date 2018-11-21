@@ -13,7 +13,7 @@ from swagger_server.models import Role
 from swagger_server.models import Invitation
 from swagger_server.models import InvitationSiteRole
 from swagger_server.models import InvitationSiteRoleCreate
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 from flask import json
 
 
@@ -47,11 +47,9 @@ class InvitationSiteRoleTestCase(BaseTestCase):
             "description": "a super cool test site",
             "domain_id": self.domain_model.id
         }
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data=self.site_data,
-            action="create"
         )
 
         self.site_role_data = {

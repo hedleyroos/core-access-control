@@ -14,7 +14,7 @@ from ge_core_shared import db_actions, decorators
 from swagger_server.models import CredentialsCreate, Site, Domain, SiteCreate
 from swagger_server.models.credentials import Credentials  # noqa: E501
 from swagger_server.models.credentials_update import CredentialsUpdate  # noqa: E501
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 
 
 class CredentialsTestCase(BaseTestCase):
@@ -31,15 +31,13 @@ class CredentialsTestCase(BaseTestCase):
             },
             action="create"
         )
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=SiteCreate,
             data={
                 "name": "TestSite",
                 "domain_id": self.domain_model.id,
                 "description": "A test site"
             },
-            action="create"
         )
         self.credentials_data = {
             "site_id": self.site_model.id,

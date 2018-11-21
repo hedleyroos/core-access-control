@@ -13,9 +13,23 @@ from sqlalchemy.exc import SQLAlchemyError
 from ge_core_shared import decorators, exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
+from access_control import models
 
 
 DB = SQLAlchemy()
+
+
+def db_create_entry(model, **kwargs):
+    """
+    Helper method for unit tests, creation during testing tends to bypass the
+    actual api endpoints. The resulting Api models from using the core_shared
+    crud create, is sometimes missing attributes needed to make testing easier.
+    """
+    model = getattr(models, model)
+    instance = model(**kwargs["data"])
+    DB.session.add(instance)
+    DB.session.commit()
+    return instance
 
 
 class BaseTestCase(TestCase):
