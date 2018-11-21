@@ -1,20 +1,28 @@
 """empty message
 
-Revision ID: 438f2e6a9312
-Revises: 1c24f1c1e551
-Create Date: 2018-11-19 13:52:45.457428
+Revision ID: c3bd1ec23c7f
+Revises: f826c9bf9577
+Create Date: 2018-11-21 09:34:04.951487
 
 """
 from alembic import op
-from sqlalchemy.sql import table, column
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '438f2e6a9312'
-down_revision = '1c24f1c1e551'
+revision = 'c3bd1ec23c7f'
+down_revision = 'f826c9bf9577'
 branch_labels = None
 depends_on = None
+access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
+	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
+access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
+	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
+access-control-api: swagger-codegen-cli-$(CODEGEN_VERSION).jar validate-swagger
+	@echo "$(CYAN)Generating flask server for the Access Control API...$(CLEAR)"
+	$(CODEGEN) -i swagger/access_control.yml -l python-flask -o .
 
 
 def upgrade():
@@ -23,7 +31,6 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('label', sa.VARCHAR(length=100), nullable=False),
     sa.Column('data_schema', sa.JSON(), nullable=False),
-    sa.Column('description', sa.Text(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
