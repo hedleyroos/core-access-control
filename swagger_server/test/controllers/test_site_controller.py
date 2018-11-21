@@ -9,6 +9,7 @@ from flask import json
 
 from project.settings import API_KEY_HEADER
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.test import BaseTestCase
@@ -39,7 +40,7 @@ class SiteTestCase(BaseTestCase):
         }
         self.site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )
@@ -112,7 +113,7 @@ class SiteTestCase(BaseTestCase):
             }
             objects.append(db_actions.crud(
                 model="Site",
-                api_model=Site,
+                api_model=SiteCreate,
                 data=data,
                 action="create"
             ))

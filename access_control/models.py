@@ -401,6 +401,7 @@ class DeletionMethod(DB.Model):
     id = DB.Column(DB.Integer, primary_key=True)
     label = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
     data_schema = DB.Column(DB.JSON, default={}, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,

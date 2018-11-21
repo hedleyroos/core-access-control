@@ -9,6 +9,7 @@ from swagger_server.models.domain import Domain
 from swagger_server.models.domain_role import DomainRole
 from swagger_server.models.role import Role
 from swagger_server.models.site import Site
+from swagger_server.models.site_create import SiteCreate
 from swagger_server.models.site_role import SiteRole
 from swagger_server.models.user_domain_role import UserDomainRole
 from swagger_server.models.user_site_role import UserSiteRole
@@ -71,7 +72,7 @@ class TestUsersWithRolesForSite(BaseTestCase):
         }
         self.site = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )

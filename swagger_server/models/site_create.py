@@ -15,9 +15,11 @@ class SiteCreate(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None, deletion_method_id: int=None, deletion_method_data: object=None):  # noqa: E501
+    def __init__(self, id: int=None, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None, deletion_method_id: int=None, deletion_method_data: object=None):  # noqa: E501
         """SiteCreate - a model defined in Swagger
 
+        :param id: The id of this SiteCreate.  # noqa: E501
+        :type id: int
         :param name: The name of this SiteCreate.  # noqa: E501
         :type name: str
         :param client_id: The client_id of this SiteCreate.  # noqa: E501
@@ -34,6 +36,7 @@ class SiteCreate(Model):
         :type deletion_method_data: object
         """
         self.swagger_types = {
+            'id': int,
             'name': str,
             'client_id': int,
             'domain_id': int,
@@ -44,6 +47,7 @@ class SiteCreate(Model):
         }
 
         self.attribute_map = {
+            'id': 'id',
             'name': 'name',
             'client_id': 'client_id',
             'domain_id': 'domain_id',
@@ -53,6 +57,7 @@ class SiteCreate(Model):
             'deletion_method_data': 'deletion_method_data'
         }
 
+        self._id = id
         self._name = name
         self._client_id = client_id
         self._domain_id = domain_id
@@ -71,6 +76,27 @@ class SiteCreate(Model):
         :rtype: SiteCreate
         """
         return util.deserialize_model(dikt, cls)
+
+    @property
+    def id(self) -> int:
+        """Gets the id of this SiteCreate.
+
+
+        :return: The id of this SiteCreate.
+        :rtype: int
+        """
+        return self._id
+
+    @id.setter
+    def id(self, id: int):
+        """Sets the id of this SiteCreate.
+
+
+        :param id: The id of this SiteCreate.
+        :type id: int
+        """
+
+        self._id = id
 
     @property
     def name(self) -> str:

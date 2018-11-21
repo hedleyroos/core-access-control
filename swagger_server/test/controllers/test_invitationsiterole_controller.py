@@ -7,7 +7,7 @@ import werkzeug
 from ge_core_shared import db_actions, decorators
 
 from project.settings import API_KEY_HEADER
-from swagger_server.models import Site, Domain
+from swagger_server.models import Site, Domain, SiteCreate
 from swagger_server.models import SiteRole
 from swagger_server.models import Role
 from swagger_server.models import Invitation
@@ -49,7 +49,7 @@ class InvitationSiteRoleTestCase(BaseTestCase):
         }
         self.site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )

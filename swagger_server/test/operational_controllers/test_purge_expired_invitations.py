@@ -13,6 +13,7 @@ from swagger_server.models import InvitationDomainRole
 from swagger_server.models import InvitationSiteRole
 from swagger_server.models import Role
 from swagger_server.models import Site
+from swagger_server.models import SiteCreate
 from swagger_server.models import SiteRole
 from swagger_server.test import BaseTestCase
 
@@ -79,7 +80,7 @@ class InvitationTestCase(BaseTestCase):
         }
         self.site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )

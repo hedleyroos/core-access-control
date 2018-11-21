@@ -6,6 +6,8 @@ from project.settings import API_KEY_HEADER
 from swagger_server.test import BaseTestCase
 from swagger_server.models.domain import Domain
 from swagger_server.models.site import Site
+from swagger_server.models.site_create import SiteCreate
+from swagger_server.models.site_create import SiteCreate
 
 
 class TestGetSitesUnderDomain(BaseTestCase):
@@ -70,7 +72,7 @@ class TestGetSitesUnderDomain(BaseTestCase):
         }
         self.site_1 = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )
@@ -83,7 +85,7 @@ class TestGetSitesUnderDomain(BaseTestCase):
         }
         self.site_2 = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )
@@ -96,7 +98,7 @@ class TestGetSitesUnderDomain(BaseTestCase):
         }
         self.site_3 = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )

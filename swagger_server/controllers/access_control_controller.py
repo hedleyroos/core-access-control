@@ -1389,7 +1389,7 @@ def site_create(data=None):  # noqa: E501
 
     return db_actions.crud(
         model="Site",
-        api_model=Site,
+        api_model=SiteCreate,
         action="create",
         data=data,
     )

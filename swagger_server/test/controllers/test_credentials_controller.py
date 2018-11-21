@@ -11,7 +11,7 @@ from flask import json
 from project.settings import API_KEY_HEADER
 from ge_core_shared import db_actions, decorators
 
-from swagger_server.models import CredentialsCreate, Site, Domain
+from swagger_server.models import CredentialsCreate, Site, Domain, SiteCreate
 from swagger_server.models.credentials import Credentials  # noqa: E501
 from swagger_server.models.credentials_update import CredentialsUpdate  # noqa: E501
 from swagger_server.test import BaseTestCase
@@ -33,7 +33,7 @@ class CredentialsTestCase(BaseTestCase):
         )
         self.site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data={
                 "name": "TestSite",
                 "domain_id": self.domain_model.id,

@@ -14,6 +14,7 @@ from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.test import BaseTestCase
 from ge_core_shared import db_actions, decorators
 
@@ -52,7 +53,7 @@ class UserSiteRoleTestCase(BaseTestCase):
         }
         self.site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=self.site_data,
             action="create"
         )
@@ -113,7 +114,7 @@ class UserSiteRoleTestCase(BaseTestCase):
         }
         site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )
@@ -190,7 +191,7 @@ class UserSiteRoleTestCase(BaseTestCase):
         }
         site_model = db_actions.crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )
@@ -272,7 +273,7 @@ class UserSiteRoleTestCase(BaseTestCase):
             }
             site_model = db_actions.crud(
                 model="Site",
-                api_model=Site,
+                api_model=SiteCreate,
                 data=site_data,
                 action="create"
             )

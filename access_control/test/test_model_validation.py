@@ -9,6 +9,7 @@ from access_control.fixtures.deletionmethods import DELETION_METHODS
 from project.app import DB as db
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 
 
 class ListFiltersTestCase(TestCase):
@@ -75,7 +76,7 @@ class ListFiltersTestCase(TestCase):
         }
         site_model = crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )
@@ -111,7 +112,7 @@ class ListFiltersTestCase(TestCase):
         }
         site_model = crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )
@@ -146,7 +147,7 @@ class ListFiltersTestCase(TestCase):
         }
         site_model = crud(
             model="Site",
-            api_model=Site,
+            api_model=SiteCreate,
             data=site_data,
             action="create"
         )
