@@ -158,7 +158,7 @@ class Site(DB.Model):
     description = DB.Column(DB.Text, nullable=False)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True, nullable=False)
-    deletion_method_id = DB.Column(DB.Integer, DB.ForeignKey("deletion_method.id"))
+    deletion_method_id = DB.Column(DB.Integer, DB.ForeignKey("deletion_method.id"), nullable=False)
     deletion_method_data = DB.Column(DB.JSON, default={}, nullable=False)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
