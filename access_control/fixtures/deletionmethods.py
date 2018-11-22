@@ -1,5 +1,14 @@
 DELETION_METHODS = [
     {
+        "label": "none",
+        "data_schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {}
+        },
+        "description": "None type method"
+    },
+    {
         "label": "email",
         "data_schema": {
             "type": "object",

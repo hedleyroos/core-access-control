@@ -270,6 +270,8 @@ definitions:
     required:
       - domain_id
       - name
+      - deletion_method_id
+      - deletion_method_data
 
   site_update:
     type: object
