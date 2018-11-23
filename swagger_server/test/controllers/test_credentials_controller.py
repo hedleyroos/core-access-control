@@ -37,7 +37,6 @@ class CredentialsTestCase(BaseTestCase):
                 "name": "TestSite",
                 "domain_id": self.domain_model.id,
                 "description": "A test site",
-                "deletion_method_id": 1
             },
         )
         self.credentials_data = {

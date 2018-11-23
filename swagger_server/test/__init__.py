@@ -1,5 +1,7 @@
-import connexion
+import datetime
 import os
+
+import connexion
 
 import project.app
 
@@ -14,9 +16,23 @@ from ge_core_shared import decorators, exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
 from access_control import models
+from swagger_server.test.fixtures import data_migration
 
 
 DB = SQLAlchemy()
+
+
+def mangle_data(model, data):
+    """
+    Mass update for certain models' data that have had definition changes,
+    primarily changes in non nullable fields, since original test creation and
+    make use of db_create_entry.
+
+    """
+    if model.lower() == "site":
+        if not data.get("deletion_method_id"):
+            data["deletion_method_id"] = 0
+    return data
 
 
 def db_create_entry(model, **kwargs):
@@ -25,8 +41,9 @@ def db_create_entry(model, **kwargs):
     actual api endpoints. The resulting Api models from using the core_shared
     crud create, is sometimes missing attributes needed to make testing easier.
     """
+    data = mangle_data(model, kwargs["data"])
     model = getattr(models, model)
-    instance = model(**kwargs["data"])
+    instance = model(**data)
     DB.session.add(instance)
     DB.session.commit()
     return instance
@@ -61,6 +78,15 @@ class BaseTestCase(TestCase):
 
             DB.session.execute(table.delete())
         DB.session.commit()
+
+        # LOAD FIXTURES FOUND ONLY IN DATA MIGRATIONS
+        for model, data in data_migration.DATA.items():
+            # NOTE: Seemingly only raw SQL executes work in the test setUp.
+            DB.session.execute(
+                "INSERT INTO deletion_method (id, label, data_schema, description, created_at, updated_at)"
+                " VALUES ('0', 'none', '{\"type\": \"object\", \"additionalProperties\": false, \"properties\": {}}',"
+                f" 'None type method', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}');"
+            )
 
     def tearDown(self):
         super().tearDown()

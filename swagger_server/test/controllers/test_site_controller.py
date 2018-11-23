@@ -54,6 +54,7 @@ class SiteTestCase(BaseTestCase):
             "description": "a super cool test site",
             "client_id": 1,
             "is_active": True,
+            "deletion_method_id": 0
         })
         response = self.client.open(
             '/api/v1/sites',

@@ -69,7 +69,6 @@ class TestUsersWithRolesForSite(BaseTestCase):
             "description": "A Site",
             "client_id": 1,
             "is_active": True,
-            "deletion_method_id": 0
         }
         self.site = db_create_entry(
             model="Site",
