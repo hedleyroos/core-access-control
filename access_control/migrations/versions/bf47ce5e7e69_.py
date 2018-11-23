@@ -39,34 +39,11 @@ def upgrade():
     # ### end Alembic commands ###
 
     # DATA MIGRATION
-    connection = op.get_bind()
-    deletion_method_table = sa.sql.table(
-        'deletion_method',
-        sa.sql.column('id', sa.Integer),
-        sa.sql.column('label', sa.String),
-        sa.sql.column('description', sa.String),
-        sa.sql.column('data_schema', sa.JSON),
-        sa.sql.column('created_at', sa.JSON),
-        sa.sql.column('updated_at', sa.JSON)
+    op.execute(
+        "INSERT INTO deletion_method (id, label, data_schema, description, created_at, updated_at)"
+        " VALUES ('0', 'none', '{\"type\": \"object\", \"additionalProperties\": false, \"properties\": {}}',"
+        f" 'None type method', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}');"
     )
-    #op.execute(
-    #    "INSERT INTO deletion_method (id, label, data_schema, description, created_at, updated_at)"
-    #    " VALUES ('0', 'none', '{\"type\": \"object\", \"additionalProperties\": false, \"properties\": {}}',"
-    #    f" 'None type method', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}');"
-    #)
-    op.execute(deletion_method_table.insert(values={
-            "id": 1,
-            "label": "none",
-            "data_schema": {
-                "type": "object",
-                "additionalProperties": False,
-                "properties": {}
-            },
-            "description": "None type method",
-            "created_at": datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat(),
-            "updated_at": datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()
-        }
-    ))
     op.execute("UPDATE site SET deletion_method_id=0;")
 
 

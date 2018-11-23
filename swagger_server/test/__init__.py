@@ -16,7 +16,6 @@ from ge_core_shared import decorators, exception_handlers, middleware
 
 from swagger_server.encoder import JSONEncoder
 from access_control import models
-from swagger_server.test.fixtures import data_migration
 
 
 DB = SQLAlchemy()
