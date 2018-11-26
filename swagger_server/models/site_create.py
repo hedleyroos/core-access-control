@@ -201,6 +201,8 @@ class SiteCreate(Model):
         :param deletion_method_id: The deletion_method_id of this SiteCreate.
         :type deletion_method_id: int
         """
+        if deletion_method_id is None:
+            raise ValueError("Invalid value for `deletion_method_id`, must not be `None`")  # noqa: E501
 
         self._deletion_method_id = deletion_method_id
 
@@ -222,5 +224,7 @@ class SiteCreate(Model):
         :param deletion_method_data: The deletion_method_data of this SiteCreate.
         :type deletion_method_data: object
         """
+        if deletion_method_data is None:
+            raise ValueError("Invalid value for `deletion_method_data`, must not be `None`")  # noqa: E501
 
         self._deletion_method_data = deletion_method_data

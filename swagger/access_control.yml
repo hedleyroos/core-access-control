@@ -152,6 +152,12 @@ parameters:
     name: credentials_id
     required: true
     type: integer
+  deletionmethod_id:
+    description: A unique integer value identifying the credentials.
+    in: path
+    name: deletionmethod_id
+    required: true
+    type: integer
 
 definitions:
   domain:
@@ -870,6 +876,61 @@ definitions:
       - invitation_id
       - site_id
       - role_id
+
+  deletion_method:
+    type: object
+    properties:
+      id:
+        type: integer
+        readOnly: true
+      label:
+        type: string
+        maxLength: 100
+      data_schema:
+        type: object
+      description:
+        type: string
+      created_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+      updated_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+    required:
+      - id
+      - label
+      - data_schema
+      - description
+      - created_at
+      - updated_at
+
+  deletion_method_create:
+    type: object
+    properties:
+      label:
+        type: string
+        maxLength: 100
+      data_schema:
+        type: object
+      description:
+        type: string
+    required:
+      - label
+      - data_schema
+      - description
+
+  deletion_method_update:
+    type: object
+    properties:
+      label:
+        type: string
+        maxLength: 100
+      data_schema:
+        type: object
+      description:
+        type: string
 
   site_role_labels_aggregated:
     description: 'An object containing a site ID and an aggregated list of all the role labels supported
@@ -2625,3 +2686,65 @@ paths:
             $ref: '#/definitions/credentials'
       tags:
       - access_control
+
+  /deletionmethods:
+    get:
+      operationId: deletionmethod_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/deletion_method'
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: deletionmethod_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/deletion_method_create'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/deletion_method'
+      tags:
+        - access_control
+
+  '/deletionmethods/{deletionmethod_id}':
+    parameters:
+      - $ref: '#/parameters/deletionmethod_id'
+    delete:
+      operationId: deletionmethod__delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: deletionmethod__read
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/deletion_method'
+      tags:
+        - access_control
