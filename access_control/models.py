@@ -171,7 +171,7 @@ class Site(DB.Model):
     @validates("deletion_method_data")
     def validate_deletion_method_data(self, key, data):
         instance = DeletionMethod.query.filter_by(
-            **{"id": self.deletion_method_id}
+            id=self.deletion_method_id
         ).first_or_404()
         jsonschema.validate(
             data,
