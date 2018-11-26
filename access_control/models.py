@@ -2,8 +2,10 @@ from urllib.parse import urlparse
 import jsonschema
 import uuid
 
+from flask import abort
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import expression
@@ -170,9 +172,15 @@ class Site(DB.Model):
 
     @validates("deletion_method_data")
     def validate_deletion_method_data(self, key, data):
-        instance = DeletionMethod.query.filter_by(
-            id=self.deletion_method_id
-        ).first_or_404()
+        try:
+            instance = DeletionMethod.query.filter_by(
+                id=self.deletion_method_id
+            ).one()
+        except NoResultFound:
+            abort(
+                400,
+                f"No result found for: DeletionMethod<id={self.deletion_method_id}>"
+            )
         jsonschema.validate(
             data,
             schema=instance.data_schema,
