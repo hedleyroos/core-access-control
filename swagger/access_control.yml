@@ -227,6 +227,10 @@ definitions:
         type: string
       is_active:
         type: boolean
+      deletion_method_id:
+        type: integer
+      deletion_method_data:
+        type: object
       created_at:
         type: string
         format: 'date-time'
@@ -240,6 +244,8 @@ definitions:
       - domain_id
       - name
       - is_active
+      - deletion_method_id
+      - deletion_method_data
       - created_at
       - updated_at
 
@@ -257,9 +263,15 @@ definitions:
         type: string
       is_active:
         type: boolean
+      deletion_method_id:
+        type: integer
+      deletion_method_data:
+        type: object
     required:
       - domain_id
       - name
+      - deletion_method_id
+      - deletion_method_data
 
   site_update:
     type: object
@@ -275,6 +287,10 @@ definitions:
         type: string
       is_active:
         type: boolean
+      deletion_method_id:
+        type: integer
+      deletion_method_data:
+        type: object
     minProperties: 1
 
   role:

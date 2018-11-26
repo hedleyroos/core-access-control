@@ -1,8 +1,11 @@
-import uuid
 from urllib.parse import urlparse
+import jsonschema
+import uuid
 
+from flask import abort
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
+from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import expression
@@ -157,6 +160,8 @@ class Site(DB.Model):
     description = DB.Column(DB.Text, nullable=False)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True, nullable=False)
+    deletion_method_id = DB.Column(DB.Integer, DB.ForeignKey("deletion_method.id"), nullable=False)
+    deletion_method_data = DB.Column(DB.JSON, default={}, nullable=False)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
@@ -164,6 +169,23 @@ class Site(DB.Model):
         onupdate=utcnow(),
         nullable=False
     )
+
+    @validates("deletion_method_data")
+    def validate_deletion_method_data(self, key, data):
+        try:
+            instance = DeletionMethod.query.filter_by(
+                id=self.deletion_method_id
+            ).one()
+        except NoResultFound:
+            abort(
+                400,
+                f"No result found for: DeletionMethod<id={self.deletion_method_id}>"
+            )
+        jsonschema.validate(
+            data,
+            schema=instance.data_schema,
+            format_checker=jsonschema.FormatChecker()
+        )
 
     def __repr__(self):
         return "<Site(%s-%s-%s-%s)>" % (
@@ -381,6 +403,20 @@ class InvitationRedirectUrl(DB.Model):
 
     def __repr__(self):
         return "<InvitationRedirectURL(%s)>" % (self.url)
+
+
+class DeletionMethod(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    label = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
+    data_schema = DB.Column(DB.JSON, default={}, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
 
 
 class Credentials(DB.Model):

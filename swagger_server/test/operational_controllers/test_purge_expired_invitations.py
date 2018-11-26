@@ -13,8 +13,9 @@ from swagger_server.models import InvitationDomainRole
 from swagger_server.models import InvitationSiteRole
 from swagger_server.models import Role
 from swagger_server.models import Site
+from swagger_server.models import SiteCreate
 from swagger_server.models import SiteRole
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 
 
 class InvitationTestCase(BaseTestCase):
@@ -77,11 +78,9 @@ class InvitationTestCase(BaseTestCase):
             "description": "a super cool test site",
             "domain_id": self.domain_model_2.id
         }
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=Site,
             data=site_data,
-            action="create"
         )
         site_role_data = {
             "role_id": self.role_model_1.id,

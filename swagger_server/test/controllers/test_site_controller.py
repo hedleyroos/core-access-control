@@ -9,9 +9,10 @@ from flask import json
 
 from project.settings import API_KEY_HEADER
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 from ge_core_shared import db_actions, decorators
 
 
@@ -37,11 +38,9 @@ class SiteTestCase(BaseTestCase):
             "client_id": 0,
             "is_active": True,
         }
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=Site,
             data=self.site_data,
-            action="create"
         )
 
         self.headers = {API_KEY_HEADER: "test-api-key"}
@@ -55,6 +54,7 @@ class SiteTestCase(BaseTestCase):
             "description": "a super cool test site",
             "client_id": 1,
             "is_active": True,
+            "deletion_method_id": 0
         })
         response = self.client.open(
             '/api/v1/sites',
@@ -110,11 +110,9 @@ class SiteTestCase(BaseTestCase):
                 "client_id": index+3,
                 "is_active": True,
             }
-            objects.append(db_actions.crud(
+            objects.append(db_create_entry(
                 model="Site",
-                api_model=Site,
                 data=data,
-                action="create"
             ))
         query_string = [#('offset', 0),
                         ('site_ids', ",".join(map(str, [site.id for site in objects])))]
