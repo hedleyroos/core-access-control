@@ -79,13 +79,12 @@ class BaseTestCase(TestCase):
         DB.session.commit()
 
         # LOAD FIXTURES FOUND ONLY IN DATA MIGRATIONS
-        for model, data in data_migration.DATA.items():
-            # NOTE: Seemingly only raw SQL executes work in the test setUp.
-            DB.session.execute(
-                "INSERT INTO deletion_method (id, label, data_schema, description, created_at, updated_at)"
-                " VALUES ('0', 'none', '{\"type\": \"object\", \"additionalProperties\": false, \"properties\": {}}',"
-                f" 'None type method', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}');"
-            )
+        # NOTE: Seemingly only raw SQL executes work in the test setUp.
+        DB.session.execute(
+            "INSERT INTO deletion_method (id, label, data_schema, description, created_at, updated_at)"
+            " VALUES ('0', 'none', '{\"type\": \"object\", \"additionalProperties\": false, \"properties\": {}}',"
+            f" 'None type method', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}', '{datetime.datetime(1970, 1, 1, 0, 0, 0).isoformat()}');"
+        )
 
     def tearDown(self):
         super().tearDown()
