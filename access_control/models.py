@@ -154,6 +154,28 @@ class RoleResourcePermission(DB.Model):
 
 
 class Site(DB.Model):
+
+    def __init__(self, *args, **kwargs):
+        # Due to the model being instantiated more than once with differing
+        # kwargs, it causes the validation decorator to sometimes only receive
+        # partial instance data.
+        if "deletion_method_data" in kwargs and "deletion_method_id" in kwargs:
+            try:
+                instance = DeletionMethod.query.filter_by(
+                    id=kwargs["deletion_method_id"]
+                ).one()
+            except NoResultFound:
+                abort(
+                    400,
+                    f"No result found for: DeletionMethod<id={self.deletion_method_id}>"
+                )
+            jsonschema.validate(
+                kwargs["deletion_method_data"],
+                schema=instance.data_schema,
+                format_checker=jsonschema.FormatChecker()
+            )
+        super().__init__(*args, **kwargs)
+
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
     domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True, nullable=False)
@@ -169,23 +191,6 @@ class Site(DB.Model):
         onupdate=utcnow(),
         nullable=False
     )
-
-    @validates("deletion_method_data")
-    def validate_deletion_method_data(self, key, data):
-        try:
-            instance = DeletionMethod.query.filter_by(
-                id=self.deletion_method_id
-            ).one()
-        except NoResultFound:
-            abort(
-                400,
-                f"No result found for: DeletionMethod<id={self.deletion_method_id}>"
-            )
-        jsonschema.validate(
-            data,
-            schema=instance.data_schema,
-            format_checker=jsonschema.FormatChecker()
-        )
 
     def __repr__(self):
         return "<Site(%s-%s-%s-%s)>" % (

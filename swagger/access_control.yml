@@ -2731,14 +2731,14 @@ paths:
     parameters:
       - $ref: '#/parameters/deletionmethod_id'
     delete:
-      operationId: deletionmethod__delete
+      operationId: deletionmethod_delete
       responses:
         '204':
           description: ''
       tags:
         - access_control
     get:
-      operationId: deletionmethod__read
+      operationId: deletionmethod_read
       produces:
         - application/json
       responses:
@@ -2748,3 +2748,21 @@ paths:
             $ref: '#/definitions/deletion_method'
       tags:
         - access_control
+    put:
+      consumes:
+      - application/json
+      operationId: deletionmethod_update
+      parameters:
+      - in: body
+        name: data
+        schema:
+          $ref: '#/definitions/deletion_method_update'
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/deletion_method'
+      tags:
+      - access_control

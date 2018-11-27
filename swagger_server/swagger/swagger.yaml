@@ -2353,7 +2353,7 @@ paths:
     get:
       tags:
       - "access_control"
-      operationId: "deletionmethod__read"
+      operationId: "deletionmethod_read"
       produces:
       - "application/json"
       parameters:
@@ -2368,10 +2368,35 @@ paths:
           schema:
             $ref: "#/definitions/deletion_method"
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deletionmethod_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/deletion_method_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/deletion_method"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
     delete:
       tags:
       - "access_control"
-      operationId: "deletionmethod__delete"
+      operationId: "deletionmethod_delete"
       parameters:
       - name: "deletionmethod_id"
         in: "path"
