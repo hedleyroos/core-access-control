@@ -931,6 +931,7 @@ definitions:
         type: object
       description:
         type: string
+    minProperties: 1
 
   site_role_labels_aggregated:
     description: 'An object containing a site ID and an aggregated list of all the role labels supported
