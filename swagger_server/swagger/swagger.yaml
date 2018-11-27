@@ -2293,6 +2293,120 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /deletionmethods:
+    get:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/deletion_method"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/deletion_method_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/deletion_method"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /deletionmethods/{deletionmethod_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deletionmethod_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/deletion_method"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    put:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_update"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deletionmethod_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/deletion_method_update"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/deletion_method"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "deletionmethod_delete"
+      parameters:
+      - name: "deletionmethod_id"
+        in: "path"
+        description: "A unique integer value identifying the credentials."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
 securityDefinitions:
   APIKeyHeader:
     type: "apiKey"
@@ -2409,6 +2523,8 @@ definitions:
   site_create:
     type: "object"
     required:
+    - "deletion_method_data"
+    - "deletion_method_id"
     - "domain_id"
     - "name"
     properties:
@@ -3065,6 +3181,68 @@ definitions:
         type: "integer"
       role_id:
         type: "integer"
+  deletion_method:
+    type: "object"
+    required:
+    - "created_at"
+    - "data_schema"
+    - "description"
+    - "id"
+    - "label"
+    - "updated_at"
+    properties:
+      id:
+        type: "integer"
+        readOnly: true
+      label:
+        type: "string"
+        maxLength: 100
+      data_schema:
+        type: "object"
+        properties: {}
+      description:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+      updated_at:
+        type: "string"
+        format: "date-time"
+        readOnly: true
+    example:
+      updated_at: "2000-01-23T04:56:07.000+00:00"
+      data_schema: "{}"
+      description: "description"
+      created_at: "2000-01-23T04:56:07.000+00:00"
+      id: 0
+      label: "label"
+  deletion_method_create:
+    type: "object"
+    required:
+    - "data_schema"
+    - "description"
+    - "label"
+    properties:
+      label:
+        type: "string"
+        maxLength: 100
+      data_schema:
+        type: "object"
+        properties: {}
+      description:
+        type: "string"
+  deletion_method_update:
+    type: "object"
+    properties:
+      label:
+        type: "string"
+        maxLength: 100
+      data_schema:
+        type: "object"
+        properties: {}
+      description:
+        type: "string"
   site_role_labels_aggregated:
     type: "object"
     properties:
@@ -3481,6 +3659,12 @@ parameters:
     format: "uuid"
   credentials_id:
     name: "credentials_id"
+    in: "path"
+    description: "A unique integer value identifying the credentials."
+    required: true
+    type: "integer"
+  deletionmethod_id:
+    name: "deletionmethod_id"
     in: "path"
     description: "A unique integer value identifying the credentials."
     required: true

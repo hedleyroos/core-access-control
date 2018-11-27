@@ -48,13 +48,14 @@ class SiteTestCase(BaseTestCase):
     def test_site_create(self):
         """Test case for site_create
         """
-        data = Site(**{
-            "name": ("%s" % uuid.uuid1())[:30],
-            "domain_id": self.domain_model.id,
-            "description": "a super cool test site",
+        data = SiteCreate(**{
             "client_id": 1,
+            "deletion_method_data": {},
+            "deletion_method_id": 0,
+            "description": "a super cool test site",
+            "domain_id": self.domain_model.id,
             "is_active": True,
-            "deletion_method_id": 0
+            "name": ("%s" % uuid.uuid1())[:30],
         })
         response = self.client.open(
             '/api/v1/sites',

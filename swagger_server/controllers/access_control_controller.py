@@ -13,6 +13,9 @@ from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.credentials import Credentials
+from swagger_server.models.deletion_method import DeletionMethod  # noqa: E501
+from swagger_server.models.deletion_method_create import DeletionMethodCreate  # noqa: E501
+from swagger_server.models.deletion_method_update import DeletionMethodUpdate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_create import DomainCreate  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
@@ -224,6 +227,110 @@ def credentials_update(credentials_id, data=None):  # noqa: E501
         action="update",
         data=data,
         query={"id": credentials_id},
+    )
+
+def deletionmethod_create(data=None):  # noqa: E501
+    """deletionmethod_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletionMethod
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethodCreate,
+        action="create",
+        data=data,
+    )
+
+
+def deletionmethod_delete(deletionmethod_id):  # noqa: E501
+    """deletionmethod_delete
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="delete",
+        query={"id": deletionmethod_id},
+    )
+
+
+@decorators.list_response
+def deletionmethod_list(offset=None, limit=None):  # noqa: E501
+    """deletionmethod_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeletionMethod]
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "order_by": ["id"]
+        }
+    )
+
+
+def deletionmethod_read(deletionmethod_id):  # noqa: E501
+    """deletionmethod_read
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+
+    :rtype: DeletionMethod
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="read",
+        query={"id": deletionmethod_id}
+    )
+
+def deletionmethod_update(deletionmethod_id, data=None):  # noqa: E501
+    """deletionmethod_update
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+    :param data: 
+    :type data: dict | bytes
+
+    :rtype: DeletionMethod
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethodUpdate,
+        action="update",
+        data=data,
+        query={"id": deletionmethod_id},
     )
 
 

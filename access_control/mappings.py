@@ -68,7 +68,7 @@ DB_TO_API_SITE_TRANSFORMATION = Transformation(
     ],
     copy_fields=[
         "id", "name", "domain_id", "description", "client_id", "is_active",
-        "deletion_method_id", "deletion_method_data"
+        "deletion_method_data", "deletion_method_id"
     ]
 )
 
@@ -161,5 +161,15 @@ DB_TO_API_INVITATIONREDIRECTURL_TRANSFORMATION = Transformation(
     ],
     copy_fields=[
         "id", "url", "description"
+    ]
+)
+
+DB_TO_API_DELETIONMETHOD_TRANSFORMATION = Transformation(
+    mappings=[
+        Mapping(input_field="created_at", conversion=datetime_to_string),
+        Mapping(input_field="updated_at", conversion=datetime_to_string)
+    ],
+    copy_fields=[
+        "id", "label", "data_schema", "description"
     ]
 )
