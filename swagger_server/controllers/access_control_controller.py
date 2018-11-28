@@ -14,46 +14,20 @@ from swagger_server.controllers.operational_controller import get_all_user_roles
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.credentials import Credentials
 from swagger_server.models.deletion_method import DeletionMethod  # noqa: E501
-from swagger_server.models.deletion_method_create import DeletionMethodCreate  # noqa: E501
-from swagger_server.models.deletion_method_update import DeletionMethodUpdate  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
-from swagger_server.models.domain_create import DomainCreate  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
-from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E501
-from swagger_server.models.domain_role_update import DomainRoleUpdate  # noqa: E501
-from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.models.invitation import Invitation  # noqa: E501
-from swagger_server.models.invitation_create import InvitationCreate  # noqa: E501
 from swagger_server.models.invitation_domain_role import InvitationDomainRole  # noqa: E501
-from swagger_server.models.invitation_domain_role_create import InvitationDomainRoleCreate  # noqa: E501
 from swagger_server.models.invitation_redirect_url import InvitationRedirectUrl  # noqa: E501
-from swagger_server.models.invitation_redirect_url_create import InvitationRedirectUrlCreate  # noqa: E501
-from swagger_server.models.invitation_redirect_url_update import InvitationRedirectUrlUpdate  # noqa: E501
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
-from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
-from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
-from swagger_server.models.permission_create import PermissionCreate  # noqa: E501
-from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.models.resource import Resource  # noqa: E501
-from swagger_server.models.resource_create import ResourceCreate  # noqa: E501
-from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
-from swagger_server.models.role_create import RoleCreate  # noqa: E501
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
-from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
-from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
-from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
-from swagger_server.models.site_role_create import SiteRoleCreate  # noqa: E501
-from swagger_server.models.site_role_update import SiteRoleUpdate  # noqa: E501
-from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
-from swagger_server.models.user_domain_role_create import UserDomainRoleCreate  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
-from swagger_server import util
 
 db = project.app.DB
 
@@ -244,7 +218,7 @@ def deletionmethod_create(data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletionMethod",
-        api_model=DeletionMethodCreate,
+        api_model=DeletionMethod,
         action="create",
         data=data,
     )
@@ -317,7 +291,7 @@ def deletionmethod_update(deletionmethod_id, data=None):  # noqa: E501
 
     :param deletionmethod_id: A unique integer value identifying the credentials.
     :type deletionmethod_id: int
-    :param data: 
+    :param data:
     :type data: dict | bytes
 
     :rtype: DeletionMethod
@@ -327,7 +301,7 @@ def deletionmethod_update(deletionmethod_id, data=None):  # noqa: E501
 
     return db_actions.crud(
         model="DeletionMethod",
-        api_model=DeletionMethodUpdate,
+        api_model=DeletionMethod,
         action="update",
         data=data,
         query={"id": deletionmethod_id},
@@ -1496,7 +1470,7 @@ def site_create(data=None):  # noqa: E501
 
     return db_actions.crud(
         model="Site",
-        api_model=SiteCreate,
+        api_model=Site,
         action="create",
         data=data,
     )
