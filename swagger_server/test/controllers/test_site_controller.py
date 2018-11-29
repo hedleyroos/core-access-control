@@ -63,6 +63,7 @@ class SiteTestCase(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json',
             headers=self.headers)
+        self.assertEqual(response.status_code, 200)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -172,3 +173,49 @@ class SiteTestCase(BaseTestCase):
         self.assertEqual(r_data["description"], updated_entry.description)
         self.assertEqual(r_data["client_id"], updated_entry.client_id)
         self.assertEqual(r_data["is_active"], updated_entry.is_active)
+
+    def test_site_deletion_method_data_validation(self):
+        """Test case for site_create
+        """
+        data = SiteCreate(**{
+            "deletion_method_data": {"a": "a"},
+            "deletion_method_id": 0,
+            "description": "a super cool test site",
+            "domain_id": self.domain_model.id,
+            "is_active": True,
+            "name": ("%s" % uuid.uuid1())[:30],
+        })
+        response = self.client.open(
+            '/api/v1/sites',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        self.assertEqual(response.status_code, 500)
+        self.site_data = {
+            "name": ("%s" % uuid.uuid1())[:30],
+            "domain_id": self.domain_model.id,
+            "description": "a super cool test site",
+            "is_active": True,
+        }
+        self.site_model = db_create_entry(
+            model="Site",
+            data=self.site_data,
+        )
+        data = {
+            "name": ("%s" % uuid.uuid1())[:30],
+            "description": "site updated",
+            "is_active": False,
+            "deletion_method_id": 0,
+            "deletion_method_data": {"a": "a"},
+        }
+        data = SiteUpdate(
+            **data
+        )
+        response = self.client.open(
+            '/api/v1/sites/{site_id}'.format(site_id=self.site_model.id),
+            method='PUT',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        self.assertEqual(response.status_code, 500)
