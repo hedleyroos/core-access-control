@@ -153,7 +153,7 @@ class RoleResourcePermission(DB.Model):
 
 class Site(DB.Model):
     def __validate_deletion_method_data(self, lookup_id, data):
-        # Due to oddities in the orm level validation, this method is called
+        # Due to oddities in the ORM level validation, this method is called
         # twice. In __init__ to validate model creation and in an actual
         # validation method for updates.
         if lookup_id is not None and data is not None:

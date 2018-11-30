@@ -233,5 +233,5 @@ class SiteTestCase(BaseTestCase):
         self.assertEqual(response.status_code, 400)
         r_data = json.loads(response.data)
         self.assertEqual(
-            r_data["message"], "deletion_method_data validation failed against schema: {'type': 'object', 'additionalProperties': False, 'properties': {}}"
+            r_data["message"], "The deletion method data does not conform to the schema defined for the deletion method none"
         )

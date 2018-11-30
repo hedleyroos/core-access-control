@@ -10,7 +10,7 @@ class InvalidRequest(Exception):
     status_code = 400
 
     def __init__(self, message, status_code=None, payload=None):
-        Exception.__init__(self)
+        super().__init__(self)
         self.message = message
         if status_code is not None:
             self.status_code = status_code
@@ -38,7 +38,7 @@ class SiteValidator:
                 id=lookup_id
             ).one()
         except NoResultFound:
-            raise InvalidRequest(f"No result found for: DeletionMethod<id={lookup_id}>")
+            raise InvalidRequest(f"Deletion method with ID {lookup_id} does not exist")
         try:
             jsonschema.validate(
                 data,
@@ -47,14 +47,14 @@ class SiteValidator:
             )
         except jsonschema.ValidationError:
             raise InvalidRequest(
-                f"deletion_method_data validation failed against schema: {deletion_method.data_schema}"
+                "The deletion method data does not conform to the"
+                f" schema defined for the deletion method {deletion_method.label}"
             )
 
     def validate_site_deletion_method_required_fields(self, lookup_id, data):
-        has_data = data or data == {}
-        if has_data and not lookup_id >= 0:
+        if data is not None and lookup_id is None:
             raise InvalidRequest("deletion_method_id is required if deletion_method_data is provided")
-        elif lookup_id >= 0 and not has_data:
+        elif lookup_id is not None and data is None:
             raise InvalidRequest("deletion_method_data is required if deletion_method_id is provided")
 
     def validate_site_create(self, data):
@@ -71,7 +71,7 @@ class SiteValidator:
         try:
             site = Site.query.filter_by(id=lookup_id).one()
         except NoResultFound:
-            raise InvalidRequest(f"No result found for: Site<id={lookup_id}>")
+            raise InvalidRequest(f"Site with ID {lookup_id} does not exist")
         method_id = data.get("deletion_method_id") or site.deletion_method_id
         method_data = data.get("deletion_method_data") or site.deletion_method_data
         self.validate_site_deletion_method_required_fields(
