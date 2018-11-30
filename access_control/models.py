@@ -4,7 +4,6 @@ import uuid
 
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import expression

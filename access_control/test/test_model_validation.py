@@ -2,9 +2,9 @@ from unittest import TestCase
 import jsonschema
 import uuid
 
-from ge_core_shared.db_actions import get_or_create, delete_entry, list_entry, crud
+from ge_core_shared.db_actions import crud
 
-from access_control import models, fixtures
+from access_control import models
 from access_control.fixtures.deletionmethods import DELETION_METHODS
 from project.app import DB as db
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -58,8 +58,8 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9994,
             "is_active": True,
         }
-        with self.assertRaises(jsonschema.exceptions.ValidationError) as e:
-            site_model = crud(
+        with self.assertRaises(jsonschema.exceptions.ValidationError):
+            crud(
                 model="Site",
                 api_model=Site,
                 data=site_data,
@@ -74,7 +74,7 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9995,
             "is_active": True,
         }
-        site_model = crud(
+        crud(
             model="Site",
             api_model=SiteCreate,
             data=site_data,
@@ -92,8 +92,8 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9996,
             "is_active": True,
         }
-        with self.assertRaises(jsonschema.exceptions.ValidationError) as e:
-            site_model = crud(
+        with self.assertRaises(jsonschema.exceptions.ValidationError):
+            crud(
                 model="Site",
                 api_model=Site,
                 data=site_data,
@@ -108,7 +108,7 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9994,
             "is_active": True,
         }
-        site_model = crud(
+        crud(
             model="Site",
             api_model=SiteCreate,
             data=site_data,
@@ -128,7 +128,7 @@ class SiteModelValidationTestCase(TestCase):
             "is_active": True,
         }
         with self.assertRaises(jsonschema.exceptions.ValidationError) as e:
-            site_model = crud(
+            crud(
                 model="Site",
                 api_model=Site,
                 data=site_data,
@@ -143,7 +143,7 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9997,
             "is_active": True,
         }
-        site_model = crud(
+        crud(
             model="Site",
             api_model=SiteCreate,
             data=site_data,
@@ -162,8 +162,8 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9998,
             "is_active": True,
         }
-        with self.assertRaises(jsonschema.exceptions.ValidationError) as e:
-            site_model = crud(
+        with self.assertRaises(jsonschema.exceptions.ValidationError):
+            crud(
                 model="Site",
                 api_model=Site,
                 data=site_data,
@@ -178,7 +178,7 @@ class SiteModelValidationTestCase(TestCase):
             "client_id": 9999,
             "is_active": True,
         }
-        site_model = crud(
+        crud(
             model="Site",
             api_model=SiteCreate,
             data=site_data,

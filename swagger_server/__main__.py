@@ -6,15 +6,16 @@ from flask_sqlalchemy import SQLAlchemy
 from raven import Client
 from raven.contrib.flask import Sentry
 
+from ge_core_shared import decorators, exception_handlers, middleware
 from project import settings
 from project.errors import errors
-from sqlalchemy.exc import SQLAlchemyError
-from ge_core_shared import decorators, exception_handlers, middleware
 from prometheus_client import make_wsgi_app
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.wsgi import DispatcherMiddleware
 
 from swagger_server import encoder
 from swagger_server.controllers import access_control_controller, operational_controller
+from swagger_server.controllers import controller_validators
 
 DB = SQLAlchemy()
 
@@ -31,6 +32,9 @@ app.app.config["SQLALCHEMY_DATABASE_URI"] = settings.SQLALCHEMY_DATABASE_URI
 app.app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = settings.SQLALCHEMY_TRACK_MODIFICATIONS
 
 app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
+app.add_error_handler(
+    controller_validators.InvalidRequest, controller_validators.handle_invalid_request
+)
 app.app.register_blueprint(errors)
 
 # Register middleware

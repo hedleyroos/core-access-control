@@ -3,7 +3,7 @@ import connexion
 from datetime import datetime
 
 from dateutil.relativedelta import relativedelta
-from flask import abort, jsonify
+from flask import abort, jsonify, current_app
 from ge_core_shared import db_actions, decorators
 from project import settings
 from sqlalchemy import func, text
@@ -11,6 +11,7 @@ from sqlalchemy import func, text
 import project.app
 from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
+from swagger_server.controllers.controller_validators import SiteValidator
 from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
 from swagger_server.models.credentials import Credentials
 from swagger_server.models.deletion_method import DeletionMethod  # noqa: E501
@@ -1454,7 +1455,6 @@ def roleresourcepermission_read(role_id, resource_id, permission_id):  # noqa: E
         }
     )
 
-
 def site_create(data=None):  # noqa: E501
     """site_create
 
@@ -1468,6 +1468,7 @@ def site_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
+    SiteValidator().validate_site_create(data)
     return db_actions.crud(
         model="Site",
         api_model=Site,
@@ -1552,6 +1553,7 @@ def site_update(site_id, data=None):  # noqa: E501
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
+    SiteValidator().validate_site_update(site_id, data)
 
     return db_actions.crud(
         model="Site",

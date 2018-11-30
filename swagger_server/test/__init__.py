@@ -14,8 +14,9 @@ from flask_testing import TestCase
 from sqlalchemy.exc import SQLAlchemyError
 from ge_core_shared import decorators, exception_handlers, middleware
 
-from swagger_server.encoder import JSONEncoder
 from access_control import models
+from swagger_server.controllers import controller_validators
+from swagger_server.encoder import JSONEncoder
 
 
 DB = SQLAlchemy()
@@ -58,6 +59,10 @@ class BaseTestCase(TestCase):
         flask_app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
         DB.init_app(flask_app)
         app.add_error_handler(SQLAlchemyError, exception_handlers.db_exceptions)
+        app.add_error_handler(
+            controller_validators.InvalidRequest,
+            controller_validators.handle_invalid_request
+        )
 
         # Register middleware
         middleware.auth_middleware(flask_app, "core_access_control")
