@@ -2,10 +2,8 @@ from urllib.parse import urlparse
 import jsonschema
 import uuid
 
-from flask import abort
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import validates
 from sqlalchemy.sql import expression
@@ -154,26 +152,22 @@ class RoleResourcePermission(DB.Model):
 
 
 class Site(DB.Model):
-
-    def __init__(self, *args, **kwargs):
-        # Due to the model being instantiated more than once with differing
-        # kwargs, it causes the validation decorator to sometimes only receive
-        # partial instance data.
-        if "deletion_method_data" in kwargs and "deletion_method_id" in kwargs:
-            try:
-                instance = DeletionMethod.query.filter_by(
-                    id=kwargs["deletion_method_id"]
-                ).one()
-            except NoResultFound:
-                abort(
-                    400,
-                    f"No result found for: DeletionMethod<id={self.deletion_method_id}>"
-                )
+    def __validate_deletion_method_data(self, lookup_id, data):
+        # Due to oddities in the ORM level validation, this method is called
+        # twice. In __init__ to validate model creation and in an actual
+        # validation method for updates.
+        if lookup_id is not None and data is not None:
+            instance = DeletionMethod.query.filter_by(
+                id=lookup_id
+            ).one()
             jsonschema.validate(
-                kwargs["deletion_method_data"],
+                data,
                 schema=instance.data_schema,
                 format_checker=jsonschema.FormatChecker()
             )
+
+    def __init__(self, *args, **kwargs):
+        self.__validate_deletion_method_data(kwargs.get("deletion_method_id"), kwargs.get("deletion_method_data"))
         super().__init__(*args, **kwargs)
 
     id = DB.Column(DB.Integer, primary_key=True)
@@ -191,6 +185,11 @@ class Site(DB.Model):
         onupdate=utcnow(),
         nullable=False
     )
+
+    @validates("deletion_method_data")
+    def validate_deletion_method_data(self, key, data):
+        self.__validate_deletion_method_data(self.deletion_method_id, data)
+        return data
 
     def __repr__(self):
         return "<Site(%s-%s-%s-%s)>" % (

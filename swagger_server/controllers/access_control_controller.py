@@ -11,7 +11,7 @@ from sqlalchemy import func, text
 import project.app
 from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
+from swagger_server.controllers.controller_validators import SiteValidator
 from swagger_server.models.credentials import Credentials
 from swagger_server.models.deletion_method import DeletionMethod  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
@@ -203,6 +203,7 @@ def credentials_update(credentials_id, data=None):  # noqa: E501
         query={"id": credentials_id},
     )
 
+
 def deletionmethod_create(data=None):  # noqa: E501
     """deletionmethod_create
 
@@ -283,6 +284,7 @@ def deletionmethod_read(deletionmethod_id):  # noqa: E501
         action="read",
         query={"id": deletionmethod_id}
     )
+
 
 def deletionmethod_update(deletionmethod_id, data=None):  # noqa: E501
     """deletionmethod_update
@@ -1468,6 +1470,7 @@ def site_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
+    SiteValidator().validate_site_create(data)
     return db_actions.crud(
         model="Site",
         api_model=Site,
@@ -1552,6 +1555,7 @@ def site_update(site_id, data=None):  # noqa: E501
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
+    SiteValidator().validate_site_update(site_id, data)
 
     return db_actions.crud(
         model="Site",
@@ -1707,6 +1711,7 @@ def userdomainrole_create(data=None):  # noqa: E501
         data=data,
     )
 
+
 def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
     """userdomainrole_delete
 
@@ -1731,6 +1736,7 @@ def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 @decorators.list_response
 def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, role_id=None):  # noqa: E501
@@ -1766,6 +1772,7 @@ def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, r
             "order_by": ["user_id"]}
     )
 
+
 def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
     """userdomainrole_read
 
@@ -1790,6 +1797,7 @@ def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 def usersiterole_create(data=None):  # noqa: E501
     """usersiterole_create
@@ -1836,6 +1844,7 @@ def usersiterole_delete(user_id, site_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 @decorators.list_response
 def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_id=None):  # noqa: E501
@@ -1896,6 +1905,3 @@ def usersiterole_read(user_id, site_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
-
-
-

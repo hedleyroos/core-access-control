@@ -63,6 +63,7 @@ class SiteTestCase(BaseTestCase):
             data=json.dumps(data),
             content_type='application/json',
             headers=self.headers)
+        self.assertEqual(response.status_code, 200)
         r_data = json.loads(response.data)
         self.assertEqual(r_data["name"], data.name)
         self.assertEqual(r_data["domain_id"], data.domain_id)
@@ -172,3 +173,65 @@ class SiteTestCase(BaseTestCase):
         self.assertEqual(r_data["description"], updated_entry.description)
         self.assertEqual(r_data["client_id"], updated_entry.client_id)
         self.assertEqual(r_data["is_active"], updated_entry.is_active)
+
+    def test_site_deletion_method_data_validation(self):
+        """Test case for site_create
+        """
+        # Test id and data being required
+        data = SiteCreate(**{
+            "deletion_method_data": {"a": "a"},
+            "description": "a super cool test site",
+            "domain_id": self.domain_model.id,
+            "is_active": True,
+            "name": ("%s" % uuid.uuid1())[:30],
+        })
+        response = self.client.open(
+            '/api/v1/sites',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        self.assertEqual(response.status_code, 400)
+        r_data = json.loads(response.data)
+        self.assertEqual(
+            r_data["detail"], "'deletion_method_id' is a required property"
+        )
+        data = SiteCreate(**{
+            "deletion_method_id": 0,
+            "description": "a super cool test site",
+            "domain_id": self.domain_model.id,
+            "is_active": True,
+            "name": ("%s" % uuid.uuid1())[:30],
+        })
+        response = self.client.open(
+            '/api/v1/sites',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        self.assertEqual(response.status_code, 400)
+        r_data = json.loads(response.data)
+        self.assertEqual(
+            r_data["detail"], "'deletion_method_data' is a required property"
+        )
+
+        ## Test schema validation
+        data = SiteCreate(**{
+            "deletion_method_data": {"a": "a"},
+            "deletion_method_id": 0,
+            "description": "a super cool test site",
+            "domain_id": self.domain_model.id,
+            "is_active": True,
+            "name": ("%s" % uuid.uuid1())[:30],
+        })
+        response = self.client.open(
+            '/api/v1/sites',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        self.assertEqual(response.status_code, 400)
+        r_data = json.loads(response.data)
+        self.assertEqual(
+            r_data["message"], "The deletion method data does not conform to the schema defined for the deletion method none"
+        )
