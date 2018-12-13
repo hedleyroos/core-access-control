@@ -92,7 +92,7 @@ class SeedDataLoader:
                 defaults={
                     "description": site_to_create["description"] or "",
                     "domain_id": domain.id if domain else None,
-                    "deletion_method_id": 0, "deletion_method_data": {"type": "object"}
+                    "deletion_method_id": 0, "deletion_method_data": {}
                 }
             )
             roles = site_to_create.get("roles", [])
