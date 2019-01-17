@@ -15,7 +15,7 @@ class Site(Model):
     Do not edit the class manually.
     """
 
-    def __init__(self, id: int=None, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
+    def __init__(self, id: int=None, name: str=None, client_id: int=None, domain_id: int=None, description: str=None, is_active: bool=None, deletion_method_id: int=None, deletion_method_data: object=None, created_at: datetime=None, updated_at: datetime=None):  # noqa: E501
         """Site - a model defined in Swagger
 
         :param id: The id of this Site.  # noqa: E501
@@ -30,6 +30,10 @@ class Site(Model):
         :type description: str
         :param is_active: The is_active of this Site.  # noqa: E501
         :type is_active: bool
+        :param deletion_method_id: The deletion_method_id of this Site.  # noqa: E501
+        :type deletion_method_id: int
+        :param deletion_method_data: The deletion_method_data of this Site.  # noqa: E501
+        :type deletion_method_data: object
         :param created_at: The created_at of this Site.  # noqa: E501
         :type created_at: datetime
         :param updated_at: The updated_at of this Site.  # noqa: E501
@@ -42,6 +46,8 @@ class Site(Model):
             'domain_id': int,
             'description': str,
             'is_active': bool,
+            'deletion_method_id': int,
+            'deletion_method_data': object,
             'created_at': datetime,
             'updated_at': datetime
         }
@@ -53,6 +59,8 @@ class Site(Model):
             'domain_id': 'domain_id',
             'description': 'description',
             'is_active': 'is_active',
+            'deletion_method_id': 'deletion_method_id',
+            'deletion_method_data': 'deletion_method_data',
             'created_at': 'created_at',
             'updated_at': 'updated_at'
         }
@@ -63,6 +71,8 @@ class Site(Model):
         self._domain_id = domain_id
         self._description = description
         self._is_active = is_active
+        self._deletion_method_id = deletion_method_id
+        self._deletion_method_data = deletion_method_data
         self._created_at = created_at
         self._updated_at = updated_at
 
@@ -212,6 +222,52 @@ class Site(Model):
             raise ValueError("Invalid value for `is_active`, must not be `None`")  # noqa: E501
 
         self._is_active = is_active
+
+    @property
+    def deletion_method_id(self) -> int:
+        """Gets the deletion_method_id of this Site.
+
+
+        :return: The deletion_method_id of this Site.
+        :rtype: int
+        """
+        return self._deletion_method_id
+
+    @deletion_method_id.setter
+    def deletion_method_id(self, deletion_method_id: int):
+        """Sets the deletion_method_id of this Site.
+
+
+        :param deletion_method_id: The deletion_method_id of this Site.
+        :type deletion_method_id: int
+        """
+        if deletion_method_id is None:
+            raise ValueError("Invalid value for `deletion_method_id`, must not be `None`")  # noqa: E501
+
+        self._deletion_method_id = deletion_method_id
+
+    @property
+    def deletion_method_data(self) -> object:
+        """Gets the deletion_method_data of this Site.
+
+
+        :return: The deletion_method_data of this Site.
+        :rtype: object
+        """
+        return self._deletion_method_data
+
+    @deletion_method_data.setter
+    def deletion_method_data(self, deletion_method_data: object):
+        """Sets the deletion_method_data of this Site.
+
+
+        :param deletion_method_data: The deletion_method_data of this Site.
+        :type deletion_method_data: object
+        """
+        if deletion_method_data is None:
+            raise ValueError("Invalid value for `deletion_method_data`, must not be `None`")  # noqa: E501
+
+        self._deletion_method_data = deletion_method_data
 
     @property
     def created_at(self) -> datetime:

@@ -16,11 +16,12 @@ from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.domain_create import DomainCreate
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.user_deletion_data import UserDeletionData
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 
 
 class DeleteUserDataTestCase(BaseTestCase):
@@ -59,11 +60,9 @@ class DeleteUserDataTestCase(BaseTestCase):
                 "client_id": uuid.uuid1().int>>97,
                 "is_active": True,
             }
-            site_model = db_actions.crud(
+            site_model = db_create_entry(
                 model="Site",
-                api_model=Site,
                 data=site_data,
-                action="create"
             )
             db_actions.crud(
                 model="SiteRole",
@@ -190,11 +189,9 @@ class DeleteUserDataTestCase(BaseTestCase):
                 "client_id": uuid.uuid1().int>>97,
                 "is_active": True,
             }
-            site_model = db_actions.crud(
+            site_model = db_create_entry(
                 model="Site",
-                api_model=Site,
                 data=site_data,
-                action="create"
             )
             db_actions.crud(
                 model="SiteRole",
@@ -301,11 +298,9 @@ class DeleteUserDataTestCase(BaseTestCase):
                 "client_id": uuid.uuid1().int>>97,
                 "is_active": True,
             }
-            site_model = db_actions.crud(
+            site_model = db_create_entry(
                 model="Site",
-                api_model=Site,
                 data=site_data,
-                action="create"
             )
             db_actions.crud(
                 model="SiteRole",

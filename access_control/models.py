@@ -1,5 +1,6 @@
-import uuid
 from urllib.parse import urlparse
+import jsonschema
+import uuid
 
 from sqlalchemy import types
 from sqlalchemy.dialects.postgresql import UUID, CHAR
@@ -151,12 +152,32 @@ class RoleResourcePermission(DB.Model):
 
 
 class Site(DB.Model):
+    def __validate_deletion_method_data(self, lookup_id, data):
+        # Due to oddities in the ORM level validation, this method is called
+        # twice. In __init__ to validate model creation and in an actual
+        # validation method for updates.
+        if lookup_id is not None and data is not None:
+            instance = DeletionMethod.query.filter_by(
+                id=lookup_id
+            ).one()
+            jsonschema.validate(
+                data,
+                schema=instance.data_schema,
+                format_checker=jsonschema.FormatChecker()
+            )
+
+    def __init__(self, *args, **kwargs):
+        self.__validate_deletion_method_data(kwargs.get("deletion_method_id"), kwargs.get("deletion_method_data"))
+        super().__init__(*args, **kwargs)
+
     id = DB.Column(DB.Integer, primary_key=True)
     name = DB.Column(DB.VARCHAR(30), unique=True, index=True, nullable=False)
     domain_id = DB.Column(DB.Integer, DB.ForeignKey("domain.id"), index=True, nullable=False)
     description = DB.Column(DB.Text, nullable=False)
     client_id = DB.Column(DB.Integer, unique=True, index=True)
     is_active = DB.Column(DB.Boolean, default=True, nullable=False)
+    deletion_method_id = DB.Column(DB.Integer, DB.ForeignKey("deletion_method.id"), nullable=False)
+    deletion_method_data = DB.Column(DB.JSON, default={}, nullable=False)
     created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
     updated_at = DB.Column(
         DB.DateTime,
@@ -164,6 +185,11 @@ class Site(DB.Model):
         onupdate=utcnow(),
         nullable=False
     )
+
+    @validates("deletion_method_data")
+    def validate_deletion_method_data(self, key, data):
+        self.__validate_deletion_method_data(self.deletion_method_id, data)
+        return data
 
     def __repr__(self):
         return "<Site(%s-%s-%s-%s)>" % (
@@ -381,3 +407,74 @@ class InvitationRedirectUrl(DB.Model):
 
     def __repr__(self):
         return "<InvitationRedirectURL(%s)>" % (self.url)
+
+
+class DeletionMethod(DB.Model):
+    id = DB.Column(DB.Integer, primary_key=True)
+    label = DB.Column(DB.VARCHAR(100), unique=True, index=True, nullable=False)
+    data_schema = DB.Column(DB.JSON, default={}, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+
+class Credentials(DB.Model):
+    """
+    Credentials are (id, secret) pairs that can be linked to a site.
+    These credentials are used when a site needs to perform an action
+    which requires authentication.
+    """
+    id = DB.Column(DB.Integer, primary_key=True)
+    site_id = DB.Column(
+        DB.Integer, DB.ForeignKey("site.id"), nullable=False, index=True
+    )
+    account_id = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
+    account_secret = DB.Column(DB.VARCHAR(256), unique=True, nullable=False)
+    description = DB.Column(DB.Text, nullable=False)
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+    __table_args__ = (
+        DB.CheckConstraint("char_length(account_id)>=32",
+                           name="account_id_min_length"),
+        DB.CheckConstraint("char_length(account_secret)>=32",
+                           name="account_secret_min_length"),
+        {}
+    )
+
+    def __repr__(self):
+        return f"<Credentials({self.id})>"
+
+    @validates("account_id")
+    def validate_account_id(self, _key, account_id):
+        length = len(account_id)
+
+        if length < 32:
+            raise ValueError("account_id too short")
+
+        if length > 256:
+            raise ValueError("account_id too long")
+
+        return account_id
+
+    @validates("account_secret")
+    def validate_account_secret(self, _key, account_secret):
+        length = len(account_secret)
+
+        if length < 32:
+            raise ValueError("account_secret too short")
+
+        if length > 256:
+            raise ValueError("account_secret too long")
+
+        return account_secret

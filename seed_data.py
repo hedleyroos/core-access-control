@@ -2,12 +2,13 @@ from flask import Flask
 
 from ge_core_shared.db_actions import get_or_create, read_entry
 from access_control.fixtures.domains import DOMAIN_HIERARCHY
+from access_control.fixtures.deletionmethods import DELETION_METHODS
 from access_control.fixtures.permissions import PERMISSIONS
 from access_control.fixtures.resources import RESOURCES
 from access_control.fixtures.roles import ROLES
 from access_control.fixtures.role_resource_permissions import ROLE_RESOURCE_PERMISSIONS
 from access_control.models import Resource, Permission, Role, Domain, \
-    DomainRole, RoleResourcePermission, Site, SiteRole
+    DomainRole, RoleResourcePermission, Site, SiteRole, DeletionMethod
 
 app = Flask(__name__)
 
@@ -22,6 +23,7 @@ class SeedDataLoader:
         # resources and permissions have been loaded.
         self.load_role_resource_permissions()
         self.load_domain(DOMAIN_HIERARCHY)
+        self.load_deletion_methods()
         print("Done")
 
     @staticmethod
@@ -89,7 +91,8 @@ class SeedDataLoader:
                 Site, name=site_to_create["name"],
                 defaults={
                     "description": site_to_create["description"] or "",
-                    "domain_id": domain.id if domain else None
+                    "domain_id": domain.id if domain else None,
+                    "deletion_method_id": 0, "deletion_method_data": {}
                 }
             )
             roles = site_to_create.get("roles", [])
@@ -112,6 +115,15 @@ class SeedDataLoader:
                 get_or_create(RoleResourcePermission, role_id=role.id, resource_id=resource.id,
                               permission_id=permission.id)
         print("Done.")
+
+    @staticmethod
+    def load_deletion_methods():
+        print("Loading Deletion Methods...")
+        for method in DELETION_METHODS:
+            label = method.pop("label")
+            instance, created = get_or_create(DeletionMethod, defaults=method, **{"label": label})
+            print("Deletion Method %s loaded..." % instance.label)
+        print("Done")
 
 
 loader = SeedDataLoader()

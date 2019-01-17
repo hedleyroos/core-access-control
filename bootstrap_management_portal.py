@@ -31,7 +31,8 @@ if __name__ == "__main__":
         defaults={
             "description": "The Management Portal",
             "client_id": client_id,
-            "domain_id": domain.id
+            "domain_id": domain.id,
+            "deletion_method_id": 0
         }
     )
 

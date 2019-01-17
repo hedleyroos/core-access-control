@@ -11,45 +11,23 @@ from sqlalchemy import func, text
 import project.app
 from access_control import models
 from swagger_server.controllers.operational_controller import get_all_user_roles
-from swagger_server.models.all_user_roles import AllUserRoles  # noqa: E501
+from swagger_server.controllers.controller_validators import SiteValidator
+from swagger_server.models.credentials import Credentials
+from swagger_server.models.deletion_method import DeletionMethod  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
-from swagger_server.models.domain_create import DomainCreate  # noqa: E501
 from swagger_server.models.domain_role import DomainRole  # noqa: E501
-from swagger_server.models.domain_role_create import DomainRoleCreate  # noqa: E501
-from swagger_server.models.domain_role_update import DomainRoleUpdate  # noqa: E501
-from swagger_server.models.domain_update import DomainUpdate  # noqa: E501
 from swagger_server.models.invitation import Invitation  # noqa: E501
-from swagger_server.models.invitation_create import InvitationCreate  # noqa: E501
 from swagger_server.models.invitation_domain_role import InvitationDomainRole  # noqa: E501
-from swagger_server.models.invitation_domain_role_create import InvitationDomainRoleCreate  # noqa: E501
 from swagger_server.models.invitation_redirect_url import InvitationRedirectUrl  # noqa: E501
-from swagger_server.models.invitation_redirect_url_create import InvitationRedirectUrlCreate  # noqa: E501
-from swagger_server.models.invitation_redirect_url_update import InvitationRedirectUrlUpdate  # noqa: E501
 from swagger_server.models.invitation_site_role import InvitationSiteRole  # noqa: E501
-from swagger_server.models.invitation_site_role_create import InvitationSiteRoleCreate  # noqa: E501
-from swagger_server.models.invitation_update import InvitationUpdate  # noqa: E501
 from swagger_server.models.permission import Permission  # noqa: E501
-from swagger_server.models.permission_create import PermissionCreate  # noqa: E501
-from swagger_server.models.permission_update import PermissionUpdate  # noqa: E501
 from swagger_server.models.resource import Resource  # noqa: E501
-from swagger_server.models.resource_create import ResourceCreate  # noqa: E501
-from swagger_server.models.resource_update import ResourceUpdate  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
-from swagger_server.models.role_create import RoleCreate  # noqa: E501
 from swagger_server.models.role_resource_permission import RoleResourcePermission  # noqa: E501
-from swagger_server.models.role_resource_permission_create import RoleResourcePermissionCreate  # noqa: E501
-from swagger_server.models.role_update import RoleUpdate  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
-from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
-from swagger_server.models.site_role_create import SiteRoleCreate  # noqa: E501
-from swagger_server.models.site_role_update import SiteRoleUpdate  # noqa: E501
-from swagger_server.models.site_update import SiteUpdate  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
-from swagger_server.models.user_domain_role_create import UserDomainRoleCreate  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
-from swagger_server.models.user_site_role_create import UserSiteRoleCreate  # noqa: E501
-from swagger_server import util
 
 db = project.app.DB
 
@@ -109,6 +87,226 @@ def access_control_roleresourcepermission_delete(role_id, resource_id, permissio
             "resource_id": resource_id,
             "permission_id": permission_id
         }
+    )
+
+
+def credentials_create(data=None):  # noqa: E501
+    """credentials_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Credentials
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="create",
+        data=data,
+    )
+
+
+def credentials_delete(credentials_id):  # noqa: E501
+    """credentials_delete
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="delete",
+        query={"id": credentials_id},
+    )
+
+
+@decorators.list_response
+def credentials_list(offset=None, limit=None, credentials_ids=None, site_id=None):  # noqa: E501
+    """credentials_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+    :param credentials_ids: An optional list of credentials ids
+    :type credentials_ids: List[int]
+    :param site_id: An optional query parameter to filter by site_id
+    :type site_id: int
+
+    :rtype: List[Credentials]
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "id": credentials_ids,
+                "site_id": site_id
+            },
+            "order_by": ["id"]
+        }
+    )
+
+
+def credentials_read(credentials_id):  # noqa: E501
+    """credentials_read
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+
+    :rtype: Credentials
+    """
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="read",
+        query={"id": credentials_id}
+    )
+
+
+def credentials_update(credentials_id, data=None):  # noqa: E501
+    """credentials_update
+
+     # noqa: E501
+
+    :param credentials_id: A unique integer value identifying the credentials.
+    :type credentials_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: Credentials
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="Credentials",
+        api_model=Credentials,
+        action="update",
+        data=data,
+        query={"id": credentials_id},
+    )
+
+
+def deletionmethod_create(data=None):  # noqa: E501
+    """deletionmethod_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletionMethod
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="create",
+        data=data,
+    )
+
+
+def deletionmethod_delete(deletionmethod_id):  # noqa: E501
+    """deletionmethod_delete
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="delete",
+        query={"id": deletionmethod_id},
+    )
+
+
+@decorators.list_response
+def deletionmethod_list(offset=None, limit=None):  # noqa: E501
+    """deletionmethod_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+
+    :rtype: List[DeletionMethod]
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "order_by": ["id"]
+        }
+    )
+
+
+def deletionmethod_read(deletionmethod_id):  # noqa: E501
+    """deletionmethod_read
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+
+    :rtype: DeletionMethod
+    """
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="read",
+        query={"id": deletionmethod_id}
+    )
+
+
+def deletionmethod_update(deletionmethod_id, data=None):  # noqa: E501
+    """deletionmethod_update
+
+     # noqa: E501
+
+    :param deletionmethod_id: A unique integer value identifying the credentials.
+    :type deletionmethod_id: int
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: DeletionMethod
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="DeletionMethod",
+        api_model=DeletionMethod,
+        action="update",
+        data=data,
+        query={"id": deletionmethod_id},
     )
 
 
@@ -1272,6 +1470,7 @@ def site_create(data=None):  # noqa: E501
     if connexion.request.is_json:
         data = connexion.request.get_json()
 
+    SiteValidator().validate_site_create(data)
     return db_actions.crud(
         model="Site",
         api_model=Site,
@@ -1356,6 +1555,7 @@ def site_update(site_id, data=None):  # noqa: E501
     """
     if connexion.request.is_json:
         data = connexion.request.get_json()
+    SiteValidator().validate_site_update(site_id, data)
 
     return db_actions.crud(
         model="Site",
@@ -1511,6 +1711,7 @@ def userdomainrole_create(data=None):  # noqa: E501
         data=data,
     )
 
+
 def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
     """userdomainrole_delete
 
@@ -1535,6 +1736,7 @@ def userdomainrole_delete(user_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 @decorators.list_response
 def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, role_id=None):  # noqa: E501
@@ -1570,6 +1772,7 @@ def userdomainrole_list(offset=None, limit=None, user_id=None, domain_id=None, r
             "order_by": ["user_id"]}
     )
 
+
 def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
     """userdomainrole_read
 
@@ -1594,6 +1797,7 @@ def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 def usersiterole_create(data=None):  # noqa: E501
     """usersiterole_create
@@ -1640,6 +1844,7 @@ def usersiterole_delete(user_id, site_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
+
 
 @decorators.list_response
 def usersiterole_list(offset=None, limit=None, user_id=None, site_id=None, role_id=None):  # noqa: E501
@@ -1700,6 +1905,3 @@ def usersiterole_read(user_id, site_id, role_id):  # noqa: E501
             "role_id": role_id,
         }
     )
-
-
-

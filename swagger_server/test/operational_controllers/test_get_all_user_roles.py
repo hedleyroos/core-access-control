@@ -13,9 +13,10 @@ from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.domain import Domain  # noqa: E501
 from swagger_server.models.role import Role  # noqa: E501
 from swagger_server.models.site import Site  # noqa: E501
+from swagger_server.models.site_create import SiteCreate  # noqa: E501
 from swagger_server.models import DomainRole
 from swagger_server.models import UserDomainRoleCreate
-from swagger_server.test import BaseTestCase
+from swagger_server.test import BaseTestCase, db_create_entry
 
 
 class TestOperationalController(BaseTestCase):
@@ -40,11 +41,9 @@ class TestOperationalController(BaseTestCase):
             "client_id": 0,
             "is_active": True,
         }
-        self.site_model = db_actions.crud(
+        self.site_model = db_create_entry(
             model="Site",
-            api_model=Site,
             data=site_data,
-            action="create"
         )
         self.roles = []
 
