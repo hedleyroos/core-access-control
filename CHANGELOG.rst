@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.4
+---
+- Addition of site deletion methods (API and model changes)
+
 1.3.3
 -----
 - Make use of core-shared:1.3.1
