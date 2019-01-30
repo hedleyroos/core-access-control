@@ -7,6 +7,8 @@ import uuid
 import psycopg2
 from flask import json
 from ge_core_shared import db_actions, decorators
+from sqlalchemy.orm.exc import StaleDataError
+
 from swagger_server.models.domain import Domain
 from swagger_server.test import BaseTestCase
 from unittest.mock import patch
@@ -73,4 +75,26 @@ class TestExceptions(BaseTestCase):
         self.assertEqual(
             r_data["error"],
             "OperationalError('Server closed the connection unexpectedly',)"
+        )
+
+    @patch("ge_core_shared.db_actions.db.session.commit")
+    def test_staledataerror_response(self, mocked_crud):
+
+        error = StaleDataError("Some reason")
+        mocked_crud.side_effect = error
+        data = Domain(**{
+            "name": ("%s" % uuid.uuid1())[:30],
+            "description": "a super cool test domain",
+        })
+        response = self.client.open(
+            '/api/v1/domains',
+            method='POST',
+            data=json.dumps(data),
+            content_type='application/json',
+            headers=self.headers)
+        r_data = json.loads(response.data)
+        self.assertEqual(response.status_code, 500)
+        self.assertEqual(
+            "StaleDataError(Some reason)",
+            r_data["error"]
         )
