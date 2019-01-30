@@ -1,8 +1,12 @@
 Changelog
 =========
 
-1.4
----
+1.4.1
+-----
+- Use latest version of core-share library
+
+1.4.0
+-----
 - Addition of site deletion methods (API and model changes)
 
 1.3.3
