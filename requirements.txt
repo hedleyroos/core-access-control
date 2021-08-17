@@ -20,3 +20,5 @@ prometheus-client==0.3.1
 rfc3987
 strict-rfc3339
 
+Flask==1.1.4
+werkzeug==0.16.1
