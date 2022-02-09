@@ -2037,6 +2037,133 @@ paths:
         204:
           description: ""
       x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /userresourceroles:
+    get:
+      tags:
+      - "access_control"
+      operationId: "userresourcerole_list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "An optional query parameter specifying the offset in the result\
+          \ set to start from."
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+      - name: "limit"
+        in: "query"
+        description: "An optional query parameter to limit the number of results returned."
+        required: false
+        type: "integer"
+        default: 20
+        maximum: 100
+        minimum: 1
+      - name: "user_id"
+        in: "query"
+        description: "An optional query parameter to filter by user_id"
+        required: false
+        type: "string"
+        format: "uuid"
+      - name: "resource_id"
+        in: "query"
+        description: "An optional query parameter to filter by resource_id"
+        required: false
+        type: "integer"
+      - name: "role_id"
+        in: "query"
+        description: "An optional query parameter to filter by role_id"
+        required: false
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/user_resource_role"
+          headers:
+            X-Total-Count:
+              type: "integer"
+              description: "The total number of results matching the query"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    post:
+      tags:
+      - "access_control"
+      operationId: "userresourcerole_create"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "data"
+        required: false
+        schema:
+          $ref: "#/definitions/user_resource_role_create"
+      responses:
+        201:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_resource_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+  /userresourceroles/{user_id}/{resource_id}/{role_id}:
+    get:
+      tags:
+      - "access_control"
+      operationId: "userresourcerole_read"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: ""
+          schema:
+            $ref: "#/definitions/user_resource_role"
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
+    delete:
+      tags:
+      - "access_control"
+      operationId: "userresourcerole_delete"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "A UUID value identifying the user."
+        required: true
+        type: "string"
+        format: "uuid"
+      - name: "resource_id"
+        in: "path"
+        description: "A unique integer value identifying the resource."
+        required: true
+        type: "integer"
+      - name: "role_id"
+        in: "path"
+        description: "A unique integer value identifying the role."
+        required: true
+        type: "integer"
+      responses:
+        204:
+          description: ""
+      x-swagger-router-controller: "swagger_server.controllers.access_control_controller"
   /usersiteroles:
     get:
       tags:

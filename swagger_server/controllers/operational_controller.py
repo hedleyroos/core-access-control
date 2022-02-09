@@ -63,6 +63,30 @@ SELECT id, parent_id, implicit_roles || explicit_roles AS roles
   FROM _roles;
 """
 
+SQL_ALL_RESOURCE_ROLES_FOR_USER = """
+WITH _roles AS (
+  SELECT site.id, site.domain_id,
+         -- Site roles are distinct per definition
+         array_agg(siterole.role_id) AS implicit_roles,
+         -- User site roles are distinct per definition
+         array_agg(userresourcerole.role_id) AS explicit_roles
+    FROM site
+    LEFT OUTER JOIN site_role AS siterole
+      ON (site.id = siterole.site_id AND
+          siterole.grant_implicitly)
+    LEFT OUTER JOIN user_site_role AS userresourcerole
+      ON (site.id = userresourcerole.site_id AND
+          userresourcerole.user_id = :user_id)
+   GROUP BY site.id, site.domain_id
+)
+-- Return all the sites with the implicit and explicit
+-- roles for the specified user.
+-- The list of roles needs to be post-processed as it may contain duplicates and NULL values, e.g.
+-- {6,null} or {null,null}
+SELECT id, domain_id, implicit_roles || explicit_roles AS roles
+  FROM _roles;
+"""
+
 SQL_ALL_SITE_ROLES_FOR_USER = """
 WITH _roles AS (
   SELECT site.id, site.domain_id,
@@ -346,7 +370,7 @@ SELECT COUNT(*) AS amount
 
 SQL_DELETE_USER_DATA = """
 -- Given a user id (:user_id),
--- delete UserDomainRoles and UserSiteRoles tied to user id
+-- delete UserDomainRoles, UserResourceRoles and UserSiteRoles tied to user id
 
 WITH deleted_site_roles AS (
     DELETE FROM user_site_role
@@ -358,6 +382,12 @@ deleted_domain_roles AS (
         WHERE user_id = :user_id
     RETURNING user_id
 ),
+deleted_resource_roles AS (
+    DELETE FROM user_resource_role
+        WHERE user_id = :user_id
+    RETURNING user_id
+),
+
 deleted_rows AS (
    SELECT * FROM deleted_site_roles
    UNION ALL  -- ALL is required so that duplicates are not dropped

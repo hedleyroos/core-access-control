@@ -479,6 +479,46 @@ definitions:
       - domain_id
       - role_id
 
+  user_resource_role:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      resource_id:
+        type: integer
+      role_id:
+        type: integer
+      created_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+      updated_at:
+        type: string
+        format: 'date-time'
+        readOnly: true
+    required:
+      - user_id
+      - resource_id
+      - role_id
+      - created_at
+      - updated_at
+
+  user_resource_role_create:
+    type: object
+    properties:
+      user_id:
+        type: string
+        format: uuid
+      resource_id:
+        type: integer
+      role_id:
+        type: integer
+    required:
+      - user_id
+      - resource_id
+      - role_id
+
   user_site_role:
     type: object
     properties:
@@ -2527,6 +2567,73 @@ paths:
           description: ''
           schema:
             $ref: '#/definitions/user_domain_role'
+      tags:
+        - access_control
+
+  /userresourceroles:
+    get:
+      operationId: userresourcerole_list
+      parameters:
+        - $ref: '#/parameters/optional_offset'
+        - $ref: '#/parameters/optional_limit'
+        - $ref: '#/parameters/optional_user_filter'
+        - $ref: '#/parameters/optional_resource_filter'
+        - $ref: '#/parameters/optional_role_filter'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          headers:
+            X-Total-Count:
+                type: integer
+                description: The total number of results matching the query
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/user_resource_role'
+      tags:
+        - access_control
+    post:
+      consumes:
+        - application/json
+      operationId: userresourcerole_create
+      parameters:
+        - in: body
+          name: data
+          schema:
+            $ref: '#/definitions/user_resource_role_create'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/user_resource_role'
+      tags:
+        - access_control
+
+  '/userresourceroles/{user_id}/{resource_id}/{role_id}':
+    parameters:
+      - $ref: '#/parameters/user_id'
+      - $ref: '#/parameters/resource_id'
+      - $ref: '#/parameters/role_id'
+    delete:
+      operationId: userresourcerole_delete
+      responses:
+        '204':
+          description: ''
+      tags:
+        - access_control
+    get:
+      operationId: userresourcerole_read
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/user_resource_role'
       tags:
         - access_control
 

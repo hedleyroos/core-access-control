@@ -27,6 +27,7 @@ from swagger_server.models.role_resource_permission import RoleResourcePermissio
 from swagger_server.models.site import Site  # noqa: E501
 from swagger_server.models.site_role import SiteRole  # noqa: E501
 from swagger_server.models.user_domain_role import UserDomainRole  # noqa: E501
+from swagger_server.models.user_resource_role import UserResourceRole  # noqa: E501
 from swagger_server.models.user_site_role import UserSiteRole  # noqa: E501
 
 db = project.app.DB
@@ -1794,6 +1795,114 @@ def userdomainrole_read(user_id, domain_id, role_id):  # noqa: E501
         query={
             "user_id": user_id,
             "domain_id": domain_id,
+            "role_id": role_id,
+        }
+    )
+
+
+def userresourcerole_create(data=None):  # noqa: E501
+    """userresourcerole_create
+
+     # noqa: E501
+
+    :param data:
+    :type data: dict | bytes
+
+    :rtype: UserResourceRole
+    """
+    if connexion.request.is_json:
+        data = connexion.request.get_json()
+
+    return db_actions.crud(
+        model="UserResourceRole",
+        api_model=UserResourceRole,
+        action="create",
+        data=data,
+    )
+
+
+def userresourcerole_delete(user_id, resource_id, role_id):  # noqa: E501
+    """userresourcerole_delete
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param resource_id: A unique integer value identifying the resource.
+    :type resource_id: int
+    :param role_id: A unique integer value identifying the role.
+    :type role_id: int
+
+    :rtype: None
+    """
+    return db_actions.crud(
+        model="UserResourceRole",
+        api_model=UserResourceRole,
+        action="delete",
+        query={
+            "user_id": user_id,
+            "resource_id": resource_id,
+            "role_id": role_id,
+        }
+    )
+
+
+@decorators.list_response
+def userresourcerole_list(offset=None, limit=None, user_id=None, resource_id=None, role_id=None):  # noqa: E501
+    """userresourcerole_list
+
+     # noqa: E501
+
+    :param offset: An optional query parameter specifying the offset in the result set to start from.
+    :type offset: int
+    :param limit: An optional query parameter to limit the number of results returned.
+    :type limit: int
+    :param user_id: An optional query parameter to filter by user_id
+    :type user_id: dict | bytes
+    :param resource_id: An optional query parameter to filter by resource_id
+    :type resource_id: int
+    :param role_id: An optional query parameter to filter by role_id
+    :type role_id: int
+
+    :rtype: List[UserResourceRole]
+    """
+    return db_actions.crud(
+        model="UserResourceRole",
+        api_model=UserResourceRole,
+        action="list",
+        query={
+            "offset": offset,
+            "limit": limit,
+            "ids": {
+                "user_id": user_id,
+                "resource_id": resource_id,
+                "role_id": role_id
+            },
+            "order_by": ["resource_id"]}
+    )
+
+
+def userresourcerole_read(user_id, resource_id, role_id):  # noqa: E501
+    """userresourcerole_read
+
+     # noqa: E501
+
+    :param user_id: A UUID value identifying the user.
+    :type user_id: dict | bytes
+    :param resource_id: A unique integer value identifying the resource.
+    :type resource_id: int
+    :param role_id: A unique integer value identifying the role.
+    :type role_id: int
+
+    :rtype: UserResourceRole
+    """
+    return db_actions.crud(
+        model="UserResourceRole",
+        api_model=UserResourceRole,
+        action="read",
+        query={
+            "user_id": user_id,
+            "resource_id": resource_id,
             "role_id": role_id,
         }
     )

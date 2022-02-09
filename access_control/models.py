@@ -299,6 +299,35 @@ class UserDomainRole(DB.Model):
         )
 
 
+class UserResourceRole(DB.Model):
+    user_id = DB.Column(UUID, primary_key=True)
+    resource_id = DB.Column(
+        DB.Integer, primary_key=True
+    )
+    role_id = DB.Column(
+        DB.Integer, primary_key=True
+    )
+    created_at = DB.Column(DB.DateTime, default=utcnow(), nullable=False)
+    updated_at = DB.Column(
+        DB.DateTime,
+        default=utcnow(),
+        onupdate=utcnow(),
+        nullable=False
+    )
+
+    __table_args__ = (
+        DB.ForeignKeyConstraint(
+            [resource_id, role_id],
+            [ResourceRole.resource_id, ResourceRole.role_id]
+        ), {}
+    )
+
+    def __repr__(self):
+        return "<UserResourceRole(%s-%s-%s)>" % (
+            self.user_id, self.resource_id, self.role_id
+        )
+
+
 class Invitation(DB.Model):
     id = DB.Column(GUID(), default=uuid.uuid1, primary_key=True)
     first_name = DB.Column(DB.Text, nullable=False)
